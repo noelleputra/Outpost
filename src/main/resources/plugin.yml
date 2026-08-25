@@ -1,4 +1,4 @@
-main: dev.noellx.Outpost.Outpost
+main: dev.noellx.outpost.Outpost
 version: 1.0.0
 name: Outpost
 author: Noellx
