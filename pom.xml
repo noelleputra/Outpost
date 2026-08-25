@@ -4,11 +4,11 @@
             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://www.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>dev.noellx.nullaeoutpost</groupId>
-    <artifactId>nullaeoutpost</artifactId>
+    <groupId>dev.noellx.Outpost</groupId>
+    <artifactId>Outpost</artifactId>
     <version>1.0.0</version>
     
-    <name>NullaeOutpost</name>
+    <name>Outpost</name>
     <url>https://github.com/noelleputra</url>
 
     <properties>

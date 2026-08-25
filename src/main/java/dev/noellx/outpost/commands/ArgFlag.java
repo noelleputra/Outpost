@@ -45,7 +45,7 @@ public class ArgFlag implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Collections.singletonList("NullaeOutpost.flags");
+        return Collections.singletonList("Outpost.flags");
     }
 
     @Override
@@ -230,7 +230,7 @@ public class ArgFlag implements NOCommandArg {
         Player p = (Player) s;
         OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
 
-        if (!p.hasPermission("NullaeOutpost.flags")) {
+        if (!p.hasPermission("Outpost.flags")) {
             OutpostL.msg(p, OutpostL.NO_PERMISSION_FLAGS.msg());
             return true;
         }
@@ -274,7 +274,7 @@ public class ArgFlag implements NOCommandArg {
             LinkedHashMap<String, List<String>> allowedFlags = r.getTypeOptions().allowedFlags;
 
             // check if flag is allowed and its group is also allowed
-            if (allowedFlags.keySet().contains(flagName) && allowedFlags.get(flagName).contains(flags.getOrDefault("-g", "all")) && p.hasPermission("NullaeOutpost.flags.edit." + flagName)) {
+            if (allowedFlags.keySet().contains(flagName) && allowedFlags.get(flagName).contains(flags.getOrDefault("-g", "all")) && p.hasPermission("Outpost.flags.edit." + flagName)) {
                 StringBuilder value = new StringBuilder();
                 for (int i = 2; i < args.length; i++) value.append(args[i]).append(" ");
 

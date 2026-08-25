@@ -127,7 +127,7 @@ public class BlockHandler {
     // create a NO region (no checks for items)
     public static boolean createNORegion(Player p, Location l, OutpostProtectBlock blockOptions) {
         // check permission
-        if (!p.hasPermission("NullaeOutpost.create")) {
+        if (!p.hasPermission("Outpost.create")) {
             OutpostL.msg(p, OutpostL.NO_PERMISSION_CREATE.msg());
             return false;
         }
@@ -151,7 +151,7 @@ public class BlockHandler {
         }
 
         // non-admin checks
-        if (!p.hasPermission("NullaeOutpost.admin")) {
+        if (!p.hasPermission("Outpost.admin")) {
             // check if in world blacklist or not in world whitelist
             boolean containsWorld = blockOptions.worlds.contains(p.getLocation().getWorld().getName());
 
@@ -190,7 +190,7 @@ public class BlockHandler {
         }
 
         // check for minimum distance between claims by using fake region
-        if (blockOptions.distanceBetweenClaims != -1 && !p.hasPermission("NullaeOutpost.superowner")) {
+        if (blockOptions.distanceBetweenClaims != -1 && !p.hasPermission("Outpost.superowner")) {
             if (!isFarEnoughFromOtherClaims(blockOptions, p.getWorld(), lp, bx, by, bz)) {
                 OutpostL.msg(p, OutpostL.REGION_TOO_CLOSE.msg().replace("%num%", "" + blockOptions.distanceBetweenClaims));
                 return false;
@@ -204,7 +204,7 @@ public class BlockHandler {
         rm.addRegion(region); // added to the region manager, be careful in implementing checks
 
         // check if new region overlaps more powerful region
-        if (!blockOptions.allowOverlapUnownedRegions && !p.hasPermission("NullaeOutpost.superowner") && WGUtils.overlapsStrongerRegion(p.getWorld(), region, lp)) {
+        if (!blockOptions.allowOverlapUnownedRegions && !p.hasPermission("Outpost.superowner") && WGUtils.overlapsStrongerRegion(p.getWorld(), region, lp)) {
             rm.removeRegion(id);
             OutpostL.msg(p, OutpostL.REGION_OVERLAP.msg());
             return false;
@@ -227,10 +227,10 @@ public class BlockHandler {
 
         // check for player's number of adjacent region groups
         if (Outpost.getInstance().getConfigOptions().regionsMustBeAdjacent) {
-            if (MiscUtil.getPermissionNumber(p, "NullaeOutpost.adjacent.", 1) >= 0 && !p.hasPermission("NullaeOutpost.admin")) {
+            if (MiscUtil.getPermissionNumber(p, "Outpost.adjacent.", 1) >= 0 && !p.hasPermission("Outpost.admin")) {
                 HashMap<String, ArrayList<String>> adjGroups = WGUtils.getPlayerAdjacentRegionGroups(p, rm);
 
-                int permNum = MiscUtil.getPermissionNumber(p, "NullaeOutpost.adjacent.", 1);
+                int permNum = MiscUtil.getPermissionNumber(p, "Outpost.adjacent.", 1);
                 if (adjGroups.size() > permNum && permNum != -1) {
                     OutpostL.msg(p, OutpostL.REGION_NOT_ADJACENT.msg());
                     rm.removeRegion(id);
@@ -257,7 +257,7 @@ public class BlockHandler {
         }
 
         // show merge menu
-        if (Outpost.getInstance().getConfigOptions().allowMergingRegions && blockOptions.allowMerging && p.hasPermission("NullaeOutpost.merge")) {
+        if (Outpost.getInstance().getConfigOptions().allowMergingRegions && blockOptions.allowMerging && p.hasPermission("Outpost.merge")) {
             OutpostRegion r = OutpostRegion.fromWGRegion(p.getWorld(), region);
             if (r != null) playerMergeTask(p, r);
         }

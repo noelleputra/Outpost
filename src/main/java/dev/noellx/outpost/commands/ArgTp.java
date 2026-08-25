@@ -47,7 +47,7 @@ public class ArgTp implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Collections.singletonList("NullaeOutpost.tp");
+        return Collections.singletonList("Outpost.tp");
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ArgTp implements NOCommandArg {
         Player p = (Player) s;
 
         // preliminary checks
-        if (!p.hasPermission("NullaeOutpost.tp"))
+        if (!p.hasPermission("Outpost.tp"))
             return OutpostL.msg(p, OutpostL.NO_PERMISSION_TP.msg());
 
         if (args.length < 2 || args.length > 3)
@@ -136,7 +136,7 @@ public class ArgTp implements NOCommandArg {
         }
 
         // teleport player
-        if (r.getTypeOptions().tpWaitingSeconds == 0 || p.hasPermission("NullaeOutpost.tp.bypasswait")) {
+        if (r.getTypeOptions().tpWaitingSeconds == 0 || p.hasPermission("Outpost.tp.bypasswait")) {
             // no teleport delay
             OutpostL.msg(p, OutpostL.TPING.msg());
             Bukkit.getScheduler().runTask(Outpost.getInstance(), () -> p.teleport(r.getHome())); // run on main thread, not async

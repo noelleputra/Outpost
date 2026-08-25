@@ -45,7 +45,7 @@ public class ArgAddRemove implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.members", "NullaeOutpost.owners");
+        return Arrays.asList("Outpost.members", "Outpost.owners");
     }
 
     @Override
@@ -61,9 +61,9 @@ public class ArgAddRemove implements NOCommandArg {
         String operationType = args[0].toLowerCase(); // add, remove, addowner, removeowner
 
         // check permission
-        if ((operationType.equals("add") || operationType.equals("remove")) && !p.hasPermission("NullaeOutpost.members")) {
+        if ((operationType.equals("add") || operationType.equals("remove")) && !p.hasPermission("Outpost.members")) {
             return OutpostL.msg(p, OutpostL.NO_PERMISSION_MEMBERS.msg());
-        } else if ((operationType.equals("addowner") || operationType.equals("removeowner")) && !p.hasPermission("NullaeOutpost.owners")) {
+        } else if ((operationType.equals("addowner") || operationType.equals("removeowner")) && !p.hasPermission("Outpost.owners")) {
             return OutpostL.msg(p, OutpostL.NO_PERMISSION_OWNERS.msg());
         }
 

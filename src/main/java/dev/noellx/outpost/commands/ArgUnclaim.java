@@ -48,7 +48,7 @@ public class ArgUnclaim implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Collections.singletonList("NullaeOutpost.unclaim");
+        return Collections.singletonList("Outpost.unclaim");
     }
 
     @Override
@@ -61,14 +61,14 @@ public class ArgUnclaim implements NOCommandArg {
         Player p = (Player) s;
 
 
-        if (!p.hasPermission("NullaeOutpost.unclaim")) {
+        if (!p.hasPermission("Outpost.unclaim")) {
             OutpostL.msg(p, OutpostL.NO_PERMISSION_UNCLAIM.msg());
             return true;
         }
 
         if (args.length >= 2) { // /no unclaim [list|region-id] (unclaim remote region)
 
-            if (!p.hasPermission("NullaeOutpost.unclaim.remote")) {
+            if (!p.hasPermission("Outpost.unclaim.remote")) {
                 OutpostL.msg(p, OutpostL.NO_PERMISSION_UNCLAIM_REMOTE.msg());
                 return true;
             }
@@ -98,7 +98,7 @@ public class ArgUnclaim implements NOCommandArg {
                 return true;
             }
 
-            if (!r.isOwner(p.getUniqueId()) && !p.hasPermission("NullaeOutpost.superowner")) {
+            if (!r.isOwner(p.getUniqueId()) && !p.hasPermission("Outpost.superowner")) {
                 OutpostL.msg(p, OutpostL.NO_REGION_PERMISSION.msg());
                 return true;
             }

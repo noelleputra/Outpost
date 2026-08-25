@@ -25,7 +25,7 @@ import dev.noellx.outpost.OutpostRegion;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Event that is called when a NullaeOutpost region is created, either by a player, or by the plugin.
+ * Event that is called when a Outpost region is created, either by a player, or by the plugin.
  */
 
 public class OutpostCreateEvent extends Event implements Cancellable {

@@ -46,7 +46,7 @@ public class ArgRegion implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.region");
+        return Arrays.asList("Outpost.region");
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ArgRegion implements NOCommandArg {
         Player p = (Player) s;
         RegionManager rgm = WGUtils.getRegionManagerWithPlayer(p);
 
-        if (!p.hasPermission("NullaeOutpost.region")) {
+        if (!p.hasPermission("Outpost.region")) {
             OutpostL.msg(p, OutpostL.NO_PERMISSION_REGION.msg());
             return true;
         }

@@ -186,7 +186,7 @@ public class OutpostStandardRegion extends OutpostRegion {
                 .map(r -> OutpostRegion.fromWGRegion(getWorld(), r))
                 .filter(r -> r != null && r.getTypeOptions() != null && !r.getId().equals(getId()))
                 .filter(r -> r.getTypeOptions().allowMerging)
-                .filter(r -> r.isOwner(p.getUniqueId()) || p.hasPermission("NullaeOutpost.admin"))
+                .filter(r -> r.isOwner(p.getUniqueId()) || p.hasPermission("Outpost.admin"))
                 .filter(r -> WGUtils.canMergeRegionTypes(getTypeOptions(), r))
                 .collect(Collectors.toList());
     }

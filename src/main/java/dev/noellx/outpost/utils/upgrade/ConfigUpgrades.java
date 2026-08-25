@@ -113,7 +113,7 @@ public class ConfigUpgrades {
                 Outpost.config.set("default_protection_block_placement_off", false);
                 Outpost.config.setComment("default_protection_block_placement_off", " Whether when players join, by default they have protection block placement toggled off (equivalent to running /no toggle)");
                 Outpost.config.set("default_allow_addowner_for_offline_players_without_lp", false);
-                Outpost.config.setComment("default_allow_addowner_for_offline_players_without_lp", " If you do not have LuckPerms, NullaeOutpost is unable to determine the limits of offline players (since it depends\n" +
+                Outpost.config.setComment("default_allow_addowner_for_offline_players_without_lp", " If you do not have LuckPerms, Outpost is unable to determine the limits of offline players (since it depends\n" +
                         " on permissions), and so it requires players to be online. Set this to true if your server does not need limits (and so\n" +
                         " the check is unnecessary).");
                 break;
@@ -133,7 +133,7 @@ public class ConfigUpgrades {
                     Outpost.config.removeComment("default_allow_addowner_for_offline_players_without_lp");
                     Outpost.config.remove("default_allow_addowner_for_offline_players_without_lp");
                     Outpost.config.set("allow_addowner_for_offline_players_without_lp", value == null ? false : (boolean) value);
-                    Outpost.config.setComment("allow_addowner_for_offline_players_without_lp", " If you do not have LuckPerms, NullaeOutpost is unable to determine the limits of offline players (since it depends\n" +
+                    Outpost.config.setComment("allow_addowner_for_offline_players_without_lp", " If you do not have LuckPerms, Outpost is unable to determine the limits of offline players (since it depends\n" +
                             " on permissions), and so it requires players to be online. Set this to true if your server does not need limits (and so\n" +
                             " the check is unnecessary).");
                 }

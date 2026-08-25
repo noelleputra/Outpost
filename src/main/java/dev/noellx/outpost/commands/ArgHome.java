@@ -49,7 +49,7 @@ public class ArgHome implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.home");
+        return Arrays.asList("Outpost.home");
     }
 
     @Override
@@ -123,7 +123,7 @@ public class ArgHome implements NOCommandArg {
         Player p = (Player) s;
 
         // prelim checks
-        if (!p.hasPermission("NullaeOutpost.home"))
+        if (!p.hasPermission("Outpost.home"))
             return OutpostL.msg(p, OutpostL.NO_PERMISSION_HOME.msg());
 
         if (args.length != 2 && args.length != 1)

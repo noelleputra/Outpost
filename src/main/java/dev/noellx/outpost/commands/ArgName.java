@@ -43,7 +43,7 @@ public class ArgName implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.name");
+        return Arrays.asList("Outpost.name");
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ArgName implements NOCommandArg {
 
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
-        if (!s.hasPermission("NullaeOutpost.name")) {
+        if (!s.hasPermission("Outpost.name")) {
             OutpostL.msg(s, OutpostL.NO_PERMISSION_NAME.msg());
             return true;
         }

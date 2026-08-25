@@ -121,12 +121,12 @@ public class ListenerClass implements Listener {
     // TODO: refactor and move this to NORegion, so that /no unclaim can use the same checks
     private String checkPermissionToBreakProtection(Player p, OutpostRegion r) {
         // check for destroy permission
-        if (!p.hasPermission("NullaeOutpost.destroy")) {
+        if (!p.hasPermission("Outpost.destroy")) {
             return OutpostL.NO_PERMISSION_DESTROY.msg();
         }
 
         // check if player is owner of region
-        if (!r.isOwner(p.getUniqueId()) && !p.hasPermission("NullaeOutpost.superowner")) {
+        if (!r.isOwner(p.getUniqueId()) && !p.hasPermission("Outpost.superowner")) {
             return OutpostL.NO_REGION_PERMISSION.msg();
         }
 
@@ -300,7 +300,7 @@ public class ListenerClass implements Listener {
     }
 
     // -=-=-=- disable grindstone inventory to prevent infinite exp exploit with enchanted_effect option  -=-=-=-
-    // see https://github.com/espidev/NullaeOutpost/issues/324
+    // see https://github.com/espidev/Outpost/issues/324
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onInventoryClickEvent(InventoryClickEvent e) {
@@ -487,7 +487,7 @@ public class ListenerClass implements Listener {
         // we only want plugin triggered teleports, ignore natural teleportation
         if (event.getCause() == TeleportCause.ENDER_PEARL || event.getCause() == TeleportCause.CHORUS_FRUIT) return;
 
-        if (event.getPlayer().hasPermission("NullaeOutpost.tp.bypassprevent")) return;
+        if (event.getPlayer().hasPermission("Outpost.tp.bypassprevent")) return;
 
         WorldGuardPlugin wg = WorldGuardPlugin.inst();
         RegionManager rgm = WGUtils.getRegionManagerWithWorld(event.getTo().getWorld());

@@ -41,7 +41,7 @@ public class ArgGive implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Collections.singletonList("NullaeOutpost.give");
+        return Collections.singletonList("Outpost.give");
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ArgGive implements NOCommandArg {
 
     @Override
     public boolean executeArgument(CommandSender p, String[] args, HashMap<String, String> flags) {
-        if (!p.hasPermission("NullaeOutpost.give"))
+        if (!p.hasPermission("Outpost.give"))
             return OutpostL.msg(p, OutpostL.NO_PERMISSION_GIVE.msg());
 
         if (args.length < 3)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 NullaeOutpost team and contributors
+ * Copyright 2019 Outpost team and contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class OutpostPlaceholderExpansion extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier() {
-        return "NullaeOutpost";
+        return "Outpost";
     }
 
     @Override

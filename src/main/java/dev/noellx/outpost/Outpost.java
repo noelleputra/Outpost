@@ -71,7 +71,7 @@ public class Outpost extends JavaPlugin {
 
     // all configuration file options are stored in here
     private OutpostConfig configOptions;
-    static HashMap<String, OutpostProtectBlock> NullaeOutpostOptions = new HashMap<>();
+    static HashMap<String, OutpostProtectBlock> OutpostOptions = new HashMap<>();
 
 
     // no alias to id cache
@@ -145,7 +145,7 @@ public class Outpost extends JavaPlugin {
     }
 
     /**
-     * @return returns the config options of this instance of NullaeOutpost
+     * @return returns the config options of this instance of Outpost
      */
     public OutpostConfig getConfigOptions() {
         return configOptions;
@@ -165,7 +165,7 @@ public class Outpost extends JavaPlugin {
      */
     public List<OutpostProtectBlock> getConfiguredBlocks() {
         List<OutpostProtectBlock> l = new ArrayList<>();
-        for (OutpostProtectBlock b : NullaeOutpostOptions.values()) {
+        for (OutpostProtectBlock b : OutpostOptions.values()) {
             if (!l.contains(b)) l.add(b);
         }
         return l;
@@ -223,7 +223,7 @@ public class Outpost extends JavaPlugin {
      * @return the config options for the protect block specified (null if not found)
      */
     public static OutpostProtectBlock getBlockOptions(String blockType) {
-        return NullaeOutpostOptions.get(blockType);
+        return OutpostOptions.get(blockType);
     }
 
     public static boolean isProtectBlockType(Block b) {
@@ -238,7 +238,7 @@ public class Outpost extends JavaPlugin {
      * @return whether or not that material is being used for a protection block
      */
     public static boolean isProtectBlockType(String material) {
-        return NullaeOutpostOptions.containsKey(material);
+        return OutpostOptions.containsKey(material);
     }
 
     /**
@@ -255,28 +255,28 @@ public class Outpost extends JavaPlugin {
     }
 
     /**
-     * Check if a WorldGuard {@link ProtectedRegion} is a NullaeOutpost region, and is configured in the config.
+     * Check if a WorldGuard {@link ProtectedRegion} is a Outpost region, and is configured in the config.
      *
      * @param r the region to check
-     * @return true if the WorldGuard region is a NullaeOutpost region, and false if it isn't
+     * @return true if the WorldGuard region is a Outpost region, and false if it isn't
      */
     public static boolean isNORegion(ProtectedRegion r) {
         return isNORegionFormat(r) && getBlockOptions(r.getFlag(FlagHandler.NO_BLOCK_MATERIAL)) != null;
     }
 
     /**
-     * Check if a WorldGuard {@link ProtectedRegion} has the format of a NullaeOutpost region, but is not necessarily configured
+     * Check if a WorldGuard {@link ProtectedRegion} has the format of a Outpost region, but is not necessarily configured
      * in the config.
      *
      * @param r the region to check
-     * @return true if the WorldGuard region is a NullaeOutpost region, and false if it isn't
+     * @return true if the WorldGuard region is a Outpost region, and false if it isn't
      */
     public static boolean isNORegionFormat(ProtectedRegion r) {
         return r != null && r.getId().startsWith("no") && r.getFlag(FlagHandler.NO_BLOCK_MATERIAL) != null;
     }
 
     /**
-     * Check if a NullaeOutpost name is already used by a region globally (from /no name)
+     * Check if a Outpost name is already used by a region globally (from /no name)
      *
      * @param name the name to search for
      * @return whether or not there is a region with this name
@@ -359,7 +359,7 @@ public class Outpost extends JavaPlugin {
 
     public static OutpostProtectBlock getProtectBlockFromAlias(String name) {
         if (name == null) return null;
-        for (OutpostProtectBlock cpb : Outpost.NullaeOutpostOptions.values()) {
+        for (OutpostProtectBlock cpb : Outpost.OutpostOptions.values()) {
             if (cpb.alias.equalsIgnoreCase(name) || cpb.type.equalsIgnoreCase(name)) return cpb;
         }
         return null;
@@ -367,8 +367,8 @@ public class Outpost extends JavaPlugin {
 
     /**
      * Check if an item is a valid protection block, and if checkNBT is true, check if it was created by
-     * NullaeOutpost. Be aware that blocks may have restrict-obtaining off, meaning that it is ignored whether or not
-     * the item is created by NullaeOutpost (in this case have checkNBT false).
+     * Outpost. Be aware that blocks may have restrict-obtaining off, meaning that it is ignored whether or not
+     * the item is created by Outpost (in this case have checkNBT false).
      *
      * @param item     the item to check
      * @param checkNBT whether or not to check if the plugin signed off on the item (restrict-obtaining)
@@ -404,8 +404,8 @@ public class Outpost extends JavaPlugin {
 
     /**
      * Check if an item is a valid protection block, and if the block type has restrict-obtaining on, check if it was
-     * created by NullaeOutpost (custom NBT tag). Be aware that blocks may have restrict-obtaining
-     * off, meaning that it ignores whether or not the item is created by NullaeOutpost.
+     * created by Outpost (custom NBT tag). Be aware that blocks may have restrict-obtaining
+     * off, meaning that it ignores whether or not the item is created by Outpost.
      *
      * @param item     the item to check
      * @return whether or not the item is a valid protection block item, and was created by protection stones
@@ -527,7 +527,7 @@ public class Outpost extends JavaPlugin {
 
         // check that WorldGuard and WorldEdit are enabled (WorldGuard will only be enabled if there's WorldEdit)
         if (getServer().getPluginManager().getPlugin("WorldGuard") == null || !getServer().getPluginManager().getPlugin("WorldGuard").isEnabled()) {
-            getLogger().severe("WorldGuard or WorldEdit not enabled! Disabling NullaeOutpost...");
+            getLogger().severe("WorldGuard or WorldEdit not enabled! Disabling Outpost...");
             getServer().getPluginManager().disablePlugin(this);
         }
 
@@ -555,7 +555,7 @@ public class Outpost extends JavaPlugin {
         // load configuration
         loadConfig(false);
 
-        // register NullaeOutpost.flags.edit.[flag] permission
+        // register Outpost.flags.edit.[flag] permission
         FlagHandler.initializePermissions();
 
         // build up region cache
@@ -602,7 +602,7 @@ public class Outpost extends JavaPlugin {
         if (configOptions.regionNegativeMinMaxUpdated == null || !configOptions.regionNegativeMinMaxUpdated)
             LegacyUpgrade.upgradeRegionsWithNegativeYValues();
 
-        getLogger().info(ChatColor.WHITE + "NullaeOutpost has successfully started!");
+        getLogger().info(ChatColor.WHITE + "Outpost has successfully started!");
     }
 
 }

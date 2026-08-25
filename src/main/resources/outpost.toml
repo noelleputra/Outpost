@@ -25,7 +25,7 @@ restrict_obtaining = true
 # Enable or disable the use of this protection stone in specific worlds
 # "blacklist" mode prevents this protect block from being used in the worlds in "worlds"
 # "whitelist" mode allows this protect block to only be used in the worlds in "worlds"
-# Can be overridden with NullaeOutpost.admin permission (including OP)!
+# Can be overridden with Outpost.admin permission (including OP)!
 world_list_type = "blacklist"
 worlds = [
     "exampleworld1",
@@ -204,7 +204,7 @@ placing_bypasses_wg_passthrough = true
     # prevent_explode must be false for this to work.
     destroy_region_when_explode = false
 
-    # Silk Touch: if true, ore-blocks that are also configured by NullaeOutpost will disallow Silk Touch drops
+    # Silk Touch: if true, ore-blocks that are also configured by Outpost will disallow Silk Touch drops
     # This was the old behaviour to prevent natural obtaining of the protection stone.
     # Recommended to keep false if "Restrict Obtaining" (the new way) is true
     prevent_silk_touch = false
@@ -226,25 +226,25 @@ placing_bypasses_wg_passthrough = true
 
     # Whether or not to prevent teleporting into a protected region if the player doesn't own it (except with ender pearl and chorus fruit)
     # Does not prevent entry, use the flag "entry deny" for preventing entry.
-    # Bypass with NullaeOutpost.tp.bypassprevent
+    # Bypass with Outpost.tp.bypassprevent
     prevent_teleport_in = false
 
     # Can't move for x seconds before teleporting with /no home or /no tp. Can be disabled with 0.
     # Option to teleport only if player stands still.
-    # Can override with permission NullaeOutpost.tp.bypasswait
+    # Can override with permission Outpost.tp.bypasswait
     no_moving_when_tp_waiting = true
     tp_waiting_seconds = 0
 
     # Whether or not to prevent obtaining this block through /no get.
-    # Ignored with NullaeOutpost.admin
+    # Ignored with Outpost.admin
     prevent_ps_get = false
 
     # Whether or not to prevent this region type from showing up in /no home, and allowing teleport.
     # Note: admins can still use /no tp to this region type
     prevent_ps_home = false
 
-    # Extra permission required to place this specific protection block (you still need NullaeOutpost.create)
-    # Also applies to /no get (you still need NullaeOutpost.get)
+    # Extra permission required to place this specific protection block (you still need Outpost.create)
+    # Also applies to /no get (you still need Outpost.get)
     # '' for no extra permission
     permission = ''
 

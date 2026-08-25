@@ -52,7 +52,7 @@ public class ArgAdmin implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Collections.singletonList("NullaeOutpost.admin");
+        return Collections.singletonList("Outpost.admin");
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ArgAdmin implements NOCommandArg {
     // /no admin [arg]
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
-        if (!s.hasPermission("NullaeOutpost.admin")) {
+        if (!s.hasPermission("Outpost.admin")) {
             return OutpostL.msg(s, OutpostL.NO_PERMISSION_ADMIN.msg());
         }
 
@@ -76,7 +76,7 @@ public class ArgAdmin implements NOCommandArg {
             case "help":
                 return ArgAdminHelp.argumentAdminHelp(s, args);
             case "version":
-                s.sendMessage(ChatColor.AQUA + "NullaeOutpost: " + ChatColor.GRAY + Outpost.getInstance().getDescription().getVersion());
+                s.sendMessage(ChatColor.AQUA + "Outpost: " + ChatColor.GRAY + Outpost.getInstance().getDescription().getVersion());
                 s.sendMessage(ChatColor.AQUA + "Developers: " + ChatColor.GRAY + Outpost.getInstance().getDescription().getAuthors());
                 s.sendMessage(ChatColor.AQUA + "Bukkit:  " + ChatColor.GRAY + Bukkit.getVersion());
                 s.sendMessage(ChatColor.AQUA + "WG: " + ChatColor.GRAY + WorldGuardPlugin.inst().getDescription().getVersion());

@@ -43,7 +43,7 @@ public class FlagHandler {
     public static final Flag<String> GREET_ACTION = new StringFlag("greeting-action");
     public static final Flag<String> FAREWELL_ACTION = new StringFlag("farewell-action");
 
-    // Custom WorldGuard Flags used by NullaeOutpost
+    // Custom WorldGuard Flags used by Outpost
     // Added to blocks on BlockPlaceEvent Listener
     // When adding flags, you may want to add them to the hidden_flags_from_info config option list
     public static final Flag<String> NO_HOME = new StringFlag("no-home");
@@ -87,7 +87,7 @@ public class FlagHandler {
     // by default, all players have access to it
     static void initializePermissions() {
         for (Flag<?> flag : WGUtils.getFlagRegistry().getAll()) {
-            Bukkit.getPluginManager().addPermission(new Permission("NullaeOutpost.flags.edit." + flag.getName(),
+            Bukkit.getPluginManager().addPermission(new Permission("Outpost.flags.edit." + flag.getName(),
                     "Given to all players by default. Remove if you do not want the player to have the ability to edit this flag with /no flag.",
                     PermissionDefault.TRUE));
         }

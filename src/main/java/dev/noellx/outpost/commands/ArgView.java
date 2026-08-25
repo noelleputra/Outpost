@@ -45,7 +45,7 @@ public class ArgView implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.view");
+        return Arrays.asList("Outpost.view");
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ArgView implements NOCommandArg {
 
         OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
 
-        if (!p.hasPermission("NullaeOutpost.view")) {
+        if (!p.hasPermission("Outpost.view")) {
             OutpostL.msg(p, OutpostL.NO_PERMISSION_VIEW.msg());
             return true;
         }
@@ -67,7 +67,7 @@ public class ArgView implements NOCommandArg {
             OutpostL.msg(p, OutpostL.NOT_IN_REGION.msg());
             return true;
         }
-        if (!p.hasPermission("NullaeOutpost.view.others") && WGUtils.hasNoAccess(r.getWGRegion(), p, WorldGuardPlugin.inst().wrapPlayer(p), true)) {
+        if (!p.hasPermission("Outpost.view.others") && WGUtils.hasNoAccess(r.getWGRegion(), p, WorldGuardPlugin.inst().wrapPlayer(p), true)) {
             OutpostL.msg(p, OutpostL.NO_ACCESS.msg());
             return true;
         }

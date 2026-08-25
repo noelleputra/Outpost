@@ -105,7 +105,7 @@ public class OutpostConfig {
 
         // keep in mind that there is /no reload, so clear arrays before adding config options!
         // clear data (for /no reload)
-        Outpost.NullaeOutpostOptions.clear();
+        Outpost.OutpostOptions.clear();
 
         // create config object
         if (Outpost.config == null) {
@@ -212,7 +212,7 @@ public class OutpostConfig {
                     b.type = "PLAYER_HEAD:" + nuuid;
                 }
 
-                Outpost.NullaeOutpostOptions.put(b.type, b); // add block
+                Outpost.OutpostOptions.put(b.type, b); // add block
             }
 
             // cleanup temp file

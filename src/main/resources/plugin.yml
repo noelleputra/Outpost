@@ -1,6 +1,6 @@
-main: dev.noellx.nullaeoutpost.NullaeOutpost
+main: dev.noellx.Outpost.Outpost
 version: 1.0.0
-name: NullaeOutpost
+name: Outpost
 author: Noellx
 description: A simple Outpost.
 api-version: 1.21

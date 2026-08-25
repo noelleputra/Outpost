@@ -186,7 +186,7 @@ public class LegacyUpgrade {
             try {
                 rm.save();
             } catch (Exception e) {
-                Bukkit.getLogger().severe("[NullaeOutpost] WorldGuard Error [" + e + "] during Region File Save");
+                Bukkit.getLogger().severe("[Outpost] WorldGuard Error [" + e + "] during Region File Save");
             }
         }
     }
@@ -224,7 +224,7 @@ public class LegacyUpgrade {
             try {
                 rm.save();
             } catch (Exception e) {
-                Bukkit.getLogger().severe("[NullaeOutpost] WorldGuard Error [" + e + "] during Region File Save");
+                Bukkit.getLogger().severe("[Outpost] WorldGuard Error [" + e + "] during Region File Save");
             }
         }
 

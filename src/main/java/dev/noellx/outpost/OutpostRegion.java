@@ -35,7 +35,7 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Represents an instance of a NullaeOutpost protected region.
+ * Represents an instance of a Outpost protected region.
  */
 
 public abstract class OutpostRegion {
@@ -125,7 +125,7 @@ public abstract class OutpostRegion {
      *
      * @param w the world
      * @param r the WorldGuard region
-     * @return the {@link OutpostRegion} based on the parameters, or null if the region given is not a NullaeOutpost region
+     * @return the {@link OutpostRegion} based on the parameters, or null if the region given is not a Outpost region
      */
     public static OutpostRegion fromWGRegion(World w, ProtectedRegion r) {
         if (!Outpost.isNORegionFormat(r)) return null;

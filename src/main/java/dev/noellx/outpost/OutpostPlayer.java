@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Wrapper for a Bukkit player that exposes NullaeOutpost related methods.
+ * Wrapper for a Bukkit player that exposes Outpost related methods.
  */
 
 public class OutpostPlayer {
@@ -132,7 +132,7 @@ public class OutpostPlayer {
     static class CannotAccessOfflinePlayerPermissionsException extends RuntimeException {}
 
     /**
-     * Get a player's permission limits for each protection block (NullaeOutpost.limit.alias.x)
+     * Get a player's permission limits for each protection block (Outpost.limit.alias.x)
      * Protection blocks that aren't specified in the player's permissions will not be returned in the map.
      * If LuckPerms support isn't enabled and the player is not online, then the method will throw a CannotAccessOfflinePlayerPermissionsException.
      *
@@ -161,7 +161,7 @@ public class OutpostPlayer {
         }
 
         for (String perm : permissions) {
-            if (perm.startsWith("NullaeOutpost.limit")) {
+            if (perm.startsWith("Outpost.limit")) {
                 String[] spl = perm.split("\\.");
 
                 if (spl.length == 4 && Outpost.getProtectBlockFromAlias(spl[2]) != null) {
@@ -177,7 +177,7 @@ public class OutpostPlayer {
     }
 
     /**
-     * Get a player's total protection limit from permission (NullaeOutpost.limit.x)
+     * Get a player's total protection limit from permission (Outpost.limit.x)
      * If there is no attached Player object to this NOPlayer, and LuckPerms is not enabled, this throws a CannotAccessOfflinePlayerPermissionsException.
      *
      * @return the number of protection regions the player can have, or -1 if there is no limit set.
@@ -185,12 +185,12 @@ public class OutpostPlayer {
 
     public int getGlobalRegionLimits() {
         if (getPlayer() != null) {
-            return MiscUtil.getPermissionNumber(getPlayer(), "NullaeOutpost.limit.", -1);
+            return MiscUtil.getPermissionNumber(getPlayer(), "Outpost.limit.", -1);
         } else if (Outpost.getInstance().isLuckPermsSupportEnabled()) {
             // use LuckPerms to obtain all of an offline player's permissions (vault and spigot api are unable to do this)
             try {
                 List<String> permissions = MiscUtil.getLuckPermsUserPermissions(getUuid());
-                return MiscUtil.getPermissionNumber(permissions, "NullaeOutpost.limit.", -1);
+                return MiscUtil.getPermissionNumber(permissions, "Outpost.limit.", -1);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
                 throw new CannotAccessOfflinePlayerPermissionsException();

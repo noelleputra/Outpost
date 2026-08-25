@@ -40,7 +40,7 @@ public class ArgToggle implements NOCommandArg {
         }
         @Override
         public List<String> getPermissionsToExecute() {
-            return Collections.singletonList("NullaeOutpost.toggle");
+            return Collections.singletonList("Outpost.toggle");
         }
         @Override
         public HashMap<String, Boolean> getRegisteredFlags() {
@@ -49,7 +49,7 @@ public class ArgToggle implements NOCommandArg {
         @Override
         public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
             Player p = (Player) s;
-            if (p.hasPermission("NullaeOutpost.toggle")) {
+            if (p.hasPermission("Outpost.toggle")) {
                 Outpost.toggleList.remove(p.getUniqueId());
                 p.sendMessage(OutpostL.TOGGLE_ON.msg());
             } else {
@@ -75,7 +75,7 @@ public class ArgToggle implements NOCommandArg {
         }
         @Override
         public List<String> getPermissionsToExecute() {
-            return Collections.singletonList("NullaeOutpost.toggle");
+            return Collections.singletonList("Outpost.toggle");
         }
         @Override
         public HashMap<String, Boolean> getRegisteredFlags() {
@@ -84,7 +84,7 @@ public class ArgToggle implements NOCommandArg {
         @Override
         public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
             Player p = (Player) s;
-            if (p.hasPermission("NullaeOutpost.toggle")) {
+            if (p.hasPermission("Outpost.toggle")) {
                 Outpost.toggleList.add(p.getUniqueId());
                 p.sendMessage(OutpostL.TOGGLE_OFF.msg());
             } else {
@@ -110,7 +110,7 @@ public class ArgToggle implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Collections.singletonList("NullaeOutpost.toggle");
+        return Collections.singletonList("Outpost.toggle");
     }
 
     @Override
@@ -121,7 +121,7 @@ public class ArgToggle implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         Player p = (Player) s;
-        if (p.hasPermission("NullaeOutpost.toggle")) {
+        if (p.hasPermission("Outpost.toggle")) {
             if (!Outpost.toggleList.contains(p.getUniqueId())) {
                 Outpost.toggleList.add(p.getUniqueId());
                 p.sendMessage(OutpostL.TOGGLE_OFF.msg());

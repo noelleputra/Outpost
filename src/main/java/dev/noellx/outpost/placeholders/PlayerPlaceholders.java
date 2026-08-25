@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 NullaeOutpost team and contributors
+ * Copyright 2019 Outpost team and contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ class PlayerPlaceholders {
 
         if (identifier.equals("currentplayer_global_region_limit")) {
 
-            if (p.hasPermission("NullaeOutpost.admin")) {
+            if (p.hasPermission("Outpost.admin")) {
                 return "-1";
             } else {
                 return psp.getGlobalRegionLimits() + "";
@@ -53,7 +53,7 @@ class PlayerPlaceholders {
                     .filter(e -> e.getKey().alias.equals(alias))
                     .collect(Collectors.toList());
 
-            if (p.hasPermission("NullaeOutpost.admin")) {
+            if (p.hasPermission("Outpost.admin")) {
                 return "-1";
             }
 

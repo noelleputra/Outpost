@@ -44,7 +44,7 @@ public class ArgList implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.list");
+        return Arrays.asList("Outpost.list");
     }
 
     @Override
@@ -54,10 +54,10 @@ public class ArgList implements NOCommandArg {
 
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
-        if (!s.hasPermission("NullaeOutpost.list"))
+        if (!s.hasPermission("Outpost.list"))
             return OutpostL.msg(s, OutpostL.NO_PERMISSION_LIST.msg());
 
-        if (args.length == 2 && !s.hasPermission("NullaeOutpost.list.others"))
+        if (args.length == 2 && !s.hasPermission("Outpost.list.others"))
             return OutpostL.msg(s, OutpostL.NO_PERMISSION_LIST_OTHERS.msg());
 
         if (args.length == 2 && !UUIDCache.containsName(args[1]))
@@ -83,7 +83,7 @@ public class ArgList implements NOCommandArg {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
-        if (!sender.hasPermission("NullaeOutpost.list") || !sender.hasPermission("NullaeOutpost.list.others")) {
+        if (!sender.hasPermission("Outpost.list") || !sender.hasPermission("Outpost.list.others")) {
             return null;
         }
         if (args.length == 2) {

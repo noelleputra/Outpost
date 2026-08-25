@@ -229,7 +229,7 @@ public class WGUtils {
                     return true;
                 }
 
-                // check NullaeOutpost allow_other_regions_to_overlap settings
+                // check Outpost allow_other_regions_to_overlap settings
                 if (Outpost.isNORegion(rg)) {
                     OutpostRegion pr = OutpostRegion.fromWGRegion(w, rg);
 
@@ -313,7 +313,7 @@ public class WGUtils {
 
     public static boolean hasNoAccess(ProtectedRegion region, Player p, LocalPlayer lp, boolean canBeMember) {
         if (region == null) return true;
-        return !p.hasPermission("NullaeOutpost.superowner") && !region.isOwner(lp) && (!canBeMember || !region.isMember(lp));
+        return !p.hasPermission("Outpost.superowner") && !region.isOwner(lp) && (!canBeMember || !region.isMember(lp));
     }
 
     // get the overlapping sets of groups of regions a player owns

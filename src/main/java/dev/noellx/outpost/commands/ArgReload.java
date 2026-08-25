@@ -41,7 +41,7 @@ public class ArgReload implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.admin");
+        return Arrays.asList("Outpost.admin");
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ArgReload implements NOCommandArg {
 
     @Override
     public boolean executeArgument(CommandSender p, String[] args, HashMap<String, String> flags) {
-        if (!p.hasPermission("NullaeOutpost.admin")) {
+        if (!p.hasPermission("Outpost.admin")) {
             OutpostL.msg(p, OutpostL.NO_PERMISSION_ADMIN.msg());
             return true;
         }

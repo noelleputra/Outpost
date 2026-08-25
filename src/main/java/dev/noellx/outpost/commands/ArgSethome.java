@@ -46,7 +46,7 @@ public class ArgSethome implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.sethome");
+        return Arrays.asList("Outpost.sethome");
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ArgSethome implements NOCommandArg {
         OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
 
         WorldGuardPlugin wg = WorldGuardPlugin.inst();
-        if (!p.hasPermission("NullaeOutpost.sethome"))
+        if (!p.hasPermission("Outpost.sethome"))
             return OutpostL.msg(p, OutpostL.NO_PERMISSION_SETHOME.msg());
 
         if (r == null)

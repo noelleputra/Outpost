@@ -47,7 +47,7 @@ public class ArgInfo implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.info");
+        return Arrays.asList("Outpost.info");
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ArgInfo implements NOCommandArg {
         if (r == null)
             return OutpostL.NOT_IN_REGION.send(p);
 
-        if (!p.hasPermission("NullaeOutpost.info.others") && WGUtils.hasNoAccess(r.getWGRegion(), p, WorldGuardPlugin.inst().wrapPlayer(p), true))
+        if (!p.hasPermission("Outpost.info.others") && WGUtils.hasNoAccess(r.getWGRegion(), p, WorldGuardPlugin.inst().wrapPlayer(p), true))
             return OutpostL.NO_ACCESS.send(p);
 
         if (r.getTypeOptions() == null) {
@@ -73,7 +73,7 @@ public class ArgInfo implements NOCommandArg {
         }
 
         if (args.length == 1) { // info of current region player is in
-            if (!p.hasPermission("NullaeOutpost.info"))
+            if (!p.hasPermission("Outpost.info"))
                 return OutpostL.NO_PERMISSION_INFO.send(p);
 
             OutpostL.msg(p, OutpostL.INFO_HEADER.msg());
@@ -131,19 +131,19 @@ public class ArgInfo implements NOCommandArg {
 
             switch (args[1].toLowerCase()) {
                 case "members":
-                    if (!p.hasPermission("NullaeOutpost.members"))
+                    if (!p.hasPermission("Outpost.members"))
                         return OutpostL.NO_PERMISSION_MEMBERS.send(p);
 
                     displayMembers(p, r.getWGRegion());
                     break;
                 case "owners":
-                    if (!p.hasPermission("NullaeOutpost.owners"))
+                    if (!p.hasPermission("Outpost.owners"))
                         return OutpostL.NO_PERMISSION_OWNERS.send(p);
 
                     displayOwners(p, r.getWGRegion());
                     break;
                 case "flags":
-                    if (!p.hasPermission("NullaeOutpost.flags"))
+                    if (!p.hasPermission("Outpost.flags"))
                         return OutpostL.NO_PERMISSION_FLAGS.send(p);
                         displayFlags(p, r);
                     break;

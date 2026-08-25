@@ -48,7 +48,7 @@ public class ArgMerge implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.merge");
+        return Arrays.asList("Outpost.merge");
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ArgMerge implements NOCommandArg {
 
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
-        if (!s.hasPermission("NullaeOutpost.merge"))
+        if (!s.hasPermission("Outpost.merge"))
             return OutpostL.msg(s, OutpostL.NO_PERMISSION_MERGE.msg());
 
         if (!Outpost.getInstance().getConfigOptions().allowMergingRegions)
@@ -113,7 +113,7 @@ public class ArgMerge implements NOCommandArg {
             if (!Outpost.isNORegion(region) || !Outpost.isNORegion(root))
                 return OutpostL.msg(p, OutpostL.MULTI_REGION_DOES_NOT_EXIST.msg());
 
-            if (!p.hasPermission("NullaeOutpost.admin") && (!region.isOwner(lp) || !root.isOwner(lp)))
+            if (!p.hasPermission("Outpost.admin") && (!region.isOwner(lp) || !root.isOwner(lp)))
                 return OutpostL.msg(p, OutpostL.NO_ACCESS.msg());
 
             // check if region is actually overlapping the region

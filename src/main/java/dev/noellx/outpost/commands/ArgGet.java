@@ -44,7 +44,7 @@ public class ArgGet implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Collections.singletonList("NullaeOutpost.get");
+        return Collections.singletonList("Outpost.get");
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ArgGet implements NOCommandArg {
     private boolean openGetGUI(Player p) {
         OutpostL.msg(p, OutpostL.GET_HEADER.msg());
         for (OutpostProtectBlock b : Outpost.getInstance().getConfiguredBlocks()) {
-            if ((!b.permission.equals("") && !p.hasPermission(b.permission)) || (b.preventPsGet && !p.hasPermission("NullaeOutpost.admin"))) {
+            if ((!b.permission.equals("") && !p.hasPermission(b.permission)) || (b.preventPsGet && !p.hasPermission("Outpost.admin"))) {
                 continue; // no permission
             }
 
@@ -86,7 +86,7 @@ public class ArgGet implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         Player p = (Player) s;
-        if (!p.hasPermission("NullaeOutpost.get"))
+        if (!p.hasPermission("Outpost.get"))
             return OutpostL.msg(p, OutpostL.NO_PERMISSION_GET.msg());
 
         // /no get (for GUI)
@@ -105,7 +105,7 @@ public class ArgGet implements NOCommandArg {
             return OutpostL.msg(p, OutpostL.GET_NO_PERMISSION_BLOCK.msg());
 
         // check if /no get is disabled on this
-        if (cp.preventPsGet && !p.hasPermission("NullaeOutpost.admin"))
+        if (cp.preventPsGet && !p.hasPermission("Outpost.admin"))
             return OutpostL.msg(p, OutpostL.GET_NO_PERMISSION_BLOCK.msg());
 
         // check if item was able to be added (inventory not full)
@@ -127,7 +127,7 @@ public class ArgGet implements NOCommandArg {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         List<String> l = new ArrayList<>();
         for (OutpostProtectBlock b : Outpost.getInstance().getConfiguredBlocks()) {
-            if ((!b.permission.equals("") && !sender.hasPermission(b.permission)) || (b.preventPsGet && !sender.hasPermission("NullaeOutpost.admin"))) continue; // no permission
+            if ((!b.permission.equals("") && !sender.hasPermission(b.permission)) || (b.preventPsGet && !sender.hasPermission("Outpost.admin"))) continue; // no permission
             l.add(b.alias);
         }
         return args.length == 2 ? StringUtil.copyPartialMatches(args[1], l, new ArrayList<>()) : null;

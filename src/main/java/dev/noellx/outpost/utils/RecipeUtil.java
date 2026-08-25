@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 NullaeOutpost team and contributors
+ * Copyright 2019 Outpost team and contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class RecipeUtil {
         }
     }
     public static void removeNORecipes() {
-        // remove previous NullaeOutpost recipes (/no reload)
+        // remove previous Outpost recipes (/no reload)
         Iterator<Recipe> iter = Bukkit.getServer().recipeIterator();
         while (iter.hasNext()) {
             try {
@@ -106,7 +106,7 @@ public class RecipeUtil {
 
                 recipe.setIngredient(items.get(mat), Material.matchMaterial(mat));
 
-            } else if (mat.startsWith("PROTECTION_STONES:")) { // NullaeOutpost block
+            } else if (mat.startsWith("PROTECTION_STONES:")) { // Outpost block
 
                 // format PROTECTION_STONES:alias
                 String alias = mat.substring(mat.indexOf(":") + 1);

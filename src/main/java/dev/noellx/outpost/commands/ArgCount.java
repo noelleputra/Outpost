@@ -57,7 +57,7 @@ public class ArgCount implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.count", "NullaeOutpost.count.others");
+        return Arrays.asList("Outpost.count", "Outpost.count.others");
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ArgCount implements NOCommandArg {
             int[] count;
 
             if (args.length == 1) {
-                if (!p.hasPermission("NullaeOutpost.count")) {
+                if (!p.hasPermission("Outpost.count")) {
                     OutpostL.msg(p, OutpostL.NO_PERMISSION_COUNT.msg());
                     return;
                 }
@@ -86,7 +86,7 @@ public class ArgCount implements NOCommandArg {
 
             } else if (args.length == 2) {
 
-                if (!p.hasPermission("NullaeOutpost.count.others")) {
+                if (!p.hasPermission("Outpost.count.others")) {
                     OutpostL.msg(p, OutpostL.NO_PERMISSION_COUNT_OTHERS.msg());
                     return;
                 }

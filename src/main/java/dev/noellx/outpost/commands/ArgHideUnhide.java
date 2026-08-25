@@ -41,7 +41,7 @@ public class ArgHideUnhide implements NOCommandArg {
 
     @Override
     public List<String> getPermissionsToExecute() {
-        return Arrays.asList("NullaeOutpost.hide", "NullaeOutpost.unhide");
+        return Arrays.asList("Outpost.hide", "Outpost.unhide");
     }
 
     @Override
@@ -55,10 +55,10 @@ public class ArgHideUnhide implements NOCommandArg {
         OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
 
         // preliminary checks
-        if (arg[0].equals("unhide") && !p.hasPermission("NullaeOutpost.unhide"))
+        if (arg[0].equals("unhide") && !p.hasPermission("Outpost.unhide"))
             return OutpostL.msg(p, OutpostL.NO_PERMISSION_UNHIDE.msg());
 
-        if (arg[0].equals("hide") && !p.hasPermission("NullaeOutpost.hide"))
+        if (arg[0].equals("hide") && !p.hasPermission("Outpost.hide"))
             return OutpostL.msg(p, OutpostL.NO_PERMISSION_HIDE.msg());
 
         if (r == null)

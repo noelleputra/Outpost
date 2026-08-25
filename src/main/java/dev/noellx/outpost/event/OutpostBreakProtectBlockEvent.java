@@ -39,18 +39,18 @@ public class OutpostBreakProtectBlockEvent extends Event implements Cancellable 
     }
 
     /**
-     * Gets the NullaeOutpost item associated with the region.
+     * Gets the Outpost item associated with the region.
      *
-     * @return The NullaeOutpost item.
+     * @return The Outpost item.
      */
     public ItemStack getNOItem() {
         return Objects.requireNonNull(region.getTypeOptions()).createItem();
     }
 
     /**
-     * Gets the NullaeOutpost region associated with the event.
+     * Gets the Outpost region associated with the event.
      *
-     * @return The NullaeOutpost region.
+     * @return The Outpost region.
      */
     public OutpostRegion getRegion() {
         return region;

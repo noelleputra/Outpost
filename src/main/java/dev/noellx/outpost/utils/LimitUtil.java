@@ -74,7 +74,7 @@ public class LimitUtil {
     }
 
     public static boolean check(Player p, OutpostProtectBlock b) {
-        if (!p.hasPermission("NullaeOutpost.admin")) {
+        if (!p.hasPermission("Outpost.admin")) {
             // check if player has limit on protection stones
             String msg = LimitUtil.hasPlayerPassedRegionLimit(OutpostPlayer.fromPlayer(p), b);
             if (!msg.isEmpty()) {
