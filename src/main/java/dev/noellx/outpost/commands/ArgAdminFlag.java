@@ -19,9 +19,9 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import dev.noellx.outpost.FlagHandler;
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NORegion;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.OutpostRegion;
+import dev.noellx.outpost.Outpost;
 import dev.noellx.outpost.utils.UUIDCache;
 import dev.noellx.outpost.utils.WGUtils;
 
@@ -33,14 +33,14 @@ class ArgAdminFlag {
     static boolean argumentAdminFlag(CommandSender p, String[] args) {
 
         if (args.length < 5) {
-            NOL.msg(p, ArgAdmin.getFlagHelp());
+            OutpostL.msg(p, ArgAdmin.getFlagHelp());
             return true;
         }
 
         String flag, value = "", gee = "";
         World w = Bukkit.getWorld(args[2]);
         if (w == null)
-            return NOL.msg(p, NOL.INVALID_WORLD.msg());
+            return OutpostL.msg(p, OutpostL.INVALID_WORLD.msg());
 
         if (args[3].equalsIgnoreCase("-g")) {
             flag = args[5];
@@ -52,12 +52,12 @@ class ArgAdminFlag {
         }
 
         if (WGUtils.getFlagRegistry().get(flag) == null)
-            return NOL.msg(p, NOL.FLAG_NOT_SET.msg());
+            return OutpostL.msg(p, OutpostL.FLAG_NOT_SET.msg());
 
         final String fValue = value, fGee = gee;
         RegionManager rgm = WGUtils.getRegionManagerWithWorld(w);
         for (ProtectedRegion r : rgm.getRegions().values()) {
-            if (NullaeOutpost.isNORegion(r) && NORegion.fromWGRegion(w, r) != null) {
+            if (Outpost.isNORegion(r) && OutpostRegion.fromWGRegion(w, r) != null) {
                 String flagValue = fValue;
 
                 // apply %player% placeholder
@@ -68,7 +68,7 @@ class ArgAdminFlag {
                     }
                 }
 
-                ArgFlag.setFlag(NORegion.fromWGRegion(w, r), p, flag, flagValue.trim(), fGee);
+                ArgFlag.setFlag(OutpostRegion.fromWGRegion(w, r), p, flag, flagValue.trim(), fGee);
             }
         }
         return true;

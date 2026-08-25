@@ -42,14 +42,14 @@ public class LegacyUpgrade {
 
     // upgrade to 1.17, upgrade regions with 0->256 to SHORT_MIN->SHORT_MAX
     public static void upgradeRegionsWithNegativeYValues() {
-        NullaeOutpost.getInstance().getLogger().info("Upgrading region y-values for 1.17...");
+        Outpost.getInstance().getLogger().info("Upgrading region y-values for 1.17...");
         for (RegionManager rgm : WGUtils.getAllRegionManagers().values()) {
             List<ProtectedRegion> newRegions = new ArrayList<>();
 
             // loop through each region
             for (var region : rgm.getRegions().values()) {
                 int minY = region.getMinimumPoint().getBlockY(), maxY = region.getMaximumPoint().getBlockY();
-                if (NullaeOutpost.isNORegion(region) && minY == 0 && maxY == 256) {
+                if (Outpost.isNORegion(region) && minY == 0 && maxY == 256) {
                     // clone region, and recreate with new min/max points
                     ProtectedRegion toAdd = null;
                     if (region instanceof ProtectedPolygonalRegion) { // convert merged region
@@ -61,7 +61,7 @@ public class LegacyUpgrade {
                     }
 
                     if (toAdd != null) {
-                        NullaeOutpost.getInstance().getLogger().info("Updated region " + region.getId());
+                        Outpost.getInstance().getLogger().info("Updated region " + region.getId());
                         toAdd.copyFrom(region); // copy region settings
                         newRegions.add(toAdd);
                     }
@@ -79,9 +79,9 @@ public class LegacyUpgrade {
             }
         }
         // update config to mark that uuid upgrade has been done
-        NullaeOutpost.config.set("region_negative_min_max_updated", true);
-        NullaeOutpost.config.save();
-        NullaeOutpost.getInstance().getLogger().info("Finished!");
+        Outpost.config.set("region_negative_min_max_updated", true);
+        Outpost.config.save();
+        Outpost.getInstance().getLogger().info("Finished!");
     }
 
     // for one day when we switch to proper base64 generation (no hashcode, use nameuuidfrombytes)
@@ -90,7 +90,7 @@ public class LegacyUpgrade {
 
         HashMap<String, String> oldToNew = new HashMap<>();
 
-        for (NOProtectBlock b : NullaeOutpost.getInstance().getConfiguredBlocks()) {
+        for (OutpostProtectBlock b : Outpost.getInstance().getConfiguredBlocks()) {
             if (b.type.startsWith("PLAYER_HEAD:") && b.type.split(":").length > 1) {
                 String base64 = b.type.split(":")[1];
                 oldToNew.put(new UUID(base64.hashCode(), base64.hashCode()).toString(), UUID.nameUUIDFromBytes(base64.getBytes()).toString());
@@ -100,12 +100,12 @@ public class LegacyUpgrade {
         for (World world : Bukkit.getWorlds()) {
             RegionManager rm = WGUtils.getRegionManagerWithWorld(world);
             for (ProtectedRegion r : rm.getRegions().values()) {
-                if (NullaeOutpost.isNORegion(r)) {
-                    NORegion psr = NORegion.fromWGRegion(world, r);
+                if (Outpost.isNORegion(r)) {
+                    OutpostRegion psr = OutpostRegion.fromWGRegion(world, r);
 
-                    if (psr instanceof NOGroupRegion) {
-                        NOGroupRegion psgr = (NOGroupRegion) psr;
-                        for (NOMergedRegion psmr : psgr.getMergedRegions()) {
+                    if (psr instanceof OutpostGroupRegion) {
+                        OutpostGroupRegion psgr = (OutpostGroupRegion) psr;
+                        for (OutpostMergedRegion psmr : psgr.getMergedRegions()) {
 
                             String type = psmr.getType();
                             if (oldToNew.containsKey(type)) {
@@ -147,15 +147,15 @@ public class LegacyUpgrade {
     public static void upgradeRegions() {
 
         YamlConfiguration hideFile = null;
-        if (new File(NullaeOutpost.getInstance().getDataFolder() + "/hiddenpstones.yml").exists()) {
-            hideFile = YamlConfiguration.loadConfiguration(new File(NullaeOutpost.getInstance().getDataFolder() + "/hiddenpstones.yml"));
+        if (new File(Outpost.getInstance().getDataFolder() + "/hiddenpstones.yml").exists()) {
+            hideFile = YamlConfiguration.loadConfiguration(new File(Outpost.getInstance().getDataFolder() + "/hiddenpstones.yml"));
         }
         for (World world : Bukkit.getWorlds()) {
             RegionManager rm = WGUtils.getRegionManagerWithWorld(world);
             for (String regionName : rm.getRegions().keySet()) {
-                if (regionName.startsWith("no") && !NullaeOutpost.isNORegion(rm.getRegion(regionName))) {
+                if (regionName.startsWith("no") && !Outpost.isNORegion(rm.getRegion(regionName))) {
                     try {
-                        NOLocation psl = WGUtils.parseNORegionToLocation(regionName);
+                        OutspotLocation psl = WGUtils.parseNORegionToLocation(regionName);
                         ProtectedRegion r = rm.getRegion(regionName);
 
                         // get material of no
@@ -171,8 +171,8 @@ public class LegacyUpgrade {
                         }
 
                         if (r.getFlag(FlagHandler.NO_HOME) == null) {
-                            if (NullaeOutpost.isProtectBlockType(material)) {
-                                NOProtectBlock cpb = NullaeOutpost.getBlockOptions(material);
+                            if (Outpost.isProtectBlockType(material)) {
+                                OutpostProtectBlock cpb = Outpost.getBlockOptions(material);
                                 r.setFlag(FlagHandler.NO_HOME, (psl.x + cpb.homeXOffset) + " " + (psl.y + cpb.homeYOffset) + " " + (psl.z + cpb.homeZOffset));
                             } else {
                                 r.setFlag(FlagHandler.NO_HOME, psl.x + " " + psl.y + " " + psl.z);
@@ -229,8 +229,8 @@ public class LegacyUpgrade {
         }
 
         // update config to mark that uuid upgrade has been done
-        NullaeOutpost.config.set("uuidupdated", true);
-        NullaeOutpost.config.save();
+        Outpost.config.set("uuidupdated", true);
+        Outpost.config.save();
         Bukkit.getLogger().info("Done!");
     }
 
@@ -239,13 +239,13 @@ public class LegacyUpgrade {
         Bukkit.getLogger().info(ChatColor.AQUA + "Upgrading configs from v1.x to v2.0+...");
 
         try {
-            NullaeOutpost.blockDataFolder.mkdir();
-            Files.copy(NOConfig.class.getResourceAsStream("/config.toml"), Paths.get(NullaeOutpost.configLocation.toURI()), StandardCopyOption.REPLACE_EXISTING);
+            Outpost.blockDataFolder.mkdir();
+            Files.copy(OutpostConfig.class.getResourceAsStream("/config.toml"), Paths.get(Outpost.configLocation.toURI()), StandardCopyOption.REPLACE_EXISTING);
 
-            FileConfig fc = FileConfig.builder(NullaeOutpost.configLocation).build();
+            FileConfig fc = FileConfig.builder(Outpost.configLocation).build();
             fc.load();
 
-            File oldConfig = new File(NullaeOutpost.getInstance().getDataFolder() + "/config.yml");
+            File oldConfig = new File(Outpost.getInstance().getDataFolder() + "/config.yml");
             YamlConfiguration yml = YamlConfiguration.loadConfiguration(oldConfig);
 
             fc.set("uuidupdated", (yml.get("UUIDUpdated") != null) && yml.getBoolean("UUIDUpdated"));
@@ -258,8 +258,8 @@ public class LegacyUpgrade {
 
             // upgrade blocks
             for (String type : yml.getConfigurationSection("Region").getKeys(false)) {
-                File file = new File(NullaeOutpost.blockDataFolder.getAbsolutePath() + "/" + type + ".toml");
-                Files.copy(NOConfig.class.getResourceAsStream("/outpost.toml"), Paths.get(file.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
+                File file = new File(Outpost.blockDataFolder.getAbsolutePath() + "/" + type + ".toml");
+                Files.copy(OutpostConfig.class.getResourceAsStream("/outpost.toml"), Paths.get(file.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
                 FileConfig b = FileConfig.builder(file).build();
                 b.load();
 
@@ -290,7 +290,7 @@ public class LegacyUpgrade {
             fc.save();
             fc.close();
 
-            oldConfig.renameTo(new File(NullaeOutpost.getInstance().getDataFolder() + "/config.yml.old"));
+            oldConfig.renameTo(new File(Outpost.getInstance().getDataFolder() + "/config.yml.old"));
 
         } catch (IOException e) {
             e.printStackTrace();

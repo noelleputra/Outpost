@@ -38,11 +38,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Represents an instance of a NullaeOutpost protected region.
  */
 
-public abstract class NORegion {
+public abstract class OutpostRegion {
     RegionManager rgmanager;
     World world;
 
-    NORegion(RegionManager rgmanager, World world) {
+    OutpostRegion(RegionManager rgmanager, World world) {
         this.rgmanager = checkNotNull(rgmanager);
         this.world = checkNotNull(world);
     }
@@ -51,31 +51,31 @@ public abstract class NORegion {
 
     /**
      * Get the protection stone region that the location is in, or the closest one if there are overlapping regions.
-     * Returns either {@link NOGroupRegion}, {@link NOStandardRegion} or {@link NOMergedRegion}.
+     * Returns either {@link OutpostGroupRegion}, {@link OutpostStandardRegion} or {@link OutpostMergedRegion}.
      *
      * @param l the location
-     * @return the {@link NORegion} object if the location is in a region, or null if the location is not in a region
+     * @return the {@link OutpostRegion} object if the location is in a region, or null if the location is not in a region
      */
-    public static NORegion fromLocation(Location l) {
-        NORegion r = fromLocationUnsafe(l);
+    public static OutpostRegion fromLocation(Location l) {
+        OutpostRegion r = fromLocationUnsafe(l);
         return r == null || r.getTypeOptions() == null ? null : r;
     }
 
     /**
      * Get the protection stone region that the location is in, or the closest one if there are overlapping regions.
      * May return a region with an unconfigured block type (getTypeOptions returns null).
-     * Returns either {@link NOGroupRegion}, {@link NOStandardRegion} or {@link NOMergedRegion}.
+     * Returns either {@link OutpostGroupRegion}, {@link OutpostStandardRegion} or {@link OutpostMergedRegion}.
      *
      * @param l the location
-     * @return the {@link NORegion} object if the location is in a region, or null if the location is not in a region
+     * @return the {@link OutpostRegion} object if the location is in a region, or null if the location is not in a region
      */
-    public static NORegion fromLocationUnsafe(Location l) {
+    public static OutpostRegion fromLocationUnsafe(Location l) {
         checkNotNull(checkNotNull(l).getWorld());
         RegionManager rgm = WGUtils.getRegionManagerWithWorld(l.getWorld());
         if (rgm == null) return null;
 
         // check exact location first for merged region block
-        NOMergedRegion pr = NOMergedRegion.getMergedRegion(l);
+        OutpostMergedRegion pr = OutpostMergedRegion.getMergedRegion(l);
         if (pr != null) return pr;
 
         return fromLocationGroupUnsafe(l);
@@ -83,25 +83,25 @@ public abstract class NORegion {
 
     /**
      * Get the protection stone parent region that the location is in.
-     * Returns either {@link NOGroupRegion} or {@link NOStandardRegion}.
+     * Returns either {@link OutpostGroupRegion} or {@link OutpostStandardRegion}.
      *
      * @param l the location
-     * @return the {@link NORegion} object if the location is in a region, or null if the location is not in a region
+     * @return the {@link OutpostRegion} object if the location is in a region, or null if the location is not in a region
      */
-    public static NORegion fromLocationGroup(Location l) {
-        NORegion r = fromLocationGroupUnsafe(l);
+    public static OutpostRegion fromLocationGroup(Location l) {
+        OutpostRegion r = fromLocationGroupUnsafe(l);
         return r == null || r.getTypeOptions() == null ? null : r;
     }
 
     /**
      * Get the protection stone parent region that the location is in.
      * May return a region with an unconfigured block type (getTypeOptions returns null).
-     * Returns either {@link NOGroupRegion} or {@link NOStandardRegion}.
+     * Returns either {@link OutpostGroupRegion} or {@link OutpostStandardRegion}.
      *
      * @param l the location
-     * @return the {@link NORegion} object if the location is in a region, or null if the location is not in a region
+     * @return the {@link OutpostRegion} object if the location is in a region, or null if the location is not in a region
      */
-    public static NORegion fromLocationGroupUnsafe(Location l) {
+    public static OutpostRegion fromLocationGroupUnsafe(Location l) {
         checkNotNull(checkNotNull(l).getWorld());
         RegionManager rgm = WGUtils.getRegionManagerWithWorld(l.getWorld());
         if (rgm == null) return null;
@@ -113,9 +113,9 @@ public abstract class NORegion {
         if (r == null) {
             return null;
         } else if (r.getFlag(FlagHandler.NO_MERGED_REGIONS) != null) {
-            return new NOGroupRegion(r, rgm, l.getWorld());
+            return new OutpostGroupRegion(r, rgm, l.getWorld());
         } else {
-            return new NOStandardRegion(r, rgm, l.getWorld());
+            return new OutpostStandardRegion(r, rgm, l.getWorld());
         }
     }
 
@@ -125,14 +125,14 @@ public abstract class NORegion {
      *
      * @param w the world
      * @param r the WorldGuard region
-     * @return the {@link NORegion} based on the parameters, or null if the region given is not a NullaeOutpost region
+     * @return the {@link OutpostRegion} based on the parameters, or null if the region given is not a NullaeOutpost region
      */
-    public static NORegion fromWGRegion(World w, ProtectedRegion r) {
-        if (!NullaeOutpost.isNORegionFormat(r)) return null;
+    public static OutpostRegion fromWGRegion(World w, ProtectedRegion r) {
+        if (!Outpost.isNORegionFormat(r)) return null;
         if (r.getFlag(FlagHandler.NO_MERGED_REGIONS) != null) {
-            return new NOGroupRegion(r, WGUtils.getRegionManagerWithWorld(checkNotNull(w)), w);
+            return new OutpostGroupRegion(r, WGUtils.getRegionManagerWithWorld(checkNotNull(w)), w);
         } else {
-            return new NOStandardRegion(r, WGUtils.getRegionManagerWithWorld(checkNotNull(w)), w);
+            return new OutpostStandardRegion(r, WGUtils.getRegionManagerWithWorld(checkNotNull(w)), w);
         }
     }
 
@@ -144,13 +144,13 @@ public abstract class NORegion {
      * @return the list of regions that have that name
      */
 
-    public static List<NORegion> fromName(World w, String name) {
+    public static List<OutpostRegion> fromName(World w, String name) {
         RegionManager rgm = WGUtils.getRegionManagerWithWorld(w);
         if (rgm == null) return new ArrayList<>();
 
-        List<NORegion> l = new ArrayList<>();
+        List<OutpostRegion> l = new ArrayList<>();
 
-        List<String> rIds = NullaeOutpost.regionNameToID.get(w.getUID()).get(name);
+        List<String> rIds = Outpost.regionNameToID.get(w.getUID()).get(name);
         if (rIds == null) return l;
 
         for (int i = 0; i < rIds.size(); i++) {
@@ -172,9 +172,9 @@ public abstract class NORegion {
      * @return the map of worlds, to the regions that have the name
      */
 
-    public static HashMap<World, List<NORegion>> fromName(String name) {
-        HashMap<World, List<NORegion>> regions = new HashMap<>();
-        for (UUID worldUid : NullaeOutpost.regionNameToID.keySet()) {
+    public static HashMap<World, List<OutpostRegion>> fromName(String name) {
+        HashMap<World, List<OutpostRegion>> regions = new HashMap<>();
+        for (UUID worldUid : Outpost.regionNameToID.keySet()) {
             World w = Bukkit.getWorld(worldUid);
             regions.put(w, fromName(w, name));
         }
@@ -221,14 +221,14 @@ public abstract class NORegion {
      * @throws ProtectedRegion.CircularInheritanceException thrown when the parent already inherits from the child
      */
 
-    public abstract void setParent(NORegion r) throws ProtectedRegion.CircularInheritanceException;
+    public abstract void setParent(OutpostRegion r) throws ProtectedRegion.CircularInheritanceException;
 
     /**
      * Get the parent of this region, if there is one.
      * @return the parent of the region, or null if there isn't one
      */
 
-    public abstract NORegion getParent();
+    public abstract OutpostRegion getParent();
 
     /**
      * Get the location of the set home the region has (for /no tp).
@@ -316,7 +316,7 @@ public abstract class NORegion {
      * @return returns the type, or null if the type is not configured
      */
     @Nullable
-    public abstract NOProtectBlock getTypeOptions();
+    public abstract OutpostProtectBlock getTypeOptions();
 
     /**
      * @return returns the protect block type (may include custom player heads PLAYER_HEAD:playername) that the region is
@@ -327,7 +327,7 @@ public abstract class NORegion {
      * Change the type of the protection region.
      * @param type the type of protection region to switch to
      */
-    public void setType(NOProtectBlock type) {
+    public void setType(OutpostProtectBlock type) {
         if (!isHidden()) {
             Material set = Material.matchMaterial(type.type) == null ? Material.PLAYER_HEAD : Material.matchMaterial(type.type);
             getProtectBlock().setType(set);
@@ -399,7 +399,7 @@ public abstract class NORegion {
      * @param p the player to compare permissions with
      * @return the list of regions that the current region can merge into
      */
-    public abstract List<NORegion> getMergeableRegions(Player p);
+    public abstract List<OutpostRegion> getMergeableRegions(Player p);
 
     /**
      * Deletes the region forever. Can be cancelled by event cancellation.
@@ -434,7 +434,7 @@ public abstract class NORegion {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        NORegion psRegion = (NORegion) o;
+        OutpostRegion psRegion = (OutpostRegion) o;
         return Objects.equals(getId(), psRegion.getId()) && Objects.equals(getWorld(), psRegion.getWorld());
     }
 

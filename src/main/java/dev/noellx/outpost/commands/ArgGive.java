@@ -21,9 +21,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NOProtectBlock;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.OutpostProtectBlock;
+import dev.noellx.outpost.Outpost;
 
 import java.util.*;
 
@@ -52,19 +52,19 @@ public class ArgGive implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender p, String[] args, HashMap<String, String> flags) {
         if (!p.hasPermission("NullaeOutpost.give"))
-            return NOL.msg(p, NOL.NO_PERMISSION_GIVE.msg());
+            return OutpostL.msg(p, OutpostL.NO_PERMISSION_GIVE.msg());
 
         if (args.length < 3)
-            return NOL.msg(p, NOL.GIVE_HELP.msg());
+            return OutpostL.msg(p, OutpostL.GIVE_HELP.msg());
 
         // check if player online
         if (Bukkit.getPlayer(args[2]) == null)
-            return NOL.msg(p, NOL.PLAYER_NOT_FOUND.msg() + " (" + args[2] + ")");
+            return OutpostL.msg(p, OutpostL.PLAYER_NOT_FOUND.msg() + " (" + args[2] + ")");
 
         // check if argument is valid block
-        NOProtectBlock cp = NullaeOutpost.getProtectBlockFromAlias(args[1]);
+        OutpostProtectBlock cp = Outpost.getProtectBlockFromAlias(args[1]);
         if (cp == null)
-            return NOL.msg(p, NOL.INVALID_BLOCK.msg());
+            return OutpostL.msg(p, OutpostL.INVALID_BLOCK.msg());
 
         // check if item was able to be added (inventory not full)
         Player no = Bukkit.getPlayer(args[2]);
@@ -74,15 +74,15 @@ public class ArgGive implements NOCommandArg {
             item.setAmount(Integer.parseInt(args[3]));
 
         if (!no.getInventory().addItem(item).isEmpty()) {
-            if (NullaeOutpost.getInstance().getConfigOptions().dropItemWhenInventoryFull) {
-                NOL.msg(no, NOL.NO_ROOM_DROPPING_ON_FLOOR.msg());
+            if (Outpost.getInstance().getConfigOptions().dropItemWhenInventoryFull) {
+                OutpostL.msg(no, OutpostL.NO_ROOM_DROPPING_ON_FLOOR.msg());
                 no.getWorld().dropItem(no.getLocation(), cp.createItem());
             } else {
-                return NOL.msg(p, NOL.GIVE_NO_INVENTORY_ROOM.msg());
+                return OutpostL.msg(p, OutpostL.GIVE_NO_INVENTORY_ROOM.msg());
             }
         }
 
-        return NOL.msg(p, NOL.GIVE_GIVEN.msg().replace("%block%", args[1]).replace("%player%", Bukkit.getPlayer(args[2]).getDisplayName()));
+        return OutpostL.msg(p, OutpostL.GIVE_GIVEN.msg().replace("%block%", args[1]).replace("%player%", Bukkit.getPlayer(args[2]).getDisplayName()));
     }
 
     // tab completion
@@ -90,7 +90,7 @@ public class ArgGive implements NOCommandArg {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         List<String> l = new ArrayList<>();
         if (args.length == 2) {
-            for (NOProtectBlock b : NullaeOutpost.getInstance().getConfiguredBlocks()) l.add(b.alias);
+            for (OutpostProtectBlock b : Outpost.getInstance().getConfiguredBlocks()) l.add(b.alias);
             return StringUtil.copyPartialMatches(args[1], l, new ArrayList<>());
         } else if (args.length == 3) {
             for (Player p : Bukkit.getOnlinePlayers()) l.add(p.getName());

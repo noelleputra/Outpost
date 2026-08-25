@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * Represents the global config (config.toml) settings.
  */
 
-public class NOConfig {
+public class OutpostConfig {
 
     // config options
     // config.toml will be loaded into these fields
@@ -83,60 +83,60 @@ public class NOConfig {
     static void initConfig() {
 
         // check if using config v1 or v2 (config.yml -> config.toml)
-        if (new File(NullaeOutpost.getInstance().getDataFolder() + "/config.yml").exists() && !NullaeOutpost.configLocation.exists()) {
+        if (new File(Outpost.getInstance().getDataFolder() + "/config.yml").exists() && !Outpost.configLocation.exists()) {
             LegacyUpgrade.upgradeFromV1V2();
         }
 
         // check if config files exist
         try {
-            if (!NullaeOutpost.getInstance().getDataFolder().exists()) {
-                NullaeOutpost.getInstance().getDataFolder().mkdir();
+            if (!Outpost.getInstance().getDataFolder().exists()) {
+                Outpost.getInstance().getDataFolder().mkdir();
             }
-            if (!NullaeOutpost.blockDataFolder.exists()) {
-                NullaeOutpost.blockDataFolder.mkdir();
-                Files.copy(NOConfig.class.getResourceAsStream("/outpost.toml"), Paths.get(NullaeOutpost.blockDataFolder.getAbsolutePath() + "/outpost.toml"), StandardCopyOption.REPLACE_EXISTING);
+            if (!Outpost.blockDataFolder.exists()) {
+                Outpost.blockDataFolder.mkdir();
+                Files.copy(OutpostConfig.class.getResourceAsStream("/outpost.toml"), Paths.get(Outpost.blockDataFolder.getAbsolutePath() + "/outpost.toml"), StandardCopyOption.REPLACE_EXISTING);
             }
-            if (!NullaeOutpost.configLocation.exists()) {
-                Files.copy(NOConfig.class.getResourceAsStream("/config.toml"), Paths.get(NullaeOutpost.configLocation.toURI()), StandardCopyOption.REPLACE_EXISTING);
+            if (!Outpost.configLocation.exists()) {
+                Files.copy(OutpostConfig.class.getResourceAsStream("/config.toml"), Paths.get(Outpost.configLocation.toURI()), StandardCopyOption.REPLACE_EXISTING);
             }
         } catch (IOException ex) {
-            Logger.getLogger(NullaeOutpost.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Outpost.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         // keep in mind that there is /no reload, so clear arrays before adding config options!
         // clear data (for /no reload)
-        NullaeOutpost.NullaeOutpostOptions.clear();
+        Outpost.NullaeOutpostOptions.clear();
 
         // create config object
-        if (NullaeOutpost.config == null) {
-            NullaeOutpost.config = CommentedFileConfig.builder(NullaeOutpost.configLocation).sync().build();
+        if (Outpost.config == null) {
+            Outpost.config = CommentedFileConfig.builder(Outpost.configLocation).sync().build();
         }
 
         // loop upgrades until the config has been updated to the latest version
         do {
-            NullaeOutpost.config.load(); // load latest settings
+            Outpost.config.load(); // load latest settings
 
             // load config into configOptions object
-            NullaeOutpost.getInstance().setConfigOptions(new ObjectConverter().toObject(NullaeOutpost.config, NOConfig::new));
+            Outpost.getInstance().setConfigOptions(new ObjectConverter().toObject(Outpost.config, OutpostConfig::new));
 
             // upgrade config if need be (v3+)
             boolean leaveLoop = ConfigUpgrades.doConfigUpgrades();
             if (leaveLoop) break; // leave loop if config version is correct
 
             // save config if upgrading
-            NullaeOutpost.config.save();
+            Outpost.config.save();
         } while (true);
 
         // load protection stones to options map
-        if (NullaeOutpost.blockDataFolder.listFiles().length == 0) {
-            NullaeOutpost.getPluginLogger().warning("The blocks folder is empty! You do not have any protection blocks configured!");
+        if (Outpost.blockDataFolder.listFiles().length == 0) {
+            Outpost.getPluginLogger().warning("The blocks folder is empty! You do not have any protection blocks configured!");
         } else {
 
             // temp file to load in default no block config
             File tempFile;
-            try (InputStream in = NOConfig.class.getResourceAsStream("/outpost.toml")) {
+            try (InputStream in = OutpostConfig.class.getResourceAsStream("/outpost.toml")) {
                 if (in == null) {
-                    NullaeOutpost.getPluginLogger().severe("Could not find /outpost.toml inside the plugin jar! " +
+                    Outpost.getPluginLogger().severe("Could not find /outpost.toml inside the plugin jar! " +
                             "This usually means the jar was not built correctly (missing resources) - try running " +
                             "'mvn clean package' and make sure src/main/resources/outpost.toml exists before building.");
                     return;
@@ -153,8 +153,8 @@ public class NOConfig {
             template.load();
 
             // iterate over block files and load into map
-            NullaeOutpost.getPluginLogger().info("Protection Stone Blocks:");
-            for (File file : NullaeOutpost.blockDataFolder.listFiles()) {
+            Outpost.getPluginLogger().info("Protection Stone Blocks:");
+            for (File file : Outpost.blockDataFolder.listFiles()) {
 
                 CommentedFileConfig c = CommentedFileConfig.builder(file).sync().build();
                 c.load();
@@ -182,26 +182,26 @@ public class NOConfig {
                 if (updated) c.save();
 
                 // convert toml data into object
-                NOProtectBlock b = new ObjectConverter().toObject(c, NOProtectBlock::new);
+                OutpostProtectBlock b = new ObjectConverter().toObject(c, OutpostProtectBlock::new);
 
                 // check if material is valid, and is not a player head (since player heads also have the player name after)
                 if (Material.getMaterial(b.type) == null && !(b.type.startsWith(Material.PLAYER_HEAD.toString()))) {
-                    NullaeOutpost.getPluginLogger().warning("Unrecognized material: " + b.type);
-                    NullaeOutpost.getPluginLogger().warning("Block will not be added. Please fix this in your config.");
+                    Outpost.getPluginLogger().warning("Unrecognized material: " + b.type);
+                    Outpost.getPluginLogger().warning("Block will not be added. Please fix this in your config.");
                     continue;
                 }
 
                 // check for duplicates
-                if (NullaeOutpost.isProtectBlockType(b.type)) {
-                    NullaeOutpost.getPluginLogger().warning("Duplicate block type found! Ignoring the extra block " + b.type);
+                if (Outpost.isProtectBlockType(b.type)) {
+                    Outpost.getPluginLogger().warning("Duplicate block type found! Ignoring the extra block " + b.type);
                     continue;
                 }
-                if (NullaeOutpost.getProtectBlockFromAlias(b.alias) != null) {
-                    NullaeOutpost.getPluginLogger().warning("Duplicate block alias found! Ignoring the extra block " + b.alias);
+                if (Outpost.getProtectBlockFromAlias(b.alias) != null) {
+                    Outpost.getPluginLogger().warning("Duplicate block alias found! Ignoring the extra block " + b.alias);
                     continue;
                 }
 
-                NullaeOutpost.getPluginLogger().info("- " + b.type + " (" + b.alias + ")");
+                Outpost.getPluginLogger().info("- " + b.type + " (" + b.alias + ")");
                 FlagHandler.initDefaultFlagsForBlock(b); // process flags for block and set regionFlags field
 
                 // for PLAYER_HEAD:base64, we need to change the entry to link to a UUID hash instead of storing the giant base64
@@ -212,7 +212,7 @@ public class NOConfig {
                     b.type = "PLAYER_HEAD:" + nuuid;
                 }
 
-                NullaeOutpost.NullaeOutpostOptions.put(b.type, b); // add block
+                Outpost.NullaeOutpostOptions.put(b.type, b); // add block
             }
 
             // cleanup temp file

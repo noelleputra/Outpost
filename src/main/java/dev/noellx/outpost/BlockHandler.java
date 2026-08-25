@@ -26,7 +26,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import dev.noellx.outpost.commands.ArgMerge;
-import dev.noellx.outpost.event.NOCreateEvent;
+import dev.noellx.outpost.event.OutpostCreateEvent;
 import dev.noellx.outpost.utils.LimitUtil;
 import dev.noellx.outpost.utils.MiscUtil;
 import dev.noellx.outpost.utils.WGMerge;
@@ -48,7 +48,7 @@ public class BlockHandler {
     private static String checkCooldown(Player p) {
         double currentTime = System.currentTimeMillis();
         if (lastProtectStonePlaced.containsKey(p)) {
-            double cooldown = NullaeOutpost.getInstance().getConfigOptions().placingCooldown; // seconds
+            double cooldown = Outpost.getInstance().getConfigOptions().placingCooldown; // seconds
             double lastPlace = lastProtectStonePlaced.get(p); // milliseconds
 
             if (lastPlace + cooldown * 1000 > currentTime) { // if cooldown has not been finished
@@ -60,7 +60,7 @@ public class BlockHandler {
         return null;
     }
 
-    private static boolean isFarEnoughFromOtherClaims(NOProtectBlock blockOptions, World w, LocalPlayer lp, double bx, double by, double bz) {
+    private static boolean isFarEnoughFromOtherClaims(OutpostProtectBlock blockOptions, World w, LocalPlayer lp, double bx, double by, double bz) {
         BlockVector3 min = WGUtils.getMinVector(bx, by, bz, blockOptions.distanceBetweenClaims, blockOptions.distanceBetweenClaims, blockOptions.distanceBetweenClaims);
         BlockVector3 max = WGUtils.getMaxVector(bx, by, bz, blockOptions.distanceBetweenClaims, blockOptions.distanceBetweenClaims, blockOptions.distanceBetweenClaims);
 
@@ -74,7 +74,7 @@ public class BlockHandler {
                 // skip if the user is already an owner
                 if (rg.isOwner(lp)) continue;
 
-                if (NullaeOutpost.isNORegion(rg) && rg.getFlag(Flags.PASSTHROUGH) != StateFlag.State.ALLOW) {
+                if (Outpost.isNORegion(rg) && rg.getFlag(Flags.PASSTHROUGH) != StateFlag.State.ALLOW) {
                     // if it is a NO region, and "passthrough allow" is not set, then it is not far enough
                     return false;
                 } else if (rg.getPriority() >= td.getPriority()) {
@@ -93,19 +93,19 @@ public class BlockHandler {
         Block b = e.getBlock();
 
         // check if the block is a protection stone
-        if (!NullaeOutpost.isProtectBlockType(b)) return;
-        NOProtectBlock blockOptions = NullaeOutpost.getBlockOptions(b);
+        if (!Outpost.isProtectBlockType(b)) return;
+        OutpostProtectBlock blockOptions = Outpost.getBlockOptions(b);
 
         // check if the item was created by protection stones (stored in custom tag)
         // block must have restrictObtaining enabled for blocking place
-        if (blockOptions.restrictObtaining && !NullaeOutpost.isProtectBlockItem(e.getItemInHand(), true)) return;
+        if (blockOptions.restrictObtaining && !Outpost.isProtectBlockItem(e.getItemInHand(), true)) return;
 
         // check if player has toggled off placement of protection stones
-        if (NullaeOutpost.toggleList.contains(p.getUniqueId())) return;
+        if (Outpost.toggleList.contains(p.getUniqueId())) return;
 
         // check if player can place block in that area
         if (!WorldGuardPlugin.inst().createProtectionQuery().testBlockPlace(p, b.getLocation(), b.getType())) {
-            NOL.msg(p, NOL.CANT_PROTECT_THAT.msg());
+            OutpostL.msg(p, OutpostL.CANT_PROTECT_THAT.msg());
             e.setCancelled(true);
             return;
         }
@@ -113,7 +113,7 @@ public class BlockHandler {
         // check if it is in a WorldGuard region
         RegionManager rgm = WGUtils.getRegionManagerWithPlayer(p);
         if (!blockOptions.allowPlacingInWild && rgm.getApplicableRegions(BlockVector3.at(b.getLocation().getX(), b.getLocation().getY(), b.getLocation().getZ())).size() == 0) {
-            NOL.msg(p, NOL.MUST_BE_PLACED_IN_EXISTING_REGION.msg());
+            OutpostL.msg(p, OutpostL.MUST_BE_PLACED_IN_EXISTING_REGION.msg());
             e.setCancelled(true);
             return;
         }
@@ -125,22 +125,22 @@ public class BlockHandler {
     }
 
     // create a NO region (no checks for items)
-    public static boolean createNORegion(Player p, Location l, NOProtectBlock blockOptions) {
+    public static boolean createNORegion(Player p, Location l, OutpostProtectBlock blockOptions) {
         // check permission
         if (!p.hasPermission("NullaeOutpost.create")) {
-            NOL.msg(p, NOL.NO_PERMISSION_CREATE.msg());
+            OutpostL.msg(p, OutpostL.NO_PERMISSION_CREATE.msg());
             return false;
         }
         if (!blockOptions.permission.equals("") && !p.hasPermission(blockOptions.permission)) {
-            NOL.msg(p, NOL.NO_PERMISSION_CREATE_SPECIFIC.msg());
+            OutpostL.msg(p, OutpostL.NO_PERMISSION_CREATE_SPECIFIC.msg());
             return false;
         }
 
         // check cooldown
-        if (NullaeOutpost.getInstance().getConfigOptions().placingCooldown != -1) {
+        if (Outpost.getInstance().getConfigOptions().placingCooldown != -1) {
             String time = checkCooldown(p);
             if (time != null) {
-                NOL.msg(p, NOL.COOLDOWN.msg().replace("%time%", time));
+                OutpostL.msg(p, OutpostL.COOLDOWN.msg().replace("%time%", time));
                 return false;
             }
         }
@@ -157,7 +157,7 @@ public class BlockHandler {
 
             if ((containsWorld && blockOptions.worldListType.equalsIgnoreCase("blacklist")) || (!containsWorld && blockOptions.worldListType.equalsIgnoreCase("whitelist"))) {
                 if (blockOptions.preventBlockPlaceInRestrictedWorld) {
-                    NOL.msg(p, NOL.WORLD_DENIED_CREATE.msg());
+                    OutpostL.msg(p, OutpostL.WORLD_DENIED_CREATE.msg());
                     return false;
                 } else {
                     return true;
@@ -174,7 +174,7 @@ public class BlockHandler {
     }
 
     // create the actual WG region for NO region
-    public static boolean createActualRegion(Player p, Location l, NOProtectBlock blockOptions) {
+    public static boolean createActualRegion(Player p, Location l, OutpostProtectBlock blockOptions) {
         // create region
         double bx = l.getX(), by = l.getY(), bz = l.getZ();
 
@@ -185,14 +185,14 @@ public class BlockHandler {
 
         // if the region's id already exists, possibly placing block where a region is hidden
         if (rm.hasRegion(id)) {
-            NOL.msg(p, NOL.REGION_ALREADY_IN_LOCATION_IS_HIDDEN.msg());
+            OutpostL.msg(p, OutpostL.REGION_ALREADY_IN_LOCATION_IS_HIDDEN.msg());
             return false;
         }
 
         // check for minimum distance between claims by using fake region
         if (blockOptions.distanceBetweenClaims != -1 && !p.hasPermission("NullaeOutpost.superowner")) {
             if (!isFarEnoughFromOtherClaims(blockOptions, p.getWorld(), lp, bx, by, bz)) {
-                NOL.msg(p, NOL.REGION_TOO_CLOSE.msg().replace("%num%", "" + blockOptions.distanceBetweenClaims));
+                OutpostL.msg(p, OutpostL.REGION_TOO_CLOSE.msg().replace("%num%", "" + blockOptions.distanceBetweenClaims));
                 return false;
             }
         }
@@ -206,7 +206,7 @@ public class BlockHandler {
         // check if new region overlaps more powerful region
         if (!blockOptions.allowOverlapUnownedRegions && !p.hasPermission("NullaeOutpost.superowner") && WGUtils.overlapsStrongerRegion(p.getWorld(), region, lp)) {
             rm.removeRegion(id);
-            NOL.msg(p, NOL.REGION_OVERLAP.msg());
+            OutpostL.msg(p, OutpostL.REGION_OVERLAP.msg());
             return false;
         }
 
@@ -220,19 +220,19 @@ public class BlockHandler {
         try {
             region.setFlags(flags);
         } catch (Exception e) {
-            NullaeOutpost.getPluginLogger().severe(String.format("Region flags have failed to initialize for: %s (%s)", blockOptions.alias, blockOptions.type));
+            Outpost.getPluginLogger().severe(String.format("Region flags have failed to initialize for: %s (%s)", blockOptions.alias, blockOptions.type));
             throw e;
         }
         FlagHandler.initCustomFlagsForNO(region, l, blockOptions);
 
         // check for player's number of adjacent region groups
-        if (NullaeOutpost.getInstance().getConfigOptions().regionsMustBeAdjacent) {
+        if (Outpost.getInstance().getConfigOptions().regionsMustBeAdjacent) {
             if (MiscUtil.getPermissionNumber(p, "NullaeOutpost.adjacent.", 1) >= 0 && !p.hasPermission("NullaeOutpost.admin")) {
                 HashMap<String, ArrayList<String>> adjGroups = WGUtils.getPlayerAdjacentRegionGroups(p, rm);
 
                 int permNum = MiscUtil.getPermissionNumber(p, "NullaeOutpost.adjacent.", 1);
                 if (adjGroups.size() > permNum && permNum != -1) {
-                    NOL.msg(p, NOL.REGION_NOT_ADJACENT.msg());
+                    OutpostL.msg(p, OutpostL.REGION_NOT_ADJACENT.msg());
                     rm.removeRegion(id);
                     return false;
                 }
@@ -240,25 +240,25 @@ public class BlockHandler {
         }
 
         // fire event and check if cancelled
-        NOCreateEvent event = new NOCreateEvent(NORegion.fromWGRegion(p.getWorld(), region), p);
+        OutpostCreateEvent event = new OutpostCreateEvent(OutpostRegion.fromWGRegion(p.getWorld(), region), p);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             rm.removeRegion(id);
             return false;
         }
 
-        NOL.msg(p, NOL.PROTECTED.msg());
+        OutpostL.msg(p, OutpostL.PROTECTED.msg());
 
         // hide block if auto hide is enabled
         if (blockOptions.autoHide) {
-            NOL.msg(p, NOL.REGION_HIDDEN.msg());
+            OutpostL.msg(p, OutpostL.REGION_HIDDEN.msg());
             // run on next tick so placing tile entities don't complain
-            Bukkit.getScheduler().runTask(NullaeOutpost.getInstance(), () -> l.getBlock().setType(Material.AIR));
+            Bukkit.getScheduler().runTask(Outpost.getInstance(), () -> l.getBlock().setType(Material.AIR));
         }
 
         // show merge menu
-        if (NullaeOutpost.getInstance().getConfigOptions().allowMergingRegions && blockOptions.allowMerging && p.hasPermission("NullaeOutpost.merge")) {
-            NORegion r = NORegion.fromWGRegion(p.getWorld(), region);
+        if (Outpost.getInstance().getConfigOptions().allowMergingRegions && blockOptions.allowMerging && p.hasPermission("NullaeOutpost.merge")) {
+            OutpostRegion r = OutpostRegion.fromWGRegion(p.getWorld(), region);
             if (r != null) playerMergeTask(p, r);
         }
 
@@ -266,13 +266,13 @@ public class BlockHandler {
     }
 
     // merge behaviour after a region is created
-    private static void playerMergeTask(Player p, NORegion r) {
+    private static void playerMergeTask(Player p, OutpostRegion r) {
         boolean showGUI = true;
 
         // auto merge to nearest region if only one exists
         if (r.getTypeOptions().autoMerge) {
-            NORegion mergeTo = null;
-            for (NORegion psr : r.getMergeableRegions(p)) {
+            OutpostRegion mergeTo = null;
+            for (OutpostRegion psr : r.getMergeableRegions(p)) {
                 if (mergeTo == null) {
                     mergeTo = psr;
                     showGUI = false;
@@ -284,13 +284,13 @@ public class BlockHandler {
 
             // actually do auto merge
             if (!showGUI) {
-                NORegion finalMergeTo = mergeTo;
-                Bukkit.getScheduler().runTaskAsynchronously(NullaeOutpost.getInstance(), () -> {
+                OutpostRegion finalMergeTo = mergeTo;
+                Bukkit.getScheduler().runTaskAsynchronously(Outpost.getInstance(), () -> {
                     try {
                         WGMerge.mergeRealRegions(p.getWorld(), r.getWGRegionManager(), finalMergeTo, Arrays.asList(finalMergeTo, r));
-                        NOL.msg(p, NOL.MERGE_AUTO_MERGED.msg().replace("%region%", finalMergeTo.getId()));
+                        OutpostL.msg(p, OutpostL.MERGE_AUTO_MERGED.msg().replace("%region%", finalMergeTo.getId()));
                     } catch (WGMerge.RegionHoleException e) {
-                        NOL.msg(p, NOL.NO_REGION_HOLES.msg()); // TODO github issue #120, prevent holes even if showGUI is true
+                        OutpostL.msg(p, OutpostL.NO_REGION_HOLES.msg()); // TODO github issue #120, prevent holes even if showGUI is true
                     }
                 });
             }
@@ -301,8 +301,8 @@ public class BlockHandler {
             List<TextComponent> tc = ArgMerge.getGUI(p, r);
             if (!tc.isEmpty()) { // if there are regions you can merge into
                 p.sendMessage(ChatColor.WHITE + ""); // send empty line
-                NOL.msg(p, NOL.MERGE_INTO.msg());
-                NOL.msg(p, NOL.MERGE_HEADER.msg().replace("%region%", r.getId()));
+                OutpostL.msg(p, OutpostL.MERGE_INTO.msg());
+                OutpostL.msg(p, OutpostL.MERGE_HEADER.msg().replace("%region%", r.getId()));
                 for (TextComponent t : tc) p.spigot().sendMessage(t);
                 p.sendMessage(ChatColor.WHITE + ""); // send empty line
             }

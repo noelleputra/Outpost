@@ -26,8 +26,8 @@ import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
 import com.sk89q.worldguard.session.handler.Handler;
 
 import dev.noellx.outpost.FlagHandler;
-import dev.noellx.outpost.NORegion;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostRegion;
+import dev.noellx.outpost.Outpost;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;

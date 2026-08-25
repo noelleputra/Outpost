@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public enum NOL {
+public enum OutpostL {
     // messages.yml
 
     COOLDOWN("cooldown", ChatColor.RED + "Please wait for %time% seconds before placing again!"),
@@ -305,9 +305,9 @@ public enum NOL {
     private String message;
     private boolean isEmpty;
 
-    private static final File conf = new File(NullaeOutpost.getInstance().getDataFolder(), "messages.yml");
+    private static final File conf = new File(Outpost.getInstance().getDataFolder(), "messages.yml");
 
-    NOL(String path, String defaultMessage, String... placeholders) {
+    OutpostL(String path, String defaultMessage, String... placeholders) {
         this.path = path;
         this.defaultMessage = defaultMessage;
 
@@ -400,7 +400,7 @@ public enum NOL {
         return true;
     }
 
-    public static boolean msg(NOPlayer p, String str) {
+    public static boolean msg(OutpostPlayer p, String str) {
         return msg(p.getPlayer(), str);
     }
 
@@ -419,7 +419,7 @@ public enum NOL {
         // load config
         try {
             yml.load(conf); // can throw error
-            for (NOL psl : NOL.values()) {
+            for (OutpostL psl : OutpostL.values()) {
 
                 // fix message if need be
                 if (yml.getString(psl.path) == null) { // if msg not found in config
@@ -444,14 +444,14 @@ public enum NOL {
     }
 
     // message upgrades over time
-    private static void messageUpgrades(NOL psl, YamlConfiguration yml) {
+    private static void messageUpgrades(OutpostL psl, YamlConfiguration yml) {
         String value = yml.getString(psl.path);
         assert(value != null);
 
         // psl upgrade conversions
-        if (psl == NOL.REACHED_REGION_LIMIT && value.equals("&cYou can not create any more protected regions.")) {
+        if (psl == OutpostL.REACHED_REGION_LIMIT && value.equals("&cYou can not create any more protected regions.")) {
             yml.set(psl.path, psl.defaultMessage);
-        } else if (psl == NOL.REACHED_PER_BLOCK_REGION_LIMIT && value.equals("&cYou can not create any more regions of this type.")) {
+        } else if (psl == OutpostL.REACHED_PER_BLOCK_REGION_LIMIT && value.equals("&cYou can not create any more regions of this type.")) {
             yml.set(psl.path, psl.defaultMessage);
         } else if (value.contains("§")) {
             yml.set(psl.path, applyConfigColours(value));

@@ -25,8 +25,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 
-import dev.noellx.outpost.NOProtectBlock;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostProtectBlock;
+import dev.noellx.outpost.Outpost;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -50,7 +50,7 @@ public class BlockUtil {
 
     // used for preventing unnecessary calls to .getOwningPlayer() which could cause server freezes
     private static boolean isOwnedSkullTypeConfigured() {
-        for (NOProtectBlock b : NullaeOutpost.getInstance().getConfiguredBlocks()) {
+        for (OutpostProtectBlock b : Outpost.getInstance().getConfiguredBlocks()) {
             if (b.type.startsWith("PLAYER_HEAD:")) {
                 return true;
             }
@@ -72,7 +72,7 @@ public class BlockUtil {
             if (offlineProfile == null) {
                 return Material.PLAYER_HEAD.toString();
             }
-            if (NullaeOutpost.getBlockOptions("PLAYER_HEAD:" + offlineProfile.getUniqueId()) != null) {
+            if (Outpost.getBlockOptions("PLAYER_HEAD:" + offlineProfile.getUniqueId()) != null) {
                 return Material.PLAYER_HEAD + ":" + offlineProfile.getUniqueId();
             }
 
@@ -91,7 +91,7 @@ public class BlockUtil {
                 if (offlineProfile == null) {
                     return Material.PLAYER_HEAD.toString();
                 }
-                if (NullaeOutpost.getBlockOptions("PLAYER_HEAD:" + offlineProfile.getUniqueId()) != null) {
+                if (Outpost.getBlockOptions("PLAYER_HEAD:" + offlineProfile.getUniqueId()) != null) {
                     return Material.PLAYER_HEAD + ":" + offlineProfile.getUniqueId();
                 }
                 return Material.PLAYER_HEAD + ":" + offlineProfile.getName();
@@ -190,7 +190,7 @@ public class BlockUtil {
         return type.startsWith("PLAYER_HEAD") && type.split(":").length > 1 && type.split(":")[1].length() > MAX_USERNAME_LENGTH;
     }
 
-    public static String getUUIDFromBase64NO(NOProtectBlock b) {
+    public static String getUUIDFromBase64NO(OutpostProtectBlock b) {
         String base64 = b.type.split(":")[1];
         // return UUID.nameUUIDFromBytes(base64.getBytes()).toString(); <- I should be using this
 

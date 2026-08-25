@@ -56,15 +56,15 @@ public class ArgMerge implements NOCommandArg {
         return null;
     }
 
-    public static List<TextComponent> getGUI(Player p, NORegion r) {
+    public static List<TextComponent> getGUI(Player p, OutpostRegion r) {
         return r.getMergeableRegions(p).stream()
                 .map(psr -> {
                     TextComponent tc = new TextComponent(ChatColor.AQUA + "> " + ChatColor.WHITE + psr.getId());
                     if (psr.getName() != null) tc.addExtra(" (" + psr.getName() + ")"); // name
                     tc.addExtra(" (" + psr.getTypeOptions().alias + ")"); // region type
 
-                    tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + NullaeOutpost.getInstance().getConfigOptions().base_command + " merge " + r.getId() + " " + psr.getId()));
-                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(NOL.MERGE_CLICK_TO_MERGE.msg().replace("%region%", psr.getId())).create()));
+                    tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + Outpost.getInstance().getConfigOptions().base_command + " merge " + r.getId() + " " + psr.getId()));
+                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(OutpostL.MERGE_CLICK_TO_MERGE.msg().replace("%region%", psr.getId())).create()));
                     return tc;
                 })
                 .collect(Collectors.toList());
@@ -73,34 +73,34 @@ public class ArgMerge implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         if (!s.hasPermission("NullaeOutpost.merge"))
-            return NOL.msg(s, NOL.NO_PERMISSION_MERGE.msg());
+            return OutpostL.msg(s, OutpostL.NO_PERMISSION_MERGE.msg());
 
-        if (!NullaeOutpost.getInstance().getConfigOptions().allowMergingRegions)
-            return NOL.msg(s, NOL.MERGE_DISABLED.msg());
+        if (!Outpost.getInstance().getConfigOptions().allowMergingRegions)
+            return OutpostL.msg(s, OutpostL.MERGE_DISABLED.msg());
 
         Player p = (Player) s;
         if (args.length == 1) { // GUI
 
-            NORegion r = NORegion.fromLocationGroup(p.getLocation());
+            OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
             if (r == null)
-                return NOL.msg(s, NOL.NOT_IN_REGION.msg());
+                return OutpostL.msg(s, OutpostL.NOT_IN_REGION.msg());
 
             if (r.getTypeOptions() == null) {
-                NOL.msg(p, ChatColor.RED + "This region is problematic, and the block type (" + r.getType() + ") is not configured. Please contact an administrator.");
+                OutpostL.msg(p, ChatColor.RED + "This region is problematic, and the block type (" + r.getType() + ") is not configured. Please contact an administrator.");
                 Bukkit.getLogger().info(ChatColor.RED + "This region is problematic, and the block type (" + r.getType() + ") is not configured.");
                 return true;
             }
 
             if (!r.getTypeOptions().allowMerging)
-                return NOL.msg(s, NOL.MERGE_NOT_ALLOWED.msg());
+                return OutpostL.msg(s, OutpostL.MERGE_NOT_ALLOWED.msg());
 
             List<TextComponent> components = getGUI(p, r);
             if (components.isEmpty()) {
-                NOL.msg(p, NOL.MERGE_NO_REGIONS.msg());
+                OutpostL.msg(p, OutpostL.MERGE_NO_REGIONS.msg());
             } else {
                 p.sendMessage(ChatColor.WHITE + ""); // send empty line
-                NOL.msg(p, NOL.MERGE_HEADER.msg().replace("%region%", r.getId()));
-                NOL.msg(p, NOL.MERGE_WARNING.msg());
+                OutpostL.msg(p, OutpostL.MERGE_HEADER.msg().replace("%region%", r.getId()));
+                OutpostL.msg(p, OutpostL.MERGE_WARNING.msg());
                 for (TextComponent tc : components) p.spigot().sendMessage(tc);
                 p.sendMessage(ChatColor.WHITE + ""); // send empty line
             }
@@ -110,45 +110,45 @@ public class ArgMerge implements NOCommandArg {
             ProtectedRegion region = rm.getRegion(args[1]), root = rm.getRegion(args[2]);
             LocalPlayer lp = WorldGuardPlugin.inst().wrapPlayer(p);
 
-            if (!NullaeOutpost.isNORegion(region) || !NullaeOutpost.isNORegion(root))
-                return NOL.msg(p, NOL.MULTI_REGION_DOES_NOT_EXIST.msg());
+            if (!Outpost.isNORegion(region) || !Outpost.isNORegion(root))
+                return OutpostL.msg(p, OutpostL.MULTI_REGION_DOES_NOT_EXIST.msg());
 
             if (!p.hasPermission("NullaeOutpost.admin") && (!region.isOwner(lp) || !root.isOwner(lp)))
-                return NOL.msg(p, NOL.NO_ACCESS.msg());
+                return OutpostL.msg(p, OutpostL.NO_ACCESS.msg());
 
             // check if region is actually overlapping the region
             var overlappingRegionIds = WGUtils.findOverlapOrAdjacentRegions(root, rm, p.getWorld()).stream().map(ProtectedRegion::getId).collect(Collectors.toList());
             if (!overlappingRegionIds.contains(region.getId()))
-                return NOL.msg(p, NOL.REGION_NOT_OVERLAPPING.msg());
+                return OutpostL.msg(p, OutpostL.REGION_NOT_OVERLAPPING.msg());
 
             // check if merging is allowed in config
-            NORegion aRegion = NORegion.fromWGRegion(p.getWorld(), region), aRoot = NORegion.fromWGRegion(p.getWorld(), root);
+            OutpostRegion aRegion = OutpostRegion.fromWGRegion(p.getWorld(), region), aRoot = OutpostRegion.fromWGRegion(p.getWorld(), root);
             if (!aRegion.getTypeOptions().allowMerging || !aRoot.getTypeOptions().allowMerging)
-                return NOL.msg(p, NOL.MERGE_NOT_ALLOWED.msg());
+                return OutpostL.msg(p, OutpostL.MERGE_NOT_ALLOWED.msg());
 
             // check if the region types allow for it
             if (!WGUtils.canMergeRegionTypes(aRegion.getTypeOptions(), aRoot))
-                return NOL.msg(p, NOL.MERGE_NOT_ALLOWED.msg());
+                return OutpostL.msg(p, OutpostL.MERGE_NOT_ALLOWED.msg());
 
-            Bukkit.getScheduler().runTaskAsynchronously(NullaeOutpost.getInstance(), () -> {
+            Bukkit.getScheduler().runTaskAsynchronously(Outpost.getInstance(), () -> {
                 try {
                     WGMerge.mergeRealRegions(p.getWorld(), rm, aRoot, Arrays.asList(aRegion, aRoot));
                 } catch (WGMerge.RegionHoleException e) {
-                    NOL.msg(p, NOL.NO_REGION_HOLES.msg());
+                    OutpostL.msg(p, OutpostL.NO_REGION_HOLES.msg());
                     return;
                 }
-                NOL.msg(p, NOL.MERGE_MERGED.msg());
+                OutpostL.msg(p, OutpostL.MERGE_MERGED.msg());
 
                 // show menu again if the new region still has overlapping regions
-                Bukkit.getScheduler().runTask(NullaeOutpost.getInstance(), () -> {
-                    if (!getGUI(p, NORegion.fromWGRegion(p.getWorld(), rm.getRegion(aRoot.getId()))).isEmpty()) {
-                        Bukkit.dispatchCommand(p, NullaeOutpost.getInstance().getConfigOptions().base_command + " merge");
+                Bukkit.getScheduler().runTask(Outpost.getInstance(), () -> {
+                    if (!getGUI(p, OutpostRegion.fromWGRegion(p.getWorld(), rm.getRegion(aRoot.getId()))).isEmpty()) {
+                        Bukkit.dispatchCommand(p, Outpost.getInstance().getConfigOptions().base_command + " merge");
                     }
                 });
             });
 
         } else {
-            NOL.msg(s, NOL.MERGE_HELP.msg());
+            OutpostL.msg(s, OutpostL.MERGE_HELP.msg());
         }
 
         return true;

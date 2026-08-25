@@ -22,10 +22,10 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NOPlayer;
-import dev.noellx.outpost.NORegion;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.OutpostPlayer;
+import dev.noellx.outpost.OutpostRegion;
+import dev.noellx.outpost.Outpost;
 import dev.noellx.outpost.utils.UUIDCache;
 
 import java.util.*;
@@ -55,27 +55,27 @@ public class ArgList implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         if (!s.hasPermission("NullaeOutpost.list"))
-            return NOL.msg(s, NOL.NO_PERMISSION_LIST.msg());
+            return OutpostL.msg(s, OutpostL.NO_PERMISSION_LIST.msg());
 
         if (args.length == 2 && !s.hasPermission("NullaeOutpost.list.others"))
-            return NOL.msg(s, NOL.NO_PERMISSION_LIST_OTHERS.msg());
+            return OutpostL.msg(s, OutpostL.NO_PERMISSION_LIST_OTHERS.msg());
 
         if (args.length == 2 && !UUIDCache.containsName(args[1]))
-            return NOL.msg(s, NOL.PLAYER_NOT_FOUND.msg());
+            return OutpostL.msg(s, OutpostL.PLAYER_NOT_FOUND.msg());
 
-        NOPlayer psp = NOPlayer.fromPlayer((Player) s);
+        OutpostPlayer psp = OutpostPlayer.fromPlayer((Player) s);
 
         // run query async to reduce load
-        Bukkit.getScheduler().runTaskAsynchronously(NullaeOutpost.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Outpost.getInstance(), () -> {
             if (args.length == 1) {
-                List<NORegion> regions = psp.getNORegionsCrossWorld(psp.getPlayer().getWorld(), true);
+                List<OutpostRegion> regions = psp.getNORegionsCrossWorld(psp.getPlayer().getWorld(), true);
                 display(s, regions, psp.getUuid(), true);
             } else if (args.length == 2) {
                 UUID uuid = UUIDCache.getUUIDFromName(args[1]);
-                List<NORegion> regions = NOPlayer.fromUUID(uuid).getNORegionsCrossWorld(psp.getPlayer().getWorld(), true);
+                List<OutpostRegion> regions = OutpostPlayer.fromUUID(uuid).getNORegionsCrossWorld(psp.getPlayer().getWorld(), true);
                 display(s, regions, uuid, false);
             } else {
-                NOL.msg(s, NOL.LIST_HELP.msg());
+                OutpostL.msg(s, OutpostL.LIST_HELP.msg());
             }
         });
         return true;
@@ -94,9 +94,9 @@ public class ArgList implements NOCommandArg {
         return null;
     }
 
-    private void display(CommandSender s, List<NORegion> regions, UUID pUUID, boolean isCurrentPlayer) {
+    private void display(CommandSender s, List<OutpostRegion> regions, UUID pUUID, boolean isCurrentPlayer) {
         List<String> ownerOf = new ArrayList<>(), memberOf = new ArrayList<>();
-        for (NORegion r : regions) {
+        for (OutpostRegion r : regions) {
             if (r.isOwner(pUUID)) {
                 if (r.getName() == null) {
                     ownerOf.add(ChatColor.GRAY + "> " + ChatColor.AQUA + r.getId());
@@ -115,21 +115,21 @@ public class ArgList implements NOCommandArg {
 
         if (ownerOf.isEmpty() && memberOf.isEmpty()) {
             if (isCurrentPlayer) {
-                NOL.msg(s, NOL.LIST_NO_REGIONS.msg());
+                OutpostL.msg(s, OutpostL.LIST_NO_REGIONS.msg());
             } else {
-                NOL.msg(s, NOL.LIST_NO_REGIONS_PLAYER.msg().replace("%player%", UUIDCache.getNameFromUUID(pUUID)));
+                OutpostL.msg(s, OutpostL.LIST_NO_REGIONS_PLAYER.msg().replace("%player%", UUIDCache.getNameFromUUID(pUUID)));
             }
             return;
         }
 
-        NOL.msg(s, NOL.LIST_HEADER.msg().replace("%player%", UUIDCache.getNameFromUUID(pUUID)));
+        OutpostL.msg(s, OutpostL.LIST_HEADER.msg().replace("%player%", UUIDCache.getNameFromUUID(pUUID)));
 
         if (!ownerOf.isEmpty()) {
-            NOL.msg(s, NOL.LIST_OWNER.msg());
+            OutpostL.msg(s, OutpostL.LIST_OWNER.msg());
             for (String str : ownerOf) s.sendMessage(str);
         }
         if (!memberOf.isEmpty()) {
-            NOL.msg(s, NOL.LIST_MEMBER.msg());
+            OutpostL.msg(s, OutpostL.LIST_MEMBER.msg());
             for (String str : memberOf) s.sendMessage(str);
         }
     }

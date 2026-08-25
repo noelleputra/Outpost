@@ -66,33 +66,33 @@ public class ArgFlag implements NOCommandArg {
     }
 
     // flag gui that has ability to use pages
-    private boolean openFlagGUI(Player p, NORegion r, int page) {
+    private boolean openFlagGUI(Player p, OutpostRegion r, int page) {
         List<String> allowedFlags = new ArrayList<>(r.getTypeOptions().allowedFlags.keySet());
 
         // ensure the page is valid and in range
         if (page < 0 || (page * GUI_SIZE) > allowedFlags.size()) {
-            NOL.msg(p, NOL.PAGE_DOES_NOT_EXIST.msg());
+            OutpostL.msg(p, OutpostL.PAGE_DOES_NOT_EXIST.msg());
             return true;
         }
 
         // add blank space if gui not long enough
         for (int i = 0; i < (GUI_SIZE * page + GUI_SIZE) - (Math.min(allowedFlags.size(), GUI_SIZE * page + GUI_SIZE) - GUI_SIZE * page); i++) {
-            NOL.msg(p, ChatColor.WHITE + "");
+            OutpostL.msg(p, ChatColor.WHITE + "");
         }
 
-        NOL.msg(p, NOL.FLAG_GUI_HEADER.msg());
+        OutpostL.msg(p, OutpostL.FLAG_GUI_HEADER.msg());
 
         // send actual flags
         for (int i = GUI_SIZE * page; i < Math.min(allowedFlags.size(), GUI_SIZE * page + GUI_SIZE); i++) {
             if (i >= allowedFlags.size()) {
-                NOL.msg(p, ChatColor.WHITE + "");
+                OutpostL.msg(p, ChatColor.WHITE + "");
             } else {
                 String flag = allowedFlags.get(i);
                 List<String> currentFlagGroups = r.getTypeOptions().allowedFlags.get(flag);
                 TextComponent flagLine = new TextComponent();
 
                 // calculate flag command
-                String suggestedCommand = "/" + NullaeOutpost.getInstance().getConfigOptions().base_command + " flag ";
+                String suggestedCommand = "/" + Outpost.getInstance().getConfigOptions().base_command + " flag ";
 
                 // match flag
                 Flag<?> f = Flags.fuzzyMatchFlag(WGUtils.getFlagRegistry(), flag);
@@ -124,8 +124,8 @@ public class ArgFlag implements NOCommandArg {
                     TextComponent allow = new TextComponent((fValue == StateFlag.State.ALLOW ? ChatColor.WHITE : ChatColor.DARK_GRAY) + "Allow"),
                             deny = new TextComponent((fValue == StateFlag.State.DENY ? ChatColor.WHITE : ChatColor.DARK_GRAY) + "Deny");
 
-                    allow.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(NOL.FLAG_GUI_HOVER_SET.msg()).create()));
-                    deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(NOL.FLAG_GUI_HOVER_SET.msg()).create()));
+                    allow.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(OutpostL.FLAG_GUI_HOVER_SET.msg()).create()));
+                    deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(OutpostL.FLAG_GUI_HOVER_SET.msg()).create()));
 
                     if (fValue == StateFlag.State.ALLOW) {
                         allow.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, suggestedCommand + flagGroup + page + ":" + flag + " none"));
@@ -147,8 +147,8 @@ public class ArgFlag implements NOCommandArg {
                     TextComponent allow = new TextComponent((fValue == Boolean.TRUE ? ChatColor.WHITE : ChatColor.DARK_GRAY) + "True"),
                             deny = new TextComponent((fValue == Boolean.FALSE ? ChatColor.WHITE : ChatColor.DARK_GRAY) + "False");
 
-                    allow.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(NOL.FLAG_GUI_HOVER_SET.msg()).create()));
-                    deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(NOL.FLAG_GUI_HOVER_SET.msg()).create()));
+                    allow.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(OutpostL.FLAG_GUI_HOVER_SET.msg()).create()));
+                    deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(OutpostL.FLAG_GUI_HOVER_SET.msg()).create()));
                     if (fValue == Boolean.TRUE) {
                         allow.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, suggestedCommand + flagGroup + page + ":" + flag + " none"));
                         deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, suggestedCommand + flagGroup + page + ":" + flag + " false"));
@@ -166,7 +166,7 @@ public class ArgFlag implements NOCommandArg {
                     flagLine.addExtra(getDots(5));
                 } else { // text
                     TextComponent edit = new TextComponent(ChatColor.DARK_GRAY + "Edit");
-                    edit.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(NOL.FLAG_GUI_HOVER_SET_TEXT.msg()
+                    edit.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(OutpostL.FLAG_GUI_HOVER_SET_TEXT.msg()
                             .replace("%value%", fValue == null ? "none" : fValue.toString())).create()));
                     edit.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestedCommand + flagGroup + flag + " "));
                     flagLine.addExtra(edit);
@@ -187,12 +187,12 @@ public class ArgFlag implements NOCommandArg {
                 // HACK: Prevent pvp flag group from being changed when set to "all" to prevent exploit
                 boolean isPvpExploitCase = flag.equalsIgnoreCase("pvp") && isGroupValueAll;
                 if (isPvpExploitCase) {
-                    BaseComponent[] hover = new ComponentBuilder(NOL.FLAG_PREVENT_EXPLOIT_HOVER.msg()).create();
+                    BaseComponent[] hover = new ComponentBuilder(OutpostL.FLAG_PREVENT_EXPLOIT_HOVER.msg()).create();
                     groupChange.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover));
                 } else if (!nextGroup.equals(groupfValue)) {
                     BaseComponent[] hover = fValue == null
-                            ? new ComponentBuilder(NOL.FLAG_GUI_HOVER_CHANGE_GROUP_NULL.msg()).create()
-                            : new ComponentBuilder(NOL.FLAG_GUI_HOVER_CHANGE_GROUP.msg().replace("%group%", nextGroup)).create();
+                            ? new ComponentBuilder(OutpostL.FLAG_GUI_HOVER_CHANGE_GROUP_NULL.msg()).create()
+                            : new ComponentBuilder(OutpostL.FLAG_GUI_HOVER_CHANGE_GROUP.msg().replace("%group%", nextGroup)).create();
                     groupChange.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover));
                     groupChange.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, suggestedCommand + "-g " + nextGroup + " " + page + ":" + flag + " " + fValue));
                 }
@@ -207,10 +207,10 @@ public class ArgFlag implements NOCommandArg {
 
         // create footer
         TextComponent backPage = new TextComponent(ChatColor.AQUA + " <<"), nextPage = new TextComponent(ChatColor.AQUA + ">> ");
-        backPage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(NOL.GO_BACK_PAGE.msg()).create()));
-        nextPage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(NOL.GO_NEXT_PAGE.msg()).create()));
-        backPage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + NullaeOutpost.getInstance().getConfigOptions().base_command + " flag " + (page - 1)));
-        nextPage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + NullaeOutpost.getInstance().getConfigOptions().base_command + " flag " + (page + 1)));
+        backPage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(OutpostL.GO_BACK_PAGE.msg()).create()));
+        nextPage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(OutpostL.GO_NEXT_PAGE.msg()).create()));
+        backPage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + Outpost.getInstance().getConfigOptions().base_command + " flag " + (page - 1)));
+        nextPage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + Outpost.getInstance().getConfigOptions().base_command + " flag " + (page + 1)));
 
         TextComponent footer = new TextComponent(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "=====" + ChatColor.RESET);
         // add back page button if the page isn't 0
@@ -228,18 +228,18 @@ public class ArgFlag implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         Player p = (Player) s;
-        NORegion r = NORegion.fromLocationGroup(p.getLocation());
+        OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
 
         if (!p.hasPermission("NullaeOutpost.flags")) {
-            NOL.msg(p, NOL.NO_PERMISSION_FLAGS.msg());
+            OutpostL.msg(p, OutpostL.NO_PERMISSION_FLAGS.msg());
             return true;
         }
         if (r == null) {
-            NOL.msg(p, NOL.NOT_IN_REGION.msg());
+            OutpostL.msg(p, OutpostL.NOT_IN_REGION.msg());
             return true;
         }
         if (WGUtils.hasNoAccess(r.getWGRegion(), p, WorldGuardPlugin.inst().wrapPlayer(p), false)) {
-            NOL.msg(p, NOL.NO_ACCESS.msg());
+            OutpostL.msg(p, OutpostL.NO_ACCESS.msg());
             return true;
         }
 
@@ -252,12 +252,12 @@ public class ArgFlag implements NOCommandArg {
                 return openFlagGUI(p, r, Integer.parseInt(args[1]));
             }
 
-            NOL.msg(p, NOL.FLAG_HELP.msg());
+            OutpostL.msg(p, OutpostL.FLAG_HELP.msg());
             return true;
         }
 
         if (args.length < 3) {
-            NOL.msg(p, NOL.FLAG_HELP.msg());
+            OutpostL.msg(p, OutpostL.FLAG_HELP.msg());
             return true;
         }
 
@@ -281,13 +281,13 @@ public class ArgFlag implements NOCommandArg {
                 setFlag(r, p, args[1], value.toString().trim(), flags.getOrDefault("-g", ""));
                 // reshow GUI
                 if (!gui.equals("")) {
-                    Bukkit.dispatchCommand(p, NullaeOutpost.getInstance().getConfigOptions().base_command + " flag " + gui);
+                    Bukkit.dispatchCommand(p, Outpost.getInstance().getConfigOptions().base_command + " flag " + gui);
                 }
             } else {
-                NOL.msg(p, NOL.NO_PERMISSION_PER_FLAG.msg());
+                OutpostL.msg(p, OutpostL.NO_PERMISSION_PER_FLAG.msg());
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            NOL.msg(p, NOL.FLAG_HELP.msg());
+            OutpostL.msg(p, OutpostL.FLAG_HELP.msg());
         }
         return true;
     }
@@ -297,7 +297,7 @@ public class ArgFlag implements NOCommandArg {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            NORegion r = NORegion.fromLocationGroup(p.getLocation());
+            OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
             if (r == null) return null;
 
             List<String> keywords = new ArrayList<>();
@@ -349,7 +349,7 @@ public class ArgFlag implements NOCommandArg {
     }
 
     // /no flag logic (utilizing WG internal /region flag logic)
-    static void setFlag(NORegion r, CommandSender p, String flagName, String value, String groupValue) {
+    static void setFlag(OutpostRegion r, CommandSender p, String flagName, String value, String groupValue) {
         // correct the flag if gui flags are there
         String[] flagSplit = flagName.split(":");
         if (flagSplit.length == 2) flagName = flagSplit[1];
@@ -372,7 +372,7 @@ public class ArgFlag implements NOCommandArg {
                     region.setFlag(flag.getRegionGroupFlag(), null);
                 }
 
-                NOL.msg(p, NOL.FLAG_SET.msg().replace("%flag%", flagName));
+                OutpostL.msg(p, OutpostL.FLAG_SET.msg().replace("%flag%", flagName));
 
             } else if (value.equalsIgnoreCase("null") || value.equalsIgnoreCase("none")) { // null flag (remove)
 
@@ -380,7 +380,7 @@ public class ArgFlag implements NOCommandArg {
                 // the default is that nonmembers can be killed, but members cannot.
                 boolean isGroupValueAll = groupValue.equalsIgnoreCase("all") || groupValue.isEmpty();
                 if (r.getTypeOptions().regionFlags.get(flag) != null && isGroupValueAll && flagName.equalsIgnoreCase("pvp")) {
-                    NOL.msg(p, NOL.FLAG_PREVENT_EXPLOIT.msg());
+                    OutpostL.msg(p, OutpostL.FLAG_PREVENT_EXPLOIT.msg());
                     return;
                 }
 
@@ -390,7 +390,7 @@ public class ArgFlag implements NOCommandArg {
                     region.setFlag(flag.getRegionGroupFlag(), null);
                 }
 
-                NOL.msg(p, NOL.FLAG_SET.msg().replace("%flag%", flagName));
+                OutpostL.msg(p, OutpostL.FLAG_SET.msg().replace("%flag%", flagName));
 
             } else { // custom set flag using WG internal
                 FlagContext fc = FlagContext.create().setInput(value).build();
@@ -398,12 +398,12 @@ public class ArgFlag implements NOCommandArg {
                 if (!groupValue.equals("") && flag.getRegionGroupFlag() != null) {
                     region.setFlag(flag.getRegionGroupFlag(), flag.getRegionGroupFlag().detectValue(groupValue));
                 }
-                NOL.msg(p, NOL.FLAG_SET.msg().replace("%flag%", flagName));
+                OutpostL.msg(p, OutpostL.FLAG_SET.msg().replace("%flag%", flagName));
             }
 
         } catch (InvalidFlagFormat invalidFlagFormat) {
             //invalidFlagFormat.printStackTrace();
-            NOL.msg(p, NOL.FLAG_NOT_SET.msg().replace("%flag%", flagName));
+            OutpostL.msg(p, OutpostL.FLAG_NOT_SET.msg().replace("%flag%", flagName));
         }
     }
 

@@ -30,7 +30,7 @@ import java.util.List;
  * the ones in the config.
  */
 
-public class NOProtectBlock {
+public class OutpostProtectBlock {
 
     // Annotations are for types that have names that aren't the same as the config name
     // Check here for help: https://github.com/TheElectronWill/Night-Config
@@ -165,6 +165,6 @@ public class NOProtectBlock {
      * @return the item with NBT and other metadata to signify that it was created by protection stones
      */
     public ItemStack createItem() {
-        return NullaeOutpost.createProtectBlockItem(this);
+        return Outpost.createProtectBlockItem(this);
     }
 }

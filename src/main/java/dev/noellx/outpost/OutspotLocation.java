@@ -15,9 +15,9 @@
 
 package dev.noellx.outpost;
 
-public class NOLocation {
+public class OutspotLocation {
     public int x, y, z;
-    public NOLocation(int x, int y, int z) {
+    public OutspotLocation(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;

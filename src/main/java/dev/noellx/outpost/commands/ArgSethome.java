@@ -17,8 +17,8 @@ package dev.noellx.outpost.commands;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NORegion;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.OutpostRegion;
 import dev.noellx.outpost.utils.WGUtils;
 
 import org.bukkit.Location;
@@ -57,21 +57,21 @@ public class ArgSethome implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         Player p = (Player) s;
-        NORegion r = NORegion.fromLocationGroup(p.getLocation());
+        OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
 
         WorldGuardPlugin wg = WorldGuardPlugin.inst();
         if (!p.hasPermission("NullaeOutpost.sethome"))
-            return NOL.msg(p, NOL.NO_PERMISSION_SETHOME.msg());
+            return OutpostL.msg(p, OutpostL.NO_PERMISSION_SETHOME.msg());
 
         if (r == null)
-            return NOL.msg(p, NOL.NOT_IN_REGION.msg());
+            return OutpostL.msg(p, OutpostL.NOT_IN_REGION.msg());
 
         if (WGUtils.hasNoAccess(r.getWGRegion(), p, wg.wrapPlayer(p), false))
-            return NOL.msg(p, NOL.NO_ACCESS.msg());
+            return OutpostL.msg(p, OutpostL.NO_ACCESS.msg());
 
         Location l = p.getLocation();
         r.setHome(l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getYaw(), l.getPitch());
-        return NOL.msg(p, NOL.SETHOME_SET.msg().replace("%psid%", r.getName() != null ? String.format("%s (%s)", r.getName(), r.getId()) : r.getId()));
+        return OutpostL.msg(p, OutpostL.SETHOME_SET.msg().replace("%psid%", r.getName() != null ? String.format("%s (%s)", r.getName(), r.getId()) : r.getId()));
     }
 
     @Override

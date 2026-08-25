@@ -20,43 +20,43 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import dev.noellx.outpost.NORegion;
+import dev.noellx.outpost.OutpostRegion;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Event that is called when a protection stones region is removed
+ * Event that is called when a NullaeOutpost region is created, either by a player, or by the plugin.
  */
 
-public class NORemoveEvent extends Event implements Cancellable {
+public class OutpostCreateEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
 
-    private NORegion region;
+    private OutpostRegion region;
     private Player p = null;
     private boolean isCancelled = false;
 
-    public NORemoveEvent(NORegion psr, Player player) {
+    public OutpostCreateEvent(OutpostRegion psr, Player player) {
         this.region = checkNotNull(psr);
         this.p = player;
     }
 
-    public NORemoveEvent(NORegion psr) {
+    public OutpostCreateEvent(OutpostRegion psr) {
         this.region = checkNotNull(psr);
     }
 
     /**
-     * Returns the player that removed the protect block, if applicable
-     * @return the player, or null if the region was not removed because of a player
+     * Returns the player that created the protection region, if applicable
+     * @return the player, or null if the region was not created because of a player
      */
     public Player getPlayer() {
         return p;
     }
 
     /**
-     * Returns the region being removed.
-     * @return the region being removed
+     * Returns the region being created.
+     * @return the region being created
      */
-    public NORegion getRegion() {
+    public OutpostRegion getRegion() {
         return region;
     }
 

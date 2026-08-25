@@ -20,9 +20,9 @@ package dev.noellx.outpost.placeholders;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.Outpost;
 
-public class NOPlaceholderExpansion extends PlaceholderExpansion {
+public class OutpostPlaceholderExpansion extends PlaceholderExpansion {
 
     // persist through reloads
     @Override
@@ -42,12 +42,12 @@ public class NOPlaceholderExpansion extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return NullaeOutpost.getInstance().getDescription().getAuthors().toString();
+        return Outpost.getInstance().getDescription().getAuthors().toString();
     }
 
     @Override
     public String getVersion() {
-        return NullaeOutpost.getInstance().getDescription().getVersion();
+        return Outpost.getInstance().getDescription().getVersion();
     }
 
     @Override

@@ -30,22 +30,22 @@ import java.util.List;
 public class LimitUtil {
 
     // warning: group regions should be split into merged regions first
-    public static String checkAddOwner(NOPlayer psp, List<NOProtectBlock> blocksAdded) {
-        HashMap<NOProtectBlock, Integer> regionLimits = psp.getRegionLimits();
+    public static String checkAddOwner(OutpostPlayer psp, List<OutpostProtectBlock> blocksAdded) {
+        HashMap<OutpostProtectBlock, Integer> regionLimits = psp.getRegionLimits();
         int maxNO = psp.getGlobalRegionLimits();
 
-        NullaeOutpost.getInstance().debug(String.format("Player's global limit is %d.", maxNO));
-        NullaeOutpost.getInstance().debug(String.format("Player has limits on %d region types.", regionLimits.size()));
+        Outpost.getInstance().debug(String.format("Player's global limit is %d.", maxNO));
+        Outpost.getInstance().debug(String.format("Player has limits on %d region types.", regionLimits.size()));
 
         if (maxNO != -1 || !regionLimits.isEmpty()) { // only check if limit was found
 
             // count player's protection blocks
             int total = 0;
-            HashMap<NOProtectBlock, Integer> playerRegionCounts = getOwnedRegionTypeCounts(psp);
+            HashMap<OutpostProtectBlock, Integer> playerRegionCounts = getOwnedRegionTypeCounts(psp);
 
             // add the blocks
-            for (NOProtectBlock b : blocksAdded) {
-                NullaeOutpost.getInstance().debug(String.format("Adding region type %s.", b.alias));
+            for (OutpostProtectBlock b : blocksAdded) {
+                Outpost.getInstance().debug(String.format("Adding region type %s.", b.alias));
                 if (playerRegionCounts.containsKey(b)) {
                     playerRegionCounts.put(b, playerRegionCounts.get(b)+1);
                 } else {
@@ -54,31 +54,31 @@ public class LimitUtil {
             }
 
             // check each limit
-            for (NOProtectBlock type : playerRegionCounts.keySet()) {
+            for (OutpostProtectBlock type : playerRegionCounts.keySet()) {
                 if (regionLimits.containsKey(type)) {
-                    NullaeOutpost.getInstance().debug(String.format("Of type %s: player will have %d regions - Player's limit is %d regions.", type.alias, playerRegionCounts.get(type), regionLimits.get(type)));
+                    Outpost.getInstance().debug(String.format("Of type %s: player will have %d regions - Player's limit is %d regions.", type.alias, playerRegionCounts.get(type), regionLimits.get(type)));
                     if (playerRegionCounts.get(type) > regionLimits.get(type)) {
-                        return NOL.ADDREMOVE_PLAYER_REACHED_LIMIT.msg();
+                        return OutpostL.ADDREMOVE_PLAYER_REACHED_LIMIT.msg();
                     }
                 }
                 total += playerRegionCounts.get(type);
             }
 
             // check if player has passed region limit
-            NullaeOutpost.getInstance().debug(String.format("The player will have %d regions in total. Their limit is %d.", total, maxNO));
+            Outpost.getInstance().debug(String.format("The player will have %d regions in total. Their limit is %d.", total, maxNO));
             if (total > maxNO && maxNO != -1) {
-                return NOL.ADDREMOVE_PLAYER_REACHED_LIMIT.msg();
+                return OutpostL.ADDREMOVE_PLAYER_REACHED_LIMIT.msg();
             }
         }
         return "";
     }
 
-    public static boolean check(Player p, NOProtectBlock b) {
+    public static boolean check(Player p, OutpostProtectBlock b) {
         if (!p.hasPermission("NullaeOutpost.admin")) {
             // check if player has limit on protection stones
-            String msg = LimitUtil.hasPlayerPassedRegionLimit(NOPlayer.fromPlayer(p), b);
+            String msg = LimitUtil.hasPlayerPassedRegionLimit(OutpostPlayer.fromPlayer(p), b);
             if (!msg.isEmpty()) {
-                NOL.msg(p, msg);
+                OutpostL.msg(p, msg);
                 return false;
             }
         }
@@ -91,19 +91,19 @@ public class LimitUtil {
      * @param psp player
      * @return map of region types to the counts
      */
-    private static HashMap<NOProtectBlock, Integer> getOwnedRegionTypeCounts(NOPlayer psp) {
-        if (NullaeOutpost.getInstance().isDebug()) { // psp.getName may incur a performance penalty
-            NullaeOutpost.getInstance().debug(String.format("Debug limits for: %s", psp.getName()));
+    private static HashMap<OutpostProtectBlock, Integer> getOwnedRegionTypeCounts(OutpostPlayer psp) {
+        if (Outpost.getInstance().isDebug()) { // psp.getName may incur a performance penalty
+            Outpost.getInstance().debug(String.format("Debug limits for: %s", psp.getName()));
         }
 
-        HashMap<NOProtectBlock, Integer> counts = new HashMap<>();
+        HashMap<OutpostProtectBlock, Integer> counts = new HashMap<>();
         HashMap<World, RegionManager> m = WGUtils.getAllRegionManagers();
 
         for (World w : m.keySet()) {
             psp.getNORegions(w, false).forEach(r -> {
-                if (r instanceof NOGroupRegion) {
-                    NullaeOutpost.getInstance().debug(String.format("Checking group region %s's (world %s) (type %s) regions:", r.getId(), w.getName(), r.getTypeOptions().alias));
-                    for (NOMergedRegion psmr : ((NOGroupRegion) r).getMergedRegions()) {
+                if (r instanceof OutpostGroupRegion) {
+                    Outpost.getInstance().debug(String.format("Checking group region %s's (world %s) (type %s) regions:", r.getId(), w.getName(), r.getTypeOptions().alias));
+                    for (OutpostMergedRegion psmr : ((OutpostGroupRegion) r).getMergedRegions()) {
                         if (psmr.getTypeOptions() == null) continue;
                         if (!counts.containsKey(psmr.getTypeOptions())) {
                             counts.put(psmr.getTypeOptions(), 1);
@@ -111,7 +111,7 @@ public class LimitUtil {
                             counts.put(psmr.getTypeOptions(), counts.get(psmr.getTypeOptions())+1);
                         }
 
-                        NullaeOutpost.getInstance().debug(String.format("Merged region %s (world %s) (type %s)", psmr.getId(), w.getName(), psmr.getTypeOptions().alias));
+                        Outpost.getInstance().debug(String.format("Merged region %s (world %s) (type %s)", psmr.getId(), w.getName(), psmr.getTypeOptions().alias));
                     }
                 } else {
                     if (r.getTypeOptions() == null) return;
@@ -120,24 +120,24 @@ public class LimitUtil {
                     } else {
                         counts.put(r.getTypeOptions(), counts.get(r.getTypeOptions())+1);
                     }
-                    NullaeOutpost.getInstance().debug(String.format("Region %s (world %s) (type %s)", r.getId(), w.getName(), r.getTypeOptions().alias));
+                    Outpost.getInstance().debug(String.format("Region %s (world %s) (type %s)", r.getId(), w.getName(), r.getTypeOptions().alias));
                 }
             });
         }
         return counts;
     }
 
-    private static String hasPlayerPassedRegionLimit(NOPlayer psp, NOProtectBlock b) {
-        HashMap<NOProtectBlock, Integer> regionLimits = psp.getRegionLimits();
+    private static String hasPlayerPassedRegionLimit(OutpostPlayer psp, OutpostProtectBlock b) {
+        HashMap<OutpostProtectBlock, Integer> regionLimits = psp.getRegionLimits();
         int maxNO = psp.getGlobalRegionLimits();
 
         if (maxNO != -1 || !regionLimits.isEmpty()) { // only check if limit was found
 
             // count player's protection stones
             int total = 0, bFound = 0;
-            HashMap<NOProtectBlock, Integer> playerRegionCounts = getOwnedRegionTypeCounts(psp);
-            for (NOProtectBlock type : playerRegionCounts.keySet()) {
-                NullaeOutpost.getInstance().debug(String.format("Adding region type %s.", b.alias));
+            HashMap<OutpostProtectBlock, Integer> playerRegionCounts = getOwnedRegionTypeCounts(psp);
+            for (OutpostProtectBlock type : playerRegionCounts.keySet()) {
+                Outpost.getInstance().debug(String.format("Adding region type %s.", b.alias));
                 if (type.equals(b)) {
                     bFound = playerRegionCounts.get(type);
                 }
@@ -145,15 +145,15 @@ public class LimitUtil {
             }
 
             // check if player has passed region limit
-            NullaeOutpost.getInstance().debug(String.format("The player will have %d regions in total. Their limit is %d.", total, maxNO));
+            Outpost.getInstance().debug(String.format("The player will have %d regions in total. Their limit is %d.", total, maxNO));
             if (total >= maxNO && maxNO != -1) {
-                return NOL.REACHED_REGION_LIMIT.msg().replace("%limit%", ""+maxNO);
+                return OutpostL.REACHED_REGION_LIMIT.msg().replace("%limit%", ""+maxNO);
             }
 
             // check if player has passed per block limit
-            NullaeOutpost.getInstance().debug(String.format("Of type %s: player will have %d regions - Player's limit is %d regions.", b.alias, bFound, regionLimits.get(b) == null ? -1 : regionLimits.get(b)));
+            Outpost.getInstance().debug(String.format("Of type %s: player will have %d regions - Player's limit is %d regions.", b.alias, bFound, regionLimits.get(b) == null ? -1 : regionLimits.get(b)));
             if (regionLimits.get(b) != null && bFound >= regionLimits.get(b)) {
-                return NOL.REACHED_PER_BLOCK_REGION_LIMIT.msg().replace("%limit%", ""+regionLimits.get(b));
+                return OutpostL.REACHED_PER_BLOCK_REGION_LIMIT.msg().replace("%limit%", ""+regionLimits.get(b));
             }
         }
         return "";

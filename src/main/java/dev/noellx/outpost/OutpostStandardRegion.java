@@ -20,7 +20,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.RemovalStrategy;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-import dev.noellx.outpost.event.NORemoveEvent;
+import dev.noellx.outpost.event.OutpostRemoveEvent;
 import dev.noellx.outpost.utils.WGUtils;
 
 import org.bukkit.*;
@@ -36,10 +36,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Represents an instance of a standard NO region, that has not been merged or contains merged regions.
  */
 
-public class NOStandardRegion extends NORegion {
+public class OutpostStandardRegion extends OutpostRegion {
     private ProtectedRegion wgregion;
 
-    NOStandardRegion(ProtectedRegion wgregion, RegionManager rgmanager, World world) {
+    OutpostStandardRegion(ProtectedRegion wgregion, RegionManager rgmanager, World world) {
         super(rgmanager, world);
         this.wgregion = checkNotNull(wgregion);
     }
@@ -58,10 +58,10 @@ public class NOStandardRegion extends NORegion {
 
     @Override
     public void setName(String name) {
-        HashMap<String, ArrayList<String>> m = NullaeOutpost.regionNameToID.get(getWorld().getUID());
+        HashMap<String, ArrayList<String>> m = Outpost.regionNameToID.get(getWorld().getUID());
         if (m == null) { // if the world has not been added
-            NullaeOutpost.regionNameToID.put(getWorld().getUID(), new HashMap<>());
-            m = NullaeOutpost.regionNameToID.get(getWorld().getUID());
+            Outpost.regionNameToID.put(getWorld().getUID(), new HashMap<>());
+            m = Outpost.regionNameToID.get(getWorld().getUID());
         }
         if (m.get(getName()) != null) {
             m.get(getName()).remove(getId());
@@ -77,12 +77,12 @@ public class NOStandardRegion extends NORegion {
     }
 
     @Override
-    public void setParent(NORegion r) throws ProtectedRegion.CircularInheritanceException {
+    public void setParent(OutpostRegion r) throws ProtectedRegion.CircularInheritanceException {
         wgregion.setParent(r == null ? null : r.getWGRegion());
     }
 
     @Override
-    public NORegion getParent() {
+    public OutpostRegion getParent() {
         return wgregion.getParent() == null ? null : fromWGRegion(world, wgregion.getParent());
     }
 
@@ -108,13 +108,13 @@ public class NOStandardRegion extends NORegion {
 
     @Override
     public Block getProtectBlock() {
-        NOLocation psl = WGUtils.parseNORegionToLocation(wgregion.getId());
+        OutspotLocation psl = WGUtils.parseNORegionToLocation(wgregion.getId());
         return world.getBlockAt(psl.x, psl.y, psl.z);
     }
 
     @Override
-    public NOProtectBlock getTypeOptions() {
-        return NullaeOutpost.getBlockOptions(getType());
+    public OutpostProtectBlock getTypeOptions() {
+        return Outpost.getBlockOptions(getType());
     }
 
     @Override
@@ -123,7 +123,7 @@ public class NOStandardRegion extends NORegion {
     }
 
     @Override
-    public void setType(NOProtectBlock type) {
+    public void setType(OutpostProtectBlock type) {
         super.setType(type);
         getWGRegion().setFlag(FlagHandler.NO_BLOCK_MATERIAL, type.type);
     }
@@ -180,10 +180,10 @@ public class NOStandardRegion extends NORegion {
     }
 
     @Override
-    public List<NORegion> getMergeableRegions(Player p) {
+    public List<OutpostRegion> getMergeableRegions(Player p) {
         return WGUtils.findOverlapOrAdjacentRegions(getWGRegion(), getWGRegionManager(), getWorld())
                 .stream()
-                .map(r -> NORegion.fromWGRegion(getWorld(), r))
+                .map(r -> OutpostRegion.fromWGRegion(getWorld(), r))
                 .filter(r -> r != null && r.getTypeOptions() != null && !r.getId().equals(getId()))
                 .filter(r -> r.getTypeOptions().allowMerging)
                 .filter(r -> r.isOwner(p.getUniqueId()) || p.hasPermission("NullaeOutpost.admin"))
@@ -198,7 +198,7 @@ public class NOStandardRegion extends NORegion {
 
     @Override
     public boolean deleteRegion(boolean deleteBlock, Player cause) {
-        NORemoveEvent event = new NORemoveEvent(this, cause);
+        OutpostRemoveEvent event = new OutpostRemoveEvent(this, cause);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) { // if event was cancelled, prevent execution
             return false;
@@ -211,7 +211,7 @@ public class NOStandardRegion extends NORegion {
 
         // remove name from cache
         if (getName() != null) {
-            HashMap<String, ArrayList<String>> rIds = NullaeOutpost.regionNameToID.get(getWorld().getUID());
+            HashMap<String, ArrayList<String>> rIds = Outpost.regionNameToID.get(getWorld().getUID());
             if (rIds != null && rIds.containsKey(getName())) {
                 if (rIds.get(getName()).size() == 1) {
                     rIds.remove(getName());

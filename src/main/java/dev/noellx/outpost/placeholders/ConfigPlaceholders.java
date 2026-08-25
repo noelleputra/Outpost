@@ -19,27 +19,27 @@ package dev.noellx.outpost.placeholders;
 
 import java.util.List;
 
-import dev.noellx.outpost.NOConfig;
-import dev.noellx.outpost.NOProtectBlock;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostConfig;
+import dev.noellx.outpost.OutpostProtectBlock;
+import dev.noellx.outpost.Outpost;
 import dev.noellx.outpost.utils.MiscUtil;
 
 class ConfigPlaceholders {
 
-    private static NOConfig getConf() {
-        return NullaeOutpost.getInstance().getConfigOptions();
+    private static OutpostConfig getConf() {
+        return Outpost.getInstance().getConfigOptions();
     }
 
     static String resolveConfig(String identifier) {
         String[] spl = identifier.split("_");
         if (spl.length > 1) {
             if (spl[1].equals("block")) { // config_block_[alias]_...
-                if (spl.length > 3 && NullaeOutpost.getProtectBlockFromAlias(spl[2]) != null) {
+                if (spl.length > 3 && Outpost.getProtectBlockFromAlias(spl[2]) != null) {
                     StringBuilder sb = new StringBuilder();
                     for (int i = 3; i < spl.length; i++)
                         sb.append(spl[i]).append(i == spl.length-1 ? "" : "_");
 
-                    return resolveBlockConfig(NullaeOutpost.getProtectBlockFromAlias(spl[2]), sb.toString());
+                    return resolveBlockConfig(Outpost.getProtectBlockFromAlias(spl[2]), sb.toString());
                 }
             } else { // config_...
                 return resolveGlobalConfig(identifier);
@@ -92,7 +92,7 @@ class ConfigPlaceholders {
         return "";
     }
 
-    static String resolveBlockConfig(NOProtectBlock b, String identifier) {
+    static String resolveBlockConfig(OutpostProtectBlock b, String identifier) {
         StringBuilder sb = new StringBuilder();
         switch (identifier) {
             case "type":

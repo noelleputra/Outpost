@@ -25,8 +25,8 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
-import dev.noellx.outpost.NOProtectBlock;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostProtectBlock;
+import dev.noellx.outpost.Outpost;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,14 +37,14 @@ public class RecipeUtil {
 
     private static List<NamespacedKey> recipes = new ArrayList<>();
     public static void setupNORecipes() {
-        for (NOProtectBlock b : NullaeOutpost.getInstance().getConfiguredBlocks()) {
+        for (OutpostProtectBlock b : Outpost.getInstance().getConfiguredBlocks()) {
             // add custom recipes to Bukkit
             if (b.allowCraftWithCustomRecipe) {
                 try {
                     Bukkit.addRecipe(parseRecipe(b));
                     recipes.add(getNamespacedKeyForBlock(b));
                 } catch (IllegalStateException e) {
-                    NullaeOutpost.getPluginLogger().warning("Reloading custom recipes does not work right now, you have to restart the server for updated recipes.");
+                    Outpost.getPluginLogger().warning("Reloading custom recipes does not work right now, you have to restart the server for updated recipes.");
                 }
             }
         }
@@ -55,7 +55,7 @@ public class RecipeUtil {
         while (iter.hasNext()) {
             try {
                 Recipe r = iter.next();
-                if (r instanceof ShapedRecipe && (((ShapedRecipe) r).getKey().getNamespace().equalsIgnoreCase(NullaeOutpost.getInstance().getName()))) {
+                if (r instanceof ShapedRecipe && (((ShapedRecipe) r).getKey().getNamespace().equalsIgnoreCase(Outpost.getInstance().getName()))) {
                     iter.remove();
                 }
             } catch (Exception ignored) {
@@ -68,11 +68,11 @@ public class RecipeUtil {
         return recipes;
     }
 
-    public static NamespacedKey getNamespacedKeyForBlock(NOProtectBlock block) {
-        return new NamespacedKey(NullaeOutpost.getInstance(), block.type.replaceAll("[+/=:]", ""));
+    public static NamespacedKey getNamespacedKeyForBlock(OutpostProtectBlock block) {
+        return new NamespacedKey(Outpost.getInstance(), block.type.replaceAll("[+/=:]", ""));
     }
 
-    public static ShapedRecipe parseRecipe(NOProtectBlock block) {
+    public static ShapedRecipe parseRecipe(OutpostProtectBlock block) {
         // create item
         ItemStack item = block.createItem();
         item.setAmount(block.recipeAmount);
@@ -110,15 +110,15 @@ public class RecipeUtil {
 
                 // format PROTECTION_STONES:alias
                 String alias = mat.substring(mat.indexOf(":") + 1);
-                NOProtectBlock use = NullaeOutpost.getProtectBlockFromAlias(alias);
+                OutpostProtectBlock use = Outpost.getProtectBlockFromAlias(alias);
                 if (use != null && use.createItem() != null) {
                     recipe.setIngredient(items.get(mat), new RecipeChoice.ExactChoice(use.createItem()));
                 } else {
-                    NullaeOutpost.getPluginLogger().warning("Unable to resolve material " + mat + " for the crafting recipe for " + block.alias + ".");
+                    Outpost.getPluginLogger().warning("Unable to resolve material " + mat + " for the crafting recipe for " + block.alias + ".");
                 }
 
             } else {
-                NullaeOutpost.getPluginLogger().warning("Unable to find material " + mat + " for the crafting recipe for " + block.alias + ".");
+                Outpost.getPluginLogger().warning("Unable to find material " + mat + " for the crafting recipe for " + block.alias + ".");
             }
         }
 

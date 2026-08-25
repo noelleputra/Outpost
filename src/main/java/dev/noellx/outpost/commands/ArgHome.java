@@ -63,15 +63,15 @@ public class ArgHome implements NOCommandArg {
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         if (!(sender instanceof Player p)) return null;
-        NOPlayer psp = NOPlayer.fromPlayer(p);
+        OutpostPlayer psp = OutpostPlayer.fromPlayer(p);
 
         if (args.length == 2) {
 
             // add to cache if not already
             if (tabCache.get(p.getUniqueId()) == null) {
-                List<NORegion> regions = psp.getHomes(p.getWorld());
+                List<OutpostRegion> regions = psp.getHomes(p.getWorld());
                 List<String> regionNames = new ArrayList<>();
-                for (NORegion r : regions) {
+                for (OutpostRegion r : regions) {
                     if (r.getName() != null) {
                         regionNames.add(r.getName());
                     } else {
@@ -81,7 +81,7 @@ public class ArgHome implements NOCommandArg {
                 // cache home regions
                 tabCache.put(p.getUniqueId(), regionNames);
 
-                Bukkit.getScheduler().runTaskLater(NullaeOutpost.getInstance(), () -> {
+                Bukkit.getScheduler().runTaskLater(Outpost.getInstance(), () -> {
                     tabCache.remove(p.getUniqueId());
                 }, 200); // remove cache after 10 seconds
             }
@@ -93,9 +93,9 @@ public class ArgHome implements NOCommandArg {
 
     private static final int GUI_SIZE = 17;
 
-    private void openHomeGUI(NOPlayer psp, List<NORegion> homes, int page) {
+    private void openHomeGUI(OutpostPlayer psp, List<OutpostRegion> homes, int page) {
         List<TextComponent> entries = new ArrayList<>();
-        for (NORegion r : homes) {
+        for (OutpostRegion r : homes) {
             String msg;
             if (r.getName() == null) {
                 msg = ChatColor.GRAY + "> " + ChatColor.AQUA + r.getId();
@@ -103,19 +103,19 @@ public class ArgHome implements NOCommandArg {
                 msg = ChatColor.GRAY + "> " + ChatColor.AQUA + r.getName() + " (" + r.getId() + ")";
             }
             TextComponent tc = new TextComponent(msg);
-            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(NOL.HOME_CLICK_TO_TP.msg()).create()));
+            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(OutpostL.HOME_CLICK_TO_TP.msg()).create()));
             if (r.getName() == null) {
-                tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + NullaeOutpost.getInstance().getConfigOptions().base_command + " home " + r.getId()));
+                tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + Outpost.getInstance().getConfigOptions().base_command + " home " + r.getId()));
             } else {
-                tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + NullaeOutpost.getInstance().getConfigOptions().base_command + " home " + r.getName()));
+                tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + Outpost.getInstance().getConfigOptions().base_command + " home " + r.getName()));
             }
             entries.add(tc);
         }
 
-        TextGUI.displayGUI(psp.getPlayer(), NOL.HOME_HEADER.msg(), "/" + NullaeOutpost.getInstance().getConfigOptions().base_command + " home -p %page%", page, GUI_SIZE, entries, true);
+        TextGUI.displayGUI(psp.getPlayer(), OutpostL.HOME_HEADER.msg(), "/" + Outpost.getInstance().getConfigOptions().base_command + " home -p %page%", page, GUI_SIZE, entries, true);
 
         if (page * GUI_SIZE + GUI_SIZE < entries.size())
-            NOL.msg(psp, NOL.HOME_NEXT.msg().replace("%page%", page + 2 + ""));
+            OutpostL.msg(psp, OutpostL.HOME_NEXT.msg().replace("%page%", page + 2 + ""));
     }
 
     @Override
@@ -124,16 +124,16 @@ public class ArgHome implements NOCommandArg {
 
         // prelim checks
         if (!p.hasPermission("NullaeOutpost.home"))
-            return NOL.msg(p, NOL.NO_PERMISSION_HOME.msg());
+            return OutpostL.msg(p, OutpostL.NO_PERMISSION_HOME.msg());
 
         if (args.length != 2 && args.length != 1)
-            return NOL.msg(p, NOL.HOME_HELP.msg());
+            return OutpostL.msg(p, OutpostL.HOME_HELP.msg());
 
-        Bukkit.getScheduler().runTaskAsynchronously(NullaeOutpost.getInstance(), () -> {
-            NOPlayer psp = NOPlayer.fromPlayer(p);
+        Bukkit.getScheduler().runTaskAsynchronously(Outpost.getInstance(), () -> {
+            OutpostPlayer psp = OutpostPlayer.fromPlayer(p);
             if (args.length == 1) {
                 // just "/no home"
-                List<NORegion> regions = psp.getHomes(p.getWorld());
+                List<OutpostRegion> regions = psp.getHomes(p.getWorld());
                 if (regions.size() == 1) { // teleport to home if there is only one home
                     ArgTp.teleportPlayer(p, regions.get(0));
                 } else { // otherwise, open the GUI
@@ -142,14 +142,14 @@ public class ArgHome implements NOCommandArg {
             } else {// /no home [id]
                 // get regions from the query
                 String query = args[1];
-                List<NORegion> regions = psp.getHomes(p.getWorld())
+                List<OutpostRegion> regions = psp.getHomes(p.getWorld())
                         .stream()
                         .filter(region -> region.getId().equals(query)
                                 || (region.getName() != null && region.getName().equals(query)))
                         .collect(Collectors.toList());
 
                 if (regions.isEmpty()) {
-                    NOL.msg(s, NOL.REGION_DOES_NOT_EXIST.msg());
+                    OutpostL.msg(s, OutpostL.REGION_DOES_NOT_EXIST.msg());
                     return;
                 }
 

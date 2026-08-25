@@ -94,7 +94,7 @@ public class FlagHandler {
     }
 
     // Add the correct flags for the no region
-    static void initCustomFlagsForNO(ProtectedRegion region, Location l, NOProtectBlock cpb) {
+    static void initCustomFlagsForNO(ProtectedRegion region, Location l, OutpostProtectBlock cpb) {
         String home = l.getBlockX() + cpb.homeXOffset + " ";
         home += (l.getBlockY() + cpb.homeYOffset) + " ";
         home += (l.getBlockZ() + cpb.homeZOffset);
@@ -114,7 +114,7 @@ public class FlagHandler {
                 String s = (String) flags.get(f);
 
                 // apply placeholders
-                if (NullaeOutpost.getInstance().isPlaceholderAPISupportEnabled()) {
+                if (Outpost.getInstance().isPlaceholderAPISupportEnabled()) {
                     s = PlaceholderAPI.setPlaceholders(p, s);
                 }
                 flags.put(f, s == null ? "" : s.replaceAll("%player%", p.getName()));
@@ -124,7 +124,7 @@ public class FlagHandler {
 
     // Initializes user defined default flags for block
     // also initializes allowed flags list
-    static void initDefaultFlagsForBlock(NOProtectBlock b) {
+    static void initDefaultFlagsForBlock(OutpostProtectBlock b) {
         // initialize allowed flags list
         b.allowedFlags = new LinkedHashMap<>();
         for (String f : b.allowedFlagsRaw) {
@@ -142,7 +142,7 @@ public class FlagHandler {
                     b.allowedFlags.put(f, FLAG_GROUNO);
                 }
             } catch (Exception e) {
-                NullaeOutpost.getInstance().getLogger().warning("Skipping flag " + f + ". Did you configure the allowed_flags section correctly?");
+                Outpost.getInstance().getLogger().warning("Skipping flag " + f + ". Did you configure the allowed_flags section correctly?");
                 e.printStackTrace();
             }
         }
@@ -185,7 +185,7 @@ public class FlagHandler {
 
                 // warn if flag setting has already been set
                 if (b.regionFlags.containsKey(flag)) {
-                    NullaeOutpost.getPluginLogger().warning(String.format("Duplicate default flags found (only one flag setting can be applied for each flag)! Overwriting the previous value set for %s with \"%s\" ...", flagName, flagraw));
+                    Outpost.getPluginLogger().warning(String.format("Duplicate default flags found (only one flag setting can be applied for each flag)! Overwriting the previous value set for %s with \"%s\" ...", flagName, flagraw));
                 }
 
                 // apply flag
@@ -195,7 +195,7 @@ public class FlagHandler {
 
                     RegionGroup rGroup = flag.getRegionGroupFlag().detectValue(group);
                     if (rGroup == null) {
-                        NullaeOutpost.getPluginLogger().severe(String.format("Error parsing flag \"%s\", the group value is invalid!", flagraw));
+                        Outpost.getPluginLogger().severe(String.format("Error parsing flag \"%s\", the group value is invalid!", flagraw));
                         continue;
                     }
 
@@ -207,7 +207,7 @@ public class FlagHandler {
                 }
 
             } catch (Exception e) {
-                NullaeOutpost.getPluginLogger().warning("Error parsing flag: " + split[0] + "\nError: ");
+                Outpost.getPluginLogger().warning("Error parsing flag: " + split[0] + "\nError: ");
                 e.printStackTrace();
             }
         }

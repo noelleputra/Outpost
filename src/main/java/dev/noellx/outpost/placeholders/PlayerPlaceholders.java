@@ -21,10 +21,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import dev.noellx.outpost.NOPlayer;
-import dev.noellx.outpost.NOProtectBlock;
-import dev.noellx.outpost.NORegion;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostPlayer;
+import dev.noellx.outpost.OutpostProtectBlock;
+import dev.noellx.outpost.OutpostRegion;
+import dev.noellx.outpost.Outpost;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ class PlayerPlaceholders {
 
     static String resolvePlayer(Player p, String identifier) {
         if (p == null) return "";
-        NOPlayer psp = NOPlayer.fromPlayer(p);
+        OutpostPlayer psp = OutpostPlayer.fromPlayer(p);
 
         if (identifier.equals("currentplayer_global_region_limit")) {
 
@@ -47,7 +47,7 @@ class PlayerPlaceholders {
         } else if (identifier.startsWith("currentplayer_region_limit_")) {
 
             String alias = identifier.substring("currentplayer_region_limit_".length());
-            List<Map.Entry<NOProtectBlock, Integer>> l = psp.getRegionLimits()
+            List<Map.Entry<OutpostProtectBlock, Integer>> l = psp.getRegionLimits()
                     .entrySet()
                     .stream()
                     .filter(e -> e.getKey().alias.equals(alias))
@@ -105,13 +105,13 @@ class PlayerPlaceholders {
 
         } else if (identifier.startsWith("currentplayer_protection_placing_enabled")) {
 
-            return NullaeOutpost.toggleList.contains(p.getUniqueId()) + "";
+            return Outpost.toggleList.contains(p.getUniqueId()) + "";
 
         }
         return "";
     }
 
-    private static String getRegionsString(List<NORegion> regions, boolean useNamesIfPossible) {
+    private static String getRegionsString(List<OutpostRegion> regions, boolean useNamesIfPossible) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < regions.size(); i++) {
 

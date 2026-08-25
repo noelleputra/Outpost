@@ -25,33 +25,33 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Represents a region that exists but is a group of merged {@link NOStandardRegion}s.
- * Contains multiple {@link NOMergedRegion} representing the individual merged regions (which don't technically exist in WorldGuard).
+ * Represents a region that exists but is a group of merged {@link OutpostStandardRegion}s.
+ * Contains multiple {@link OutpostMergedRegion} representing the individual merged regions (which don't technically exist in WorldGuard).
  */
 
-public class NOGroupRegion extends NOStandardRegion {
-    NOGroupRegion(ProtectedRegion wgregion, RegionManager rgmanager, World world) {
+public class OutpostGroupRegion extends OutpostStandardRegion {
+    OutpostGroupRegion(ProtectedRegion wgregion, RegionManager rgmanager, World world) {
         super(wgregion, rgmanager, world);
         assert getWGRegion().getFlag(FlagHandler.NO_MERGED_REGIONS) != null;
     }
 
     @Override
     public boolean hide() {
-        for (NOMergedRegion r : getMergedRegions()) r.hide();
+        for (OutpostMergedRegion r : getMergedRegions()) r.hide();
         return true;
     }
 
     @Override
     public boolean unhide() {
-        for (NOMergedRegion r : getMergedRegions()) r.unhide();
+        for (OutpostMergedRegion r : getMergedRegions()) r.unhide();
         return true;
     }
 
     @Override
     public boolean deleteRegion(boolean deleteBlock, Player cause) {
-        List<NOMergedRegion> l = getMergedRegions();
+        List<OutpostMergedRegion> l = getMergedRegions();
         if (super.deleteRegion(deleteBlock, cause)) {
-            for (NOMergedRegion r : l) {
+            for (OutpostMergedRegion r : l) {
                 if (deleteBlock && !r.isHidden()) {
                     r.getProtectBlock().setType(Material.AIR);
                 }
@@ -66,8 +66,8 @@ public class NOGroupRegion extends NOStandardRegion {
      * Get the merged region whose ID is the same as the group region ID.
      * @return the root region
      */
-    public NOMergedRegion getRootRegion() {
-        for (NOMergedRegion r : getMergedRegions()) {
+    public OutpostMergedRegion getRootRegion() {
+        for (OutpostMergedRegion r : getMergedRegions()) {
             if (r.getId().equals(getId())) return r;
         }
         return null;
@@ -103,26 +103,26 @@ public class NOGroupRegion extends NOStandardRegion {
     }
 
     /**
-     * Get the list of {@link NOMergedRegion} objects of the regions that were merged into this region.
+     * Get the list of {@link OutpostMergedRegion} objects of the regions that were merged into this region.
      * @return the list of regions merged into this region
      */
-    public List<NOMergedRegion> getMergedRegions() {
+    public List<OutpostMergedRegion> getMergedRegions() {
         return getMergedRegionsUnsafe().stream()
                 .filter(r -> r.getTypeOptions() != null)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Get the list of {@link NOMergedRegion} objects of the regions that were merged into this region.
-     * Note: This is unsafe as it includes {@link NOMergedRegion}s that are of types not configured in the config.
+     * Get the list of {@link OutpostMergedRegion} objects of the regions that were merged into this region.
+     * Note: This is unsafe as it includes {@link OutpostMergedRegion}s that are of types not configured in the config.
      * @return the list of regions merged into this region
      */
-    public List<NOMergedRegion> getMergedRegionsUnsafe() {
-        List<NOMergedRegion> l = new ArrayList<>();
+    public List<OutpostMergedRegion> getMergedRegionsUnsafe() {
+        List<OutpostMergedRegion> l = new ArrayList<>();
         for (String line : getWGRegion().getFlag(FlagHandler.NO_MERGED_REGIONS_TYPES)) {
             String[] spl = line.split(" ");
             String id = spl[0], type = spl[1];
-            l.add(new NOMergedRegion(id, this, getWGRegionManager(), getWorld()));
+            l.add(new OutpostMergedRegion(id, this, getWGRegionManager(), getWorld()));
         }
         return l;
     }

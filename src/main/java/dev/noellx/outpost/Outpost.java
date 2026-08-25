@@ -23,7 +23,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import dev.noellx.outpost.commands.ArgHelp;
 import dev.noellx.outpost.commands.NOCommandArg;
-import dev.noellx.outpost.placeholders.NOPlaceholderExpansion;
+import dev.noellx.outpost.placeholders.OutpostPlaceholderExpansion;
 import dev.noellx.outpost.utils.BlockUtil;
 import dev.noellx.outpost.utils.RecipeUtil;
 import dev.noellx.outpost.utils.UUIDCache;
@@ -57,7 +57,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * be accessed through getInstance().
  */
 
-public class NullaeOutpost extends JavaPlugin {
+public class Outpost extends JavaPlugin {
     // change this when the config version goes up
     public static final int CONFIG_VERSION = 16;
 
@@ -67,11 +67,11 @@ public class NullaeOutpost extends JavaPlugin {
     public static CommentedFileConfig config;
 
     private static List<NOCommandArg> commandArgs = new ArrayList<>();
-    private static NullaeOutpost plugin;
+    private static Outpost plugin;
 
     // all configuration file options are stored in here
-    private NOConfig configOptions;
-    static HashMap<String, NOProtectBlock> NullaeOutpostOptions = new HashMap<>();
+    private OutpostConfig configOptions;
+    static HashMap<String, OutpostProtectBlock> NullaeOutpostOptions = new HashMap<>();
 
 
     // no alias to id cache
@@ -147,14 +147,14 @@ public class NullaeOutpost extends JavaPlugin {
     /**
      * @return returns the config options of this instance of NullaeOutpost
      */
-    public NOConfig getConfigOptions() {
+    public OutpostConfig getConfigOptions() {
         return configOptions;
     }
 
     /**
      * @param conf config object to replace current config
      */
-    public void setConfigOptions(NOConfig conf) {
+    public void setConfigOptions(OutpostConfig conf) {
         this.configOptions = conf;
     }
 
@@ -163,9 +163,9 @@ public class NullaeOutpost extends JavaPlugin {
      *
      * @return the list of NOProtectBlocks configured
      */
-    public List<NOProtectBlock> getConfiguredBlocks() {
-        List<NOProtectBlock> l = new ArrayList<>();
-        for (NOProtectBlock b : NullaeOutpostOptions.values()) {
+    public List<OutpostProtectBlock> getConfiguredBlocks() {
+        List<OutpostProtectBlock> l = new ArrayList<>();
+        for (OutpostProtectBlock b : NullaeOutpostOptions.values()) {
             if (!l.contains(b)) l.add(b);
         }
         return l;
@@ -177,7 +177,7 @@ public class NullaeOutpost extends JavaPlugin {
     /**
      * @return the plugin instance that is currently being used
      */
-    public static NullaeOutpost getInstance() {
+    public static Outpost getInstance() {
         return plugin;
     }
 
@@ -195,7 +195,7 @@ public class NullaeOutpost extends JavaPlugin {
      * @return the config options for the protect block specified (null if not found)
      */
 
-    public static NOProtectBlock getBlockOptions(Block block) {
+    public static OutpostProtectBlock getBlockOptions(Block block) {
         if (block == null) return null;
         return getBlockOptions(BlockUtil.getProtectBlockType(block));
     }
@@ -210,7 +210,7 @@ public class NullaeOutpost extends JavaPlugin {
      * @return the config options for the protect item specified (null if not found)
      */
 
-    public static NOProtectBlock getBlockOptions(ItemStack item) {
+    public static OutpostProtectBlock getBlockOptions(ItemStack item) {
         if (!isProtectBlockItem(item)) return null;
         return getBlockOptions(BlockUtil.getProtectBlockType(item));
     }
@@ -222,7 +222,7 @@ public class NullaeOutpost extends JavaPlugin {
      * @param blockType the material type name (Bukkit) of the protect block to get the options for, or "PLAYER_HEAD name" for heads
      * @return the config options for the protect block specified (null if not found)
      */
-    public static NOProtectBlock getBlockOptions(String blockType) {
+    public static OutpostProtectBlock getBlockOptions(String blockType) {
         return NullaeOutpostOptions.get(blockType);
     }
 
@@ -251,7 +251,7 @@ public class NullaeOutpost extends JavaPlugin {
         if (!isProtectBlockType(b)) return false;
         RegionManager rgm = WGUtils.getRegionManagerWithWorld(b.getWorld());
         if (rgm == null) return false;
-        return rgm.getRegion(WGUtils.createNOID(b.getLocation())) != null || NOMergedRegion.getMergedRegion(b.getLocation()) != null;
+        return rgm.getRegion(WGUtils.createNOID(b.getLocation())) != null || OutpostMergedRegion.getMergedRegion(b.getLocation()) != null;
     }
 
     /**
@@ -307,16 +307,16 @@ public class NullaeOutpost extends JavaPlugin {
      * @return a list of psregions that match the id or alias; will be empty if no regions were found
      */
 
-    public static List<NORegion> getNORegions(World w, String identifier) {
+    public static List<OutpostRegion> getNORegions(World w, String identifier) {
         RegionManager rgm = WGUtils.getRegionManagerWithWorld(w);
         if (rgm == null) return new ArrayList<>();
 
-        NORegion r = NORegion.fromWGRegion(w, rgm.getRegion(identifier));
+        OutpostRegion r = OutpostRegion.fromWGRegion(w, rgm.getRegion(identifier));
         if (r != null) { // return id based query
             return new ArrayList<>(Collections.singletonList(r));
         } else { // return alias based query
-            List<NORegion> regions = new ArrayList<>();
-            NORegion.fromName(identifier).values().forEach(regions::addAll);
+            List<OutpostRegion> regions = new ArrayList<>();
+            OutpostRegion.fromName(identifier).values().forEach(regions::addAll);
             return regions;
         }
     }
@@ -331,7 +331,7 @@ public class NullaeOutpost extends JavaPlugin {
      */
 
     public static boolean removeNORegion(World w, String psID) {
-        NORegion r = NORegion.fromWGRegion(checkNotNull(w), checkNotNull(WGUtils.getRegionManagerWithWorld(w).getRegion(psID)));
+        OutpostRegion r = OutpostRegion.fromWGRegion(checkNotNull(w), checkNotNull(WGUtils.getRegionManagerWithWorld(w).getRegion(psID)));
         return r != null && r.deleteRegion(false);
     }
 
@@ -346,7 +346,7 @@ public class NullaeOutpost extends JavaPlugin {
      */
 
     public static boolean removeNORegion(World w, String psID, Player cause) {
-        NORegion r = NORegion.fromWGRegion(checkNotNull(w), checkNotNull(WGUtils.getRegionManagerWithWorld(w).getRegion(psID)));
+        OutpostRegion r = OutpostRegion.fromWGRegion(checkNotNull(w), checkNotNull(WGUtils.getRegionManagerWithWorld(w).getRegion(psID)));
         return r != null && r.deleteRegion(false, cause);
     }
 
@@ -357,9 +357,9 @@ public class NullaeOutpost extends JavaPlugin {
      * @return the protect block options, or null if it wasn't found
      */
 
-    public static NOProtectBlock getProtectBlockFromAlias(String name) {
+    public static OutpostProtectBlock getProtectBlockFromAlias(String name) {
         if (name == null) return null;
-        for (NOProtectBlock cpb : NullaeOutpost.NullaeOutpostOptions.values()) {
+        for (OutpostProtectBlock cpb : Outpost.NullaeOutpostOptions.values()) {
             if (cpb.alias.equalsIgnoreCase(name) || cpb.type.equalsIgnoreCase(name)) return cpb;
         }
         return null;
@@ -378,7 +378,7 @@ public class NullaeOutpost extends JavaPlugin {
     public static boolean isProtectBlockItem(ItemStack item, boolean checkNBT) {
         if (item == null) return false;
         // check basic item
-        if (!NullaeOutpost.isProtectBlockType(BlockUtil.getProtectBlockType(item))) return false;
+        if (!Outpost.isProtectBlockType(BlockUtil.getProtectBlockType(item))) return false;
         // check for player heads
         if (!checkNBT) return true; // if not checking nbt, you only need to check type
 
@@ -388,11 +388,11 @@ public class NullaeOutpost extends JavaPlugin {
         if (item.getItemMeta() != null) {
             CustomItemTagContainer tagContainer = item.getItemMeta().getCustomTagContainer();
             try { // check if tag byte is 1
-                Byte isNOBlock = tagContainer.getCustomTag(new NamespacedKey(NullaeOutpost.getInstance(), "isNOBlock"), ItemTagType.BYTE);
+                Byte isNOBlock = tagContainer.getCustomTag(new NamespacedKey(Outpost.getInstance(), "isNOBlock"), ItemTagType.BYTE);
                 tag = isNOBlock != null && isNOBlock == 1;
             } catch (IllegalArgumentException es) {
                 try { // some nbt data may be using a string (legacy nbt from no version 2.0.0 -> 2.0.6)
-                    String isNOBlock = tagContainer.getCustomTag(new NamespacedKey(NullaeOutpost.getInstance(), "isNOBlock"), ItemTagType.STRING);
+                    String isNOBlock = tagContainer.getCustomTag(new NamespacedKey(Outpost.getInstance(), "isNOBlock"), ItemTagType.STRING);
                     tag = isNOBlock != null && isNOBlock.equals("true");
                 } catch (IllegalArgumentException ignored) {
                 }
@@ -413,7 +413,7 @@ public class NullaeOutpost extends JavaPlugin {
 
     public static boolean isProtectBlockItem(ItemStack item) {
         if (item == null) return false;
-        NOProtectBlock b = NullaeOutpost.getBlockOptions(BlockUtil.getProtectBlockType(item));
+        OutpostProtectBlock b = Outpost.getBlockOptions(BlockUtil.getProtectBlockType(item));
         if (b == null) return false;
         return isProtectBlockItem(item, b.restrictObtaining);
     }
@@ -425,7 +425,7 @@ public class NullaeOutpost extends JavaPlugin {
      * @return the item with NBT and other metadata to signify that it was created by protection stones
      */
 
-    public static ItemStack createProtectBlockItem(NOProtectBlock b) {
+    public static ItemStack createProtectBlockItem(OutpostProtectBlock b) {
         ItemStack is = BlockUtil.getProtectBlockItemFromType(b.type);
 
         // add enchant effect if enabled
@@ -473,10 +473,10 @@ public class NullaeOutpost extends JavaPlugin {
         RecipeUtil.removeNORecipes();
 
         // init config
-        NOConfig.initConfig();
+        OutpostConfig.initConfig();
 
         // init messages
-        NOL.loadConfig();
+        OutpostL.loadConfig();
 
         // init help menu
         ArgHelp.initHelpMenu();
@@ -488,14 +488,14 @@ public class NullaeOutpost extends JavaPlugin {
                 bukkitCommandMap.setAccessible(true);
                 CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
 
-                NOCommand psc = new NOCommand(getInstance().configOptions.base_command);
+                OutpostCommand psc = new OutpostCommand(getInstance().configOptions.base_command);
                 for (String command : getInstance().configOptions.aliases) { // add aliases
                     psc.getAliases().add(command);
                 }
                 commandMap.register(getInstance().configOptions.base_command, psc); // register command
 
             } catch (Exception | NoSuchMethodError e) {
-                NullaeOutpost.getPluginLogger().severe("Unable to load plugin commands!");
+                Outpost.getPluginLogger().severe("Unable to load plugin commands!");
                 e.printStackTrace();
             }
 
@@ -520,7 +520,7 @@ public class NullaeOutpost extends JavaPlugin {
         blockDataFolder = new File(this.getDataFolder() + "/blocks");
 
         // load command arguments
-        NOCommand.addDefaultArguments();
+        OutpostCommand.addDefaultArguments();
 
         // register event listeners
         getServer().getPluginManager().registerEvents(new ListenerClass(), this);
@@ -535,7 +535,7 @@ public class NullaeOutpost extends JavaPlugin {
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null && getServer().getPluginManager().getPlugin("PlaceholderAPI").isEnabled()) {
             getLogger().info("PlaceholderAPI support enabled!");
             placeholderAPISupportEnabled = true;
-            new NOPlaceholderExpansion().register();
+            new OutpostPlaceholderExpansion().register();
         } else {
             placeholderAPISupportEnabled = false;
             getLogger().info("PlaceholderAPI not found! There will be no PlaceholderAPI support.");

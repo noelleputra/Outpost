@@ -18,9 +18,9 @@ package dev.noellx.outpost.commands;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NORegion;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.OutpostRegion;
+import dev.noellx.outpost.Outpost;
 import dev.noellx.outpost.utils.WGUtils;
 
 import org.bukkit.Bukkit;
@@ -39,32 +39,32 @@ class ArgAdminHide {
             w = ((Player) p).getWorld();
         } else {
             if (args.length != 3) {
-                NOL.msg(p, NOL.ADMIN_CONSOLE_WORLD.msg());
+                OutpostL.msg(p, OutpostL.ADMIN_CONSOLE_WORLD.msg());
                 return true;
             }
             if (Bukkit.getWorld(args[2]) == null) {
-                NOL.msg(p, NOL.INVALID_WORLD.msg());
+                OutpostL.msg(p, OutpostL.INVALID_WORLD.msg());
                 return true;
             }
             w = Bukkit.getWorld(args[2]);
             mgr = WGUtils.getRegionManagerWithWorld(w);
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(NullaeOutpost.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Outpost.getInstance(), () -> {
             // loop through regions that are protection stones and hide or unhide the block
             for (ProtectedRegion r : mgr.getRegions().values()) {
-                if (NullaeOutpost.isNORegion(r)) {
-                    NORegion region = NORegion.fromWGRegion(w, r);
+                if (Outpost.isNORegion(r)) {
+                    OutpostRegion region = OutpostRegion.fromWGRegion(w, r);
                     if (args[1].equalsIgnoreCase("hide")) {
-                        Bukkit.getScheduler().runTask(NullaeOutpost.getInstance(), region::hide);
+                        Bukkit.getScheduler().runTask(Outpost.getInstance(), region::hide);
                     } else if (args[1].equalsIgnoreCase("unhide")){
-                        Bukkit.getScheduler().runTask(NullaeOutpost.getInstance(), region::unhide);
+                        Bukkit.getScheduler().runTask(Outpost.getInstance(), region::unhide);
                     }
                 }
             }
 
             String hMessage = args[1].equalsIgnoreCase("unhide") ? "unhidden" : "hidden";
-            NOL.msg(p, NOL.ADMIN_HIDE_TOGGLED.msg()
+            OutpostL.msg(p, OutpostL.ADMIN_HIDE_TOGGLED.msg()
                     .replace("%message%", hMessage));
         });
 

@@ -57,42 +57,42 @@ public class ArgView implements NOCommandArg {
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         Player p = (Player) s;
 
-        NORegion r = NORegion.fromLocationGroup(p.getLocation());
+        OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
 
         if (!p.hasPermission("NullaeOutpost.view")) {
-            NOL.msg(p, NOL.NO_PERMISSION_VIEW.msg());
+            OutpostL.msg(p, OutpostL.NO_PERMISSION_VIEW.msg());
             return true;
         }
         if (r == null) {
-            NOL.msg(p, NOL.NOT_IN_REGION.msg());
+            OutpostL.msg(p, OutpostL.NOT_IN_REGION.msg());
             return true;
         }
         if (!p.hasPermission("NullaeOutpost.view.others") && WGUtils.hasNoAccess(r.getWGRegion(), p, WorldGuardPlugin.inst().wrapPlayer(p), true)) {
-            NOL.msg(p, NOL.NO_ACCESS.msg());
+            OutpostL.msg(p, OutpostL.NO_ACCESS.msg());
             return true;
         }
         if (cooldown.contains(p.getUniqueId())) {
-            NOL.msg(p, NOL.VIEW_COOLDOWN.msg());
+            OutpostL.msg(p, OutpostL.VIEW_COOLDOWN.msg());
             return true;
         }
 
-        NOL.msg(p, NOL.VIEW_GENERATING.msg());
+        OutpostL.msg(p, OutpostL.VIEW_GENERATING.msg());
 
         // add player to cooldown
         cooldown.add(p.getUniqueId());
-        Bukkit.getScheduler().runTaskLaterAsynchronously(NullaeOutpost.getInstance(), () -> cooldown.remove(p.getUniqueId()), 20 * NullaeOutpost.getInstance().getConfigOptions().psViewCooldown);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Outpost.getInstance(), () -> cooldown.remove(p.getUniqueId()), 20 * Outpost.getInstance().getConfigOptions().psViewCooldown);
 
         int playerY = p.getLocation().getBlockY(), minY = r.getWGRegion().getMinimumPoint().getBlockY(), maxY = r.getWGRegion().getMaximumPoint().getBlockY();
 
         // send particles to client
 
-        Bukkit.getScheduler().runTaskAsynchronously(NullaeOutpost.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Outpost.getInstance(), () -> {
 
             AtomicInteger modU = new AtomicInteger(0);
 
-            if (r instanceof NOGroupRegion) {
-                NOGroupRegion pr = (NOGroupRegion) r;
-                for (NOMergedRegion psmr : pr.getMergedRegions()) {
+            if (r instanceof OutpostGroupRegion) {
+                OutpostGroupRegion pr = (OutpostGroupRegion) r;
+                for (OutpostMergedRegion psmr : pr.getMergedRegions()) {
                     handlePurpleParticle(p, new Location(p.getWorld(), 0.5 + psmr.getProtectBlock().getX(), 1.5 + psmr.getProtectBlock().getY(), 0.5 + psmr.getProtectBlock().getZ()));
                     for (int y = minY; y <= maxY; y += 10) {
                         handlePurpleParticle(p, new Location(p.getWorld(), 0.5 + psmr.getProtectBlock().getX(), 0.5 + y, 0.5 + psmr.getProtectBlock().getZ()));

@@ -20,7 +20,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-import dev.noellx.outpost.event.NORemoveEvent;
+import dev.noellx.outpost.event.OutpostRemoveEvent;
 import dev.noellx.outpost.utils.WGMerge;
 import dev.noellx.outpost.utils.WGUtils;
 
@@ -41,15 +41,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents an instance of a NO region that has been merged into another region. There is no actual WG region that
- * this contains, and instead takes properties from its parent region (see {@link NOGroupRegion}).
+ * this contains, and instead takes properties from its parent region (see {@link OutpostGroupRegion}).
  */
 
-public class NOMergedRegion extends NORegion {
+public class OutpostMergedRegion extends OutpostRegion {
 
-    private NOGroupRegion mergedGroup;
+    private OutpostGroupRegion mergedGroup;
     private String id, type;
 
-    NOMergedRegion(String id, NOGroupRegion mergedGroup, RegionManager rgmanager, World world) {
+    OutpostMergedRegion(String id, OutpostGroupRegion mergedGroup, RegionManager rgmanager, World world) {
         super(rgmanager, world); // null checks are in super constructor
         this.id = checkNotNull(id);
         this.mergedGroup = checkNotNull(mergedGroup);
@@ -69,12 +69,12 @@ public class NOMergedRegion extends NORegion {
     // ~~~~~~~~~~~ static ~~~~~~~~~~~~~~~~
 
     /**
-     * Finds the {@link NOMergedRegion} at a location if the block at that location is the source protection block for it.
+     * Finds the {@link OutpostMergedRegion} at a location if the block at that location is the source protection block for it.
      *
      * @param l location to look at
-     * @return the {@link NOMergedRegion} of the source block location, or null if not applicable
+     * @return the {@link OutpostMergedRegion} of the source block location, or null if not applicable
      */
-    public static NOMergedRegion getMergedRegion(Location l) {
+    public static OutpostMergedRegion getMergedRegion(Location l) {
         String psID = WGUtils.createNOID(l);
         RegionManager rgm = WGUtils.getRegionManagerWithWorld(l.getWorld());
         if (rgm == null) return null;
@@ -83,7 +83,7 @@ public class NOMergedRegion extends NORegion {
             // if the region has the merged region
             Set<String> mergedIds = pr.getFlag(FlagHandler.NO_MERGED_REGIONS);
             if (mergedIds != null && mergedIds.contains(psID)) {
-                return new NOMergedRegion(psID, new NOGroupRegion(pr, rgm, l.getWorld()), rgm, l.getWorld());
+                return new OutpostMergedRegion(psID, new OutpostGroupRegion(pr, rgm, l.getWorld()), rgm, l.getWorld());
             }
         }
 
@@ -97,7 +97,7 @@ public class NOMergedRegion extends NORegion {
      *
      * @return the group region
      */
-    public NOGroupRegion getGroupRegion() {
+    public OutpostGroupRegion getGroupRegion() {
         return mergedGroup;
     }
 
@@ -117,12 +117,12 @@ public class NOMergedRegion extends NORegion {
     }
 
     @Override
-    public void setParent(NORegion r) throws ProtectedRegion.CircularInheritanceException {
+    public void setParent(OutpostRegion r) throws ProtectedRegion.CircularInheritanceException {
         mergedGroup.setParent(r);
     }
 
     @Override
-    public NORegion getParent() {
+    public OutpostRegion getParent() {
         return mergedGroup.getParent();
     }
 
@@ -143,13 +143,13 @@ public class NOMergedRegion extends NORegion {
 
     @Override
     public Block getProtectBlock() {
-        NOLocation psl = WGUtils.parseNORegionToLocation(id);
+        OutspotLocation psl = WGUtils.parseNORegionToLocation(id);
         return world.getBlockAt(psl.x, psl.y, psl.z);
     }
 
     @Override
-    public NOProtectBlock getTypeOptions() {
-        return NullaeOutpost.getBlockOptions(getType());
+    public OutpostProtectBlock getTypeOptions() {
+        return Outpost.getBlockOptions(getType());
     }
 
     @Override
@@ -158,7 +158,7 @@ public class NOMergedRegion extends NORegion {
     }
 
     @Override
-    public void setType(NOProtectBlock type) {
+    public void setType(OutpostProtectBlock type) {
 
         super.setType(type);
 
@@ -228,7 +228,7 @@ public class NOMergedRegion extends NORegion {
     }
 
     @Override
-    public List<NORegion> getMergeableRegions(Player p) {
+    public List<OutpostRegion> getMergeableRegions(Player p) {
         return mergedGroup.getMergeableRegions(p);
     }
 
@@ -239,7 +239,7 @@ public class NOMergedRegion extends NORegion {
 
     @Override
     public boolean deleteRegion(boolean deleteBlock, Player cause) {
-        NORemoveEvent event = new NORemoveEvent(this, cause);
+        OutpostRemoveEvent event = new OutpostRemoveEvent(this, cause);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) { // if event was cancelled, prevent execution
             return false;

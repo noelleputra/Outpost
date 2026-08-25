@@ -17,8 +17,8 @@ package dev.noellx.outpost.commands;
 
 import org.bukkit.command.CommandSender;
 
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.Outpost;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,12 +52,12 @@ public class ArgReload implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender p, String[] args, HashMap<String, String> flags) {
         if (!p.hasPermission("NullaeOutpost.admin")) {
-            NOL.msg(p, NOL.NO_PERMISSION_ADMIN.msg());
+            OutpostL.msg(p, OutpostL.NO_PERMISSION_ADMIN.msg());
             return true;
         }
-        NOL.msg(p, NOL.RELOAD_START.msg());
-        NullaeOutpost.loadConfig(true);
-        NOL.msg(p, NOL.RELOAD_COMPLETE.msg());
+        OutpostL.msg(p, OutpostL.RELOAD_START.msg());
+        Outpost.loadConfig(true);
+        OutpostL.msg(p, OutpostL.RELOAD_COMPLETE.msg());
         return true;
     }
 

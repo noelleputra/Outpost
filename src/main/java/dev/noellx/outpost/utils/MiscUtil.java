@@ -22,7 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.Outpost;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -88,7 +88,7 @@ public class MiscUtil {
     }
 
     public static List<String> getLuckPermsUserPermissions(UUID uniqueId) throws ExecutionException, InterruptedException {
-        UserManager userManager = NullaeOutpost.getInstance().getLuckPerms().getUserManager();
+        UserManager userManager = Outpost.getInstance().getLuckPerms().getUserManager();
         User user = userManager.loadUser(uniqueId).get();
 
         List<String> permissions = new ArrayList<>();

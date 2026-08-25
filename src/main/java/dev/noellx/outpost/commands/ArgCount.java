@@ -20,10 +20,10 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import dev.noellx.outpost.NOGroupRegion;
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NOPlayer;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostGroupRegion;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.OutpostPlayer;
+import dev.noellx.outpost.Outpost;
 import dev.noellx.outpost.utils.UUIDCache;
 
 import java.util.*;
@@ -34,11 +34,11 @@ public class ArgCount implements NOCommandArg {
     static int[] countRegionsOfPlayer(UUID uuid, World w) {
         int[] count = {0, 0}; // total, including merged
 
-        NOPlayer psp = NOPlayer.fromUUID(uuid);
+        OutpostPlayer psp = OutpostPlayer.fromUUID(uuid);
         psp.getNORegions(w, false).forEach(r -> {
             count[0]++;
-            if (r instanceof NOGroupRegion) {
-                count[1] += ((NOGroupRegion) r).getMergedRegions().size();
+            if (r instanceof OutpostGroupRegion) {
+                count[1] += ((OutpostGroupRegion) r).getMergedRegions().size();
             }
         });
 
@@ -69,45 +69,45 @@ public class ArgCount implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         Player p = (Player) s;
-        Bukkit.getScheduler().runTaskAsynchronously(NullaeOutpost.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Outpost.getInstance(), () -> {
             int[] count;
 
             if (args.length == 1) {
                 if (!p.hasPermission("NullaeOutpost.count")) {
-                    NOL.msg(p, NOL.NO_PERMISSION_COUNT.msg());
+                    OutpostL.msg(p, OutpostL.NO_PERMISSION_COUNT.msg());
                     return;
                 }
 
                 count = countRegionsOfPlayer(p.getUniqueId(), p.getWorld());
-                NOL.msg(p, NOL.PERSONAL_REGION_COUNT.msg().replace("%num%", "" + count[0]));
+                OutpostL.msg(p, OutpostL.PERSONAL_REGION_COUNT.msg().replace("%num%", "" + count[0]));
                 if (count[1] != 0) {
-                    NOL.msg(p, NOL.PERSONAL_REGION_COUNT_MERGED.msg().replace("%num%", ""+count[1]));
+                    OutpostL.msg(p, OutpostL.PERSONAL_REGION_COUNT_MERGED.msg().replace("%num%", ""+count[1]));
                 }
 
             } else if (args.length == 2) {
 
                 if (!p.hasPermission("NullaeOutpost.count.others")) {
-                    NOL.msg(p, NOL.NO_PERMISSION_COUNT_OTHERS.msg());
+                    OutpostL.msg(p, OutpostL.NO_PERMISSION_COUNT_OTHERS.msg());
                     return;
                 }
                 if (!UUIDCache.containsName(args[1])) {
-                    NOL.msg(p, NOL.PLAYER_NOT_FOUND.msg());
+                    OutpostL.msg(p, OutpostL.PLAYER_NOT_FOUND.msg());
                     return;
                 }
 
                 UUID countUuid = UUIDCache.getUUIDFromName(args[1]);
                 count = countRegionsOfPlayer(countUuid, p.getWorld());
 
-                NOL.msg(p, NOL.OTHER_REGION_COUNT.msg()
+                OutpostL.msg(p, OutpostL.OTHER_REGION_COUNT.msg()
                         .replace("%player%", UUIDCache.getNameFromUUID(countUuid))
                         .replace("%num%", "" + count[0]));
                 if (count[1] != 0) {
-                    NOL.msg(p, NOL.OTHER_REGION_COUNT_MERGED.msg()
+                    OutpostL.msg(p, OutpostL.OTHER_REGION_COUNT_MERGED.msg()
                             .replace("%player%", UUIDCache.getNameFromUUID(countUuid))
                             .replace("%num%", "" + count[1]));
                 }
             } else {
-                NOL.msg(p, NOL.COUNT_HELP.msg());
+                OutpostL.msg(p, OutpostL.COUNT_HELP.msg());
             }
         });
         return true;

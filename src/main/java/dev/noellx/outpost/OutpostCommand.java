@@ -28,42 +28,42 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class NOCommand extends Command {
+public class OutpostCommand extends Command {
 
-    NOCommand(String name) {
+    OutpostCommand(String name) {
         super(name);
     }
 
     static void addDefaultArguments() {
-        NullaeOutpost.getInstance().addCommandArgument(new ArgAddRemove());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgAdmin());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgCount());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgFlag());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgGet());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgGive());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgHideUnhide());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgHome());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgInfo());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgList());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgMerge());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgName());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgRegion());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgReload());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgSethome());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgToggle());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgToggle.ArgToggleOn());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgToggle.ArgToggleOff());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgTp());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgUnclaim());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgView());
-        NullaeOutpost.getInstance().addCommandArgument(new ArgHelp());
+        Outpost.getInstance().addCommandArgument(new ArgAddRemove());
+        Outpost.getInstance().addCommandArgument(new ArgAdmin());
+        Outpost.getInstance().addCommandArgument(new ArgCount());
+        Outpost.getInstance().addCommandArgument(new ArgFlag());
+        Outpost.getInstance().addCommandArgument(new ArgGet());
+        Outpost.getInstance().addCommandArgument(new ArgGive());
+        Outpost.getInstance().addCommandArgument(new ArgHideUnhide());
+        Outpost.getInstance().addCommandArgument(new ArgHome());
+        Outpost.getInstance().addCommandArgument(new ArgInfo());
+        Outpost.getInstance().addCommandArgument(new ArgList());
+        Outpost.getInstance().addCommandArgument(new ArgMerge());
+        Outpost.getInstance().addCommandArgument(new ArgName());
+        Outpost.getInstance().addCommandArgument(new ArgRegion());
+        Outpost.getInstance().addCommandArgument(new ArgReload());
+        Outpost.getInstance().addCommandArgument(new ArgSethome());
+        Outpost.getInstance().addCommandArgument(new ArgToggle());
+        Outpost.getInstance().addCommandArgument(new ArgToggle.ArgToggleOn());
+        Outpost.getInstance().addCommandArgument(new ArgToggle.ArgToggleOff());
+        Outpost.getInstance().addCommandArgument(new ArgTp());
+        Outpost.getInstance().addCommandArgument(new ArgUnclaim());
+        Outpost.getInstance().addCommandArgument(new ArgView());
+        Outpost.getInstance().addCommandArgument(new ArgHelp());
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         if (args.length == 1) {
             List<String> l = new ArrayList<>();
-            for (NOCommandArg no : NullaeOutpost.getInstance().getCommandArguments()) {
+            for (NOCommandArg no : Outpost.getInstance().getCommandArguments()) {
                 boolean hasPerm = false;
                 if (no.getPermissionsToExecute() == null) {
                     hasPerm = true;
@@ -79,7 +79,7 @@ public class NOCommand extends Command {
             }
             return StringUtil.copyPartialMatches(args[0], l, new ArrayList<>());
         } else if (args.length >= 2) {
-            for (NOCommandArg no : NullaeOutpost.getInstance().getCommandArguments()) {
+            for (NOCommandArg no : Outpost.getInstance().getCommandArguments()) {
                 for (String arg : no.getNames()) {
                     if (arg.equalsIgnoreCase(args[0])) {
                         return no.tabComplete(sender, alias, args);
@@ -100,7 +100,7 @@ public class NOCommand extends Command {
             }
             return true;
         }
-        for (NOCommandArg command : NullaeOutpost.getInstance().getCommandArguments()) {
+        for (NOCommandArg command : Outpost.getInstance().getCommandArguments()) {
             if (command.getNames().contains(args[0])) {
                 if (command.allowNonPlayersToExecute() || s instanceof Player) {
 
@@ -130,7 +130,7 @@ public class NOCommand extends Command {
             }
         }
 
-        NOL.msg(s, NOL.NO_SUCH_COMMAND.msg());
+        OutpostL.msg(s, OutpostL.NO_SUCH_COMMAND.msg());
         return true;
     }
 }

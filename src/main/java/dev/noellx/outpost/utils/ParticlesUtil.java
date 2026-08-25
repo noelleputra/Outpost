@@ -20,12 +20,12 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.Outpost;
 
 public class ParticlesUtil {
     public static void persistRedstoneParticle(Player p, Location l, Particle.DustOptions d, int occ) {
         for (int i = 0; i < occ; i++) {
-            Bukkit.getScheduler().runTaskLater(NullaeOutpost.getInstance(), () -> {
+            Bukkit.getScheduler().runTaskLater(Outpost.getInstance(), () -> {
                 if (!p.isOnline()) return;
 
                 // Stronger "glow marker" burst

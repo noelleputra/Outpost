@@ -7,7 +7,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import dev.noellx.outpost.NORegion;
+import dev.noellx.outpost.OutpostRegion;
 
 import java.util.Objects;
 
@@ -16,15 +16,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Event that is called when a protection stones block is removed
  */
-public class NOBreakProtectBlockEvent extends Event implements Cancellable {
+public class OutpostBreakProtectBlockEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
-    private NORegion region;
+    private OutpostRegion region;
     private Player player;
     private boolean isCancelled = false;
 
-    public NOBreakProtectBlockEvent(NORegion psr, Player player) {
+    public OutpostBreakProtectBlockEvent(OutpostRegion psr, Player player) {
         this.region = checkNotNull(psr);
         this.player = player;
     }
@@ -52,7 +52,7 @@ public class NOBreakProtectBlockEvent extends Event implements Cancellable {
      *
      * @return The NullaeOutpost region.
      */
-    public NORegion getRegion() {
+    public OutpostRegion getRegion() {
         return region;
     }
 

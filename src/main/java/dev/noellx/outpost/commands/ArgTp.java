@@ -61,18 +61,18 @@ public class ArgTp implements NOCommandArg {
 
         // preliminary checks
         if (!p.hasPermission("NullaeOutpost.tp"))
-            return NOL.msg(p, NOL.NO_PERMISSION_TP.msg());
+            return OutpostL.msg(p, OutpostL.NO_PERMISSION_TP.msg());
 
         if (args.length < 2 || args.length > 3)
-            return NOL.msg(p, NOL.TP_HELP.msg());
+            return OutpostL.msg(p, OutpostL.TP_HELP.msg());
 
         if (args.length == 2) { // /no tp [name/id]
-            Bukkit.getScheduler().runTaskAsynchronously(NullaeOutpost.getInstance(), () -> {
+            Bukkit.getScheduler().runTaskAsynchronously(Outpost.getInstance(), () -> {
                 // get regions from the query
-                List<NORegion> regions = NullaeOutpost.getNORegions(p.getWorld(), args[1]);
+                List<OutpostRegion> regions = Outpost.getNORegions(p.getWorld(), args[1]);
 
                 if (regions.isEmpty()) {
-                    NOL.msg(s, NOL.REGION_DOES_NOT_EXIST.msg());
+                    OutpostL.msg(s, OutpostL.REGION_DOES_NOT_EXIST.msg());
                     return;
                 }
                 if (regions.size() > 1) {
@@ -87,30 +87,30 @@ public class ArgTp implements NOCommandArg {
             try {
                 regionNumber = Integer.parseInt(args[2]);
                 if (regionNumber <= 0) {
-                    return NOL.msg(p, NOL.NUMBER_ABOVE_ZERO.msg());
+                    return OutpostL.msg(p, OutpostL.NUMBER_ABOVE_ZERO.msg());
                 }
             } catch (NumberFormatException e) {
-                return NOL.msg(p, NOL.TP_VALID_NUMBER.msg());
+                return OutpostL.msg(p, OutpostL.TP_VALID_NUMBER.msg());
             }
 
             String tpName = args[1];
             // region checks, and set lp to offline player
             if (!UUIDCache.containsName(tpName)) {
-                return NOL.msg(p, NOL.PLAYER_NOT_FOUND.msg());
+                return OutpostL.msg(p, OutpostL.PLAYER_NOT_FOUND.msg());
             }
             UUID tpUuid = UUIDCache.getUUIDFromName(tpName);
 
             // run region search asynchronously to avoid blocking server thread
-            Bukkit.getScheduler().runTaskAsynchronously(NullaeOutpost.getInstance(), () -> {
-                List<NORegion> regions = NOPlayer.fromUUID(tpUuid).getNORegionsCrossWorld(p.getWorld(), false);
+            Bukkit.getScheduler().runTaskAsynchronously(Outpost.getInstance(), () -> {
+                List<OutpostRegion> regions = OutpostPlayer.fromUUID(tpUuid).getNORegionsCrossWorld(p.getWorld(), false);
 
                 // check if region was found
                 if (regions.isEmpty()) {
-                    NOL.msg(p, NOL.REGION_NOT_FOUND_FOR_PLAYER.msg()
+                    OutpostL.msg(p, OutpostL.REGION_NOT_FOUND_FOR_PLAYER.msg()
                             .replace("%player%", tpName));
                     return;
                 } else if (regionNumber > regions.size()) {
-                    NOL.msg(p, NOL.ONLY_HAS_REGIONS.msg()
+                    OutpostL.msg(p, OutpostL.ONLY_HAS_REGIONS.msg()
                             .replace("%player%", tpName)
                             .replace("%num%", "" + regions.size()));
                     return;
@@ -128,9 +128,9 @@ public class ArgTp implements NOCommandArg {
         return null;
     }
 
-    static void teleportPlayer(Player p, NORegion r) {
+    static void teleportPlayer(Player p, OutpostRegion r) {
         if (r.getTypeOptions() == null) {
-            NOL.msg(p, ChatColor.RED + "This region is problematic, and the block type (" + r.getType() + ") is not configured. Please contact an administrator.");
+            OutpostL.msg(p, ChatColor.RED + "This region is problematic, and the block type (" + r.getType() + ") is not configured. Please contact an administrator.");
             Bukkit.getLogger().info(ChatColor.RED + "This region is problematic, and the block type (" + r.getType() + ") is not configured.");
             return;
         }
@@ -138,19 +138,19 @@ public class ArgTp implements NOCommandArg {
         // teleport player
         if (r.getTypeOptions().tpWaitingSeconds == 0 || p.hasPermission("NullaeOutpost.tp.bypasswait")) {
             // no teleport delay
-            NOL.msg(p, NOL.TPING.msg());
-            Bukkit.getScheduler().runTask(NullaeOutpost.getInstance(), () -> p.teleport(r.getHome())); // run on main thread, not async
+            OutpostL.msg(p, OutpostL.TPING.msg());
+            Bukkit.getScheduler().runTask(Outpost.getInstance(), () -> p.teleport(r.getHome())); // run on main thread, not async
         } else if (!r.getTypeOptions().noMovingWhenTeleportWaiting) {
             // teleport delay, but doesn't care about moving
-            p.sendMessage(NOL.TP_IN_SECONDS.msg().replace("%seconds%", "" + r.getTypeOptions().tpWaitingSeconds));
+            p.sendMessage(OutpostL.TP_IN_SECONDS.msg().replace("%seconds%", "" + r.getTypeOptions().tpWaitingSeconds));
 
-            Bukkit.getScheduler().runTaskLater(NullaeOutpost.getInstance(), () -> {
-                NOL.msg(p, NOL.TPING.msg());
+            Bukkit.getScheduler().runTaskLater(Outpost.getInstance(), () -> {
+                OutpostL.msg(p, OutpostL.TPING.msg());
                 p.teleport(r.getHome());
             }, 20 * r.getTypeOptions().tpWaitingSeconds);
 
         } else {// delay and not allowed to move
-            NOL.msg(p, NOL.TP_IN_SECONDS.msg().replace("%seconds%", "" + r.getTypeOptions().tpWaitingSeconds));
+            OutpostL.msg(p, OutpostL.TP_IN_SECONDS.msg().replace("%seconds%", "" + r.getTypeOptions().tpWaitingSeconds));
             Location l = p.getLocation().clone();
             UUID uuid = p.getUniqueId();
 
@@ -159,7 +159,7 @@ public class ArgTp implements NOCommandArg {
 
             // add teleport wait tasks to queue
             waitCounter.put(uuid, 0);
-            taskCounter.put(uuid, Bukkit.getScheduler().runTaskTimer(NullaeOutpost.getInstance(), () -> {
+            taskCounter.put(uuid, Bukkit.getScheduler().runTaskTimer(Outpost.getInstance(), () -> {
                         Player pl = Bukkit.getPlayer(uuid);
                         // cancel if the player is not on the server
                         if (pl == null) {
@@ -174,16 +174,16 @@ public class ArgTp implements NOCommandArg {
                         // increment seconds
                         waitCounter.put(uuid, waitCounter.get(uuid) + 1);
 
-                        NullaeOutpost.getInstance().debug(String.format("Checking player movement. Player location: (%.2f, %.2f, %.2f), actual location: (%.2f, %.2f, %.2f)", pl.getLocation().getX(), pl.getLocation().getY(), pl.getLocation().getZ(), l.getX(), l.getY(), l.getZ()));
+                        Outpost.getInstance().debug(String.format("Checking player movement. Player location: (%.2f, %.2f, %.2f), actual location: (%.2f, %.2f, %.2f)", pl.getLocation().getX(), pl.getLocation().getY(), pl.getLocation().getZ(), l.getX(), l.getY(), l.getZ()));
 
                         // if the player moved cancel it
                         if (!inThreshold(l.getX(), pl.getLocation().getX()) || !inThreshold(l.getY(), pl.getLocation().getY()) || !inThreshold(l.getZ(), pl.getLocation().getZ())) {
-                            NullaeOutpost.getInstance().debug(String.format("Not in threshold. X check: %s, Y check: %s, Z check: %s", inThreshold(l.getX(), pl.getLocation().getX()), inThreshold(l.getY(), pl.getLocation().getY()), inThreshold(l.getZ(), pl.getLocation().getZ())));
-                            NOL.msg(pl, NOL.TP_CANCELLED_MOVED.msg());
+                            Outpost.getInstance().debug(String.format("Not in threshold. X check: %s, Y check: %s, Z check: %s", inThreshold(l.getX(), pl.getLocation().getX()), inThreshold(l.getY(), pl.getLocation().getY()), inThreshold(l.getZ(), pl.getLocation().getZ())));
+                            OutpostL.msg(pl, OutpostL.TP_CANCELLED_MOVED.msg());
                             removeUUIDTimer(uuid);
                         } else if (waitCounter.get(uuid) == r.getTypeOptions().tpWaitingSeconds * 4) { // * 4 since this loops 4 times a second
                             // if the timer has passed, teleport and cancel
-                            NOL.msg(pl, NOL.TPING.msg());
+                            OutpostL.msg(pl, OutpostL.TPING.msg());
                             pl.teleport(r.getHome());
                             removeUUIDTimer(uuid);
                         }

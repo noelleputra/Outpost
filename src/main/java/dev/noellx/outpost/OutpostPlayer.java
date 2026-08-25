@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Wrapper for a Bukkit player that exposes NullaeOutpost related methods.
  */
 
-public class NOPlayer {
+public class OutpostPlayer {
 
     // TODO implement
     public enum PlayerRegionRelationship {
@@ -59,8 +59,8 @@ public class NOPlayer {
      * @return the NOPlayer object
      */
 
-    public static NOPlayer fromUUID(UUID uuid) {
-        return new NOPlayer(checkNotNull(uuid));
+    public static OutpostPlayer fromUUID(UUID uuid) {
+        return new OutpostPlayer(checkNotNull(uuid));
     }
 
     /**
@@ -70,24 +70,24 @@ public class NOPlayer {
      * @return the NOPlayer object
      */
 
-    public static NOPlayer fromPlayer(Player p) {
-        return new NOPlayer(checkNotNull(p));
+    public static OutpostPlayer fromPlayer(Player p) {
+        return new OutpostPlayer(checkNotNull(p));
     }
 
-    public static NOPlayer fromPlayer(OfflinePlayer p) {
+    public static OutpostPlayer fromPlayer(OfflinePlayer p) {
         if (checkNotNull(p) instanceof Player) {
-            return new NOPlayer((Player) p);
+            return new OutpostPlayer((Player) p);
         } else {
-            return new NOPlayer(p.getUniqueId());
+            return new OutpostPlayer(p.getUniqueId());
         }
     }
 
-    public NOPlayer(Player player) {
+    public OutpostPlayer(Player player) {
         this.p = player;
         this.uuid = player.getUniqueId();
     }
 
-    public NOPlayer(UUID uuid) {
+    public OutpostPlayer(UUID uuid) {
         this.uuid = uuid;
     }
 
@@ -139,8 +139,8 @@ public class NOPlayer {
      * @return a hashmap containing a psprotectblock object to an integer, which is the number of protection regions of that type the player is allowed to place
      */
 
-    public HashMap<NOProtectBlock, Integer> getRegionLimits() {
-        HashMap<NOProtectBlock, Integer> regionLimits = new HashMap<>();
+    public HashMap<OutpostProtectBlock, Integer> getRegionLimits() {
+        HashMap<OutpostProtectBlock, Integer> regionLimits = new HashMap<>();
 
         List<String> permissions;
 
@@ -148,7 +148,7 @@ public class NOPlayer {
             permissions = getPlayer().getEffectivePermissions().stream().map(PermissionAttachmentInfo::getPermission).collect(Collectors.toList());
         } else if (getOfflinePlayer().getPlayer() != null) {
             permissions = getOfflinePlayer().getPlayer().getEffectivePermissions().stream().map(PermissionAttachmentInfo::getPermission).collect(Collectors.toList());
-        } else if (NullaeOutpost.getInstance().isLuckPermsSupportEnabled()) {
+        } else if (Outpost.getInstance().isLuckPermsSupportEnabled()) {
             // use luckperms to obtain all of an offline player's permissions (vault and spigot api are unable to do this)
             try {
                 permissions = MiscUtil.getLuckPermsUserPermissions(getUuid());
@@ -164,8 +164,8 @@ public class NOPlayer {
             if (perm.startsWith("NullaeOutpost.limit")) {
                 String[] spl = perm.split("\\.");
 
-                if (spl.length == 4 && NullaeOutpost.getProtectBlockFromAlias(spl[2]) != null) {
-                    NOProtectBlock block = NullaeOutpost.getProtectBlockFromAlias(spl[2]);
+                if (spl.length == 4 && Outpost.getProtectBlockFromAlias(spl[2]) != null) {
+                    OutpostProtectBlock block = Outpost.getProtectBlockFromAlias(spl[2]);
                     int limit = Integer.parseInt(spl[3]);
                     if (regionLimits.get(block) == null || regionLimits.get(block) < limit) { // only use max limit
                         regionLimits.put(block, limit);
@@ -186,7 +186,7 @@ public class NOPlayer {
     public int getGlobalRegionLimits() {
         if (getPlayer() != null) {
             return MiscUtil.getPermissionNumber(getPlayer(), "NullaeOutpost.limit.", -1);
-        } else if (NullaeOutpost.getInstance().isLuckPermsSupportEnabled()) {
+        } else if (Outpost.getInstance().isLuckPermsSupportEnabled()) {
             // use LuckPerms to obtain all of an offline player's permissions (vault and spigot api are unable to do this)
             try {
                 List<String> permissions = MiscUtil.getLuckPermsUserPermissions(getUuid());
@@ -209,14 +209,14 @@ public class NOPlayer {
      * @return list of regions that the player owns (or is a part of if canBeMember is true)
      */
 
-    public List<NORegion> getNORegions(World w, boolean canBeMember) {
+    public List<OutpostRegion> getNORegions(World w, boolean canBeMember) {
         RegionManager rgm = WGUtils.getRegionManagerWithWorld(w);
         if (rgm == null) return new ArrayList<>();
 
         return rgm.getRegions().values().stream()
-                .filter(NullaeOutpost::isNORegion)
+                .filter(Outpost::isNORegion)
                 .filter(r -> r.getOwners().contains(uuid) || (canBeMember && r.getMembers().contains(uuid)))
-                .map(r -> NORegion.fromWGRegion(w, r))
+                .map(r -> OutpostRegion.fromWGRegion(w, r))
                 .collect(Collectors.toList());
     }
 
@@ -231,24 +231,24 @@ public class NOPlayer {
      * @return list of regions that the player owns (or is a part of if canBeMember is true)
      */
 
-    public List<NORegion> getNORegionsCrossWorld(World w, boolean canBeMember) {
-        List<NORegion> regions = getNORegions(w, canBeMember);
+    public List<OutpostRegion> getNORegionsCrossWorld(World w, boolean canBeMember) {
+        List<OutpostRegion> regions = getNORegions(w, canBeMember);
         // set entry format: "worldName regionId"
         Set<String> regionIdAdded = regions.stream().map(r -> w.getName() + " " + r.getId()).collect(Collectors.toSet());
 
         // obtain cross-world named worlds
-        NullaeOutpost.regionNameToID.forEach((rw, rs) -> {
+        Outpost.regionNameToID.forEach((rw, rs) -> {
             World world = Bukkit.getWorld(rw);
             RegionManager rm = WGUtils.getRegionManagerWithWorld(world);
             if (rm != null) {
                 rs.values().forEach(rIds -> rIds.forEach(rId -> {
 
                     ProtectedRegion r = rm.getRegion(rId);
-                    if (r != null && r.getOwners().contains(uuid) && NullaeOutpost.isNORegion(r)) {
+                    if (r != null && r.getOwners().contains(uuid) && Outpost.isNORegion(r)) {
                         // check if it has already been added
                         String setId = world.getName() + " " + r.getId();
                         if (!world.getName().equals(w.getName()) || !regionIdAdded.contains(setId)) {
-                            regions.add(NORegion.fromWGRegion(world, r));
+                            regions.add(OutpostRegion.fromWGRegion(world, r));
                             regionIdAdded.add(setId);
                         }
                     }
@@ -268,8 +268,8 @@ public class NOPlayer {
      * @return list of regions that are the player's homes
      */
 
-    public List<NORegion> getHomes(World w) {
-        return getNORegionsCrossWorld(w, NullaeOutpost.getInstance().getConfigOptions().allowHomeTeleportForMembers)
+    public List<OutpostRegion> getHomes(World w) {
+        return getNORegionsCrossWorld(w, Outpost.getInstance().getConfigOptions().allowHomeTeleportForMembers)
                 .stream()
                 .filter(r -> r.getTypeOptions() != null && !r.getTypeOptions().preventPsHome)
                 .collect(Collectors.toList());

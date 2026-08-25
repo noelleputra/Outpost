@@ -22,7 +22,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import dev.noellx.outpost.NOL;
+import dev.noellx.outpost.OutpostL;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class TextGUI {
             return;
         }
 
-        NOL.msg(s, header);
+        OutpostL.msg(s, header);
 
         for (int i = currentPage*guiSize; i < Math.min((currentPage+1) * guiSize, lines.size()); i++) {
             if (sendBlankLines || !lines.get(i).equals(new TextComponent("")))
@@ -45,8 +45,8 @@ public class TextGUI {
 
         // footer page buttons
         TextComponent backPage = new TextComponent(ChatColor.AQUA + " <<"), nextPage = new TextComponent(ChatColor.AQUA + ">> ");
-        backPage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(NOL.GO_BACK_PAGE.msg()).create()));
-        nextPage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(NOL.GO_NEXT_PAGE.msg()).create()));
+        backPage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(OutpostL.GO_BACK_PAGE.msg()).create()));
+        nextPage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(OutpostL.GO_NEXT_PAGE.msg()).create()));
         backPage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, pageCommand.replace("%page%", ""+currentPage)));
         nextPage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, pageCommand.replace("%page%", currentPage+2+"")));
 

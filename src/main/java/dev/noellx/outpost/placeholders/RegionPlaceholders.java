@@ -20,8 +20,8 @@ package dev.noellx.outpost.placeholders;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.Flags;
 
-import dev.noellx.outpost.NORegion;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostRegion;
+import dev.noellx.outpost.Outpost;
 import dev.noellx.outpost.utils.MiscUtil;
 import dev.noellx.outpost.utils.UUIDCache;
 import dev.noellx.outpost.utils.WGUtils;
@@ -38,12 +38,12 @@ class RegionPlaceholders {
         String[] spl = identifier.split("_");
         if (spl.length > 2) {
             String regionIdentifier = spl[1];
-            List<NORegion> r;
+            List<OutpostRegion> r;
             if (p == null) {
                 r = new ArrayList<>();
-                WGUtils.getAllRegionManagers().forEach((w, rgm) -> r.addAll(NullaeOutpost.getNORegions(w, regionIdentifier)));
+                WGUtils.getAllRegionManagers().forEach((w, rgm) -> r.addAll(Outpost.getNORegions(w, regionIdentifier)));
             } else {
-                r = NullaeOutpost.getNORegions(p.getWorld(), regionIdentifier);
+                r = Outpost.getNORegions(p.getWorld(), regionIdentifier);
             }
 
             if (!r.isEmpty()) {
@@ -59,7 +59,7 @@ class RegionPlaceholders {
 
     public static String resolveCurrentRegionPlaceholders(Player p, String identifier) {
         if (p == null) return "";
-        NORegion r = NORegion.fromLocationGroup(p.getLocation());
+        OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
         if (r == null) return "";
 
         if (identifier.startsWith("currentregion_config_")) { // config options for current region
@@ -69,7 +69,7 @@ class RegionPlaceholders {
         }
     }
 
-    public static String resolveRegionPlaceholders(Player p, NORegion r, String identifier) {
+    public static String resolveRegionPlaceholders(Player p, OutpostRegion r, String identifier) {
         if (identifier.equals("owners")) {
             return MiscUtil.concatWithoutLast(r.getOwners().stream().map(UUIDCache::getNameFromUUID).collect(Collectors.toList()), ", ");
         } else if (identifier.equals("members")) {

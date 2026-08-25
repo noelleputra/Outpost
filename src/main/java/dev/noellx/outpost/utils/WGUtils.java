@@ -81,11 +81,11 @@ public class WGUtils {
     }
 
     // Turn WG region name into a location (ex. ps138x35y358z)
-    public static NOLocation parseNORegionToLocation(String regionId) {
+    public static OutspotLocation parseNORegionToLocation(String regionId) {
         int psx = Integer.parseInt(regionId.substring(2, regionId.indexOf("x")));
         int psy = Integer.parseInt(regionId.substring(regionId.indexOf("x") + 1, regionId.indexOf("y")));
         int psz = Integer.parseInt(regionId.substring(regionId.indexOf("y") + 1, regionId.length() - 1));
-        return new NOLocation(psx, psy, psz);
+        return new OutspotLocation(psx, psy, psz);
     }
 
     /**
@@ -111,8 +111,8 @@ public class WGUtils {
         // overlap, you need to increase the edge by one more block for the north and west (2 blocks from region edge).
         for (var edgeRegion : getTransientEdgeRegionsHelper(w, r, true)) {
             for (var region : rgm.getApplicableRegions(edgeRegion).getRegions()) {
-                NORegion psr = NORegion.fromWGRegion(w, region);
-                if (psr instanceof NOGroupRegion) {
+                OutpostRegion psr = OutpostRegion.fromWGRegion(w, region);
+                if (psr instanceof OutpostGroupRegion) {
                     overlappingRegions.add(region);
                 }
             }
@@ -144,8 +144,8 @@ public class WGUtils {
         // overlap, you need to increase the edge by one more block for the north and west (2 blocks from region edge).
         for (var edgeRegion : getTransientEdgeRegionsHelper(w, r, true)) {
             for (var region : edgeRegion.getIntersectingRegions(regionsToCheck)) {
-                NORegion psr = NORegion.fromWGRegion(w, region);
-                if (psr instanceof NOGroupRegion) {
+                OutpostRegion psr = OutpostRegion.fromWGRegion(w, region);
+                if (psr instanceof OutpostGroupRegion) {
                     overlappingRegions.add(region);
                 }
             }
@@ -166,16 +166,16 @@ public class WGUtils {
     private static List<ProtectedRegion> getTransientEdgeRegionsHelper(World w, ProtectedRegion r, boolean oneBlockAdjustHack) {
         ArrayList<ProtectedRegion> toReturn = new ArrayList<>();
 
-        NORegion psr = NORegion.fromWGRegion(w, r);
+        OutpostRegion psr = OutpostRegion.fromWGRegion(w, r);
 
         // note that NOGroupRegion is a subclass of NOStandardRegion, so we need NOGroupRegion check first
-        if (r instanceof ProtectedPolygonalRegion && psr instanceof NOGroupRegion) {
-            NOGroupRegion psgr = (NOGroupRegion) NORegion.fromWGRegion(w, r);
-            for (NOMergedRegion psmr : psgr.getMergedRegions()) {
+        if (r instanceof ProtectedPolygonalRegion && psr instanceof OutpostGroupRegion) {
+            OutpostGroupRegion psgr = (OutpostGroupRegion) OutpostRegion.fromWGRegion(w, r);
+            for (OutpostMergedRegion psmr : psgr.getMergedRegions()) {
                 var testRegion = getDefaultProtectedRegion(psmr.getTypeOptions(), WGUtils.parseNORegionToLocation(psmr.getId()));
                 toReturn.addAll(getTransientEdgeRegionsHelper(w, testRegion, oneBlockAdjustHack));
             }
-        } else if (r instanceof ProtectedCuboidRegion || (psr instanceof NOStandardRegion)) {
+        } else if (r instanceof ProtectedCuboidRegion || (psr instanceof OutpostStandardRegion)) {
             BlockVector3 minPoint = r.getMinimumPoint(), maxPoint = r.getMaximumPoint();
             long minX = minPoint.getX(), maxX = maxPoint.getX(), minY = minPoint.getY(),
                     maxY = maxPoint.getY(), minZ = minPoint.getZ(), maxZ = maxPoint.getZ();
@@ -209,8 +209,8 @@ public class WGUtils {
         for (ProtectedRegion rg : rp.getRegions()) {
             if (rg.getId().equals(r.getId())) continue;
 
-            if (NullaeOutpost.isNORegion(rg)) {
-                NORegion psr = NORegion.fromWGRegion(w, rg);
+            if (Outpost.isNORegion(rg)) {
+                OutpostRegion psr = OutpostRegion.fromWGRegion(w, rg);
 
                 // if no overlap allowed by this region type, even if owner
                 if (psr.getTypeOptions().allowOtherRegionsToOverlap.equals("none")) {
@@ -230,8 +230,8 @@ public class WGUtils {
                 }
 
                 // check NullaeOutpost allow_other_regions_to_overlap settings
-                if (NullaeOutpost.isNORegion(rg)) {
-                    NORegion pr = NORegion.fromWGRegion(w, rg);
+                if (Outpost.isNORegion(rg)) {
+                    OutpostRegion pr = OutpostRegion.fromWGRegion(w, rg);
 
                     // don't need to check for owner, since all of these are unowned regions.
                     if (pr.isMember(lp.getUniqueId()) && pr.getTypeOptions().allowOtherRegionsToOverlap.equals("member")) {
@@ -259,15 +259,15 @@ public class WGUtils {
         RegionManager rgm = WGUtils.getRegionManagerWithWorld(l.getWorld());
         List<String> idList = rgm.getApplicableRegionsIDs(v);
         if (idList.size() == 1) { // if the location is only in one region
-            if (NullaeOutpost.isNORegionFormat(rgm.getRegion(idList.get(0)))) {
+            if (Outpost.isNORegionFormat(rgm.getRegion(idList.get(0)))) {
                 currentNOID = idList.get(0);
             }
         } else {
             // Get the nearest protection stone if in overlapping region
             double distanceToNO = -1, tempToNO;
             for (String currentID : idList) {
-                if (NullaeOutpost.isNORegionFormat(rgm.getRegion(currentID))) {
-                    NOLocation psl = WGUtils.parseNORegionToLocation(currentID);
+                if (Outpost.isNORegionFormat(rgm.getRegion(currentID))) {
+                    OutspotLocation psl = WGUtils.parseNORegionToLocation(currentID);
                     Location psLocation = new Location(l.getWorld(), psl.x, psl.y, psl.z);
                     tempToNO = l.distance(psLocation);
                     if (distanceToNO == -1 || tempToNO < distanceToNO) {
@@ -318,19 +318,19 @@ public class WGUtils {
 
     // get the overlapping sets of groups of regions a player owns
     public static HashMap<String, ArrayList<String>> getPlayerAdjacentRegionGroups(Player p, RegionManager rm) {
-        NOPlayer psp = NOPlayer.fromPlayer(p);
+        OutpostPlayer psp = OutpostPlayer.fromPlayer(p);
 
-        List<NORegion> pRegions = psp.getNORegions(p.getWorld(), false);
+        List<OutpostRegion> pRegions = psp.getNORegions(p.getWorld(), false);
         HashMap<String, String> idToGroup = new HashMap<>();
         HashMap<String, ArrayList<String>> groupToIDs = new HashMap<>();
 
-        for (NORegion r : pRegions) {
+        for (OutpostRegion r : pRegions) {
             Set<ProtectedRegion> overlapping = findOverlapOrAdjacentRegions(r.getWGRegion(), r.getWGRegionManager(), r.getWorld());
 
             // algorithm to find adjacent regions
             String adjacentGroup = idToGroup.get(r.getId());
             for (ProtectedRegion pr : overlapping) {
-                if (NullaeOutpost.isNORegion(pr) && pr.isOwner(WorldGuardPlugin.inst().wrapPlayer(p)) && !pr.getId().equals(r.getId())) {
+                if (Outpost.isNORegion(pr) && pr.isOwner(WorldGuardPlugin.inst().wrapPlayer(p)) && !pr.getId().equals(r.getId())) {
 
                     if (adjacentGroup == null) { // if the region hasn't been found to overlap a region yet
 
@@ -370,7 +370,7 @@ public class WGUtils {
         return groupToIDs;
     }
 
-    public static ProtectedCuboidRegion getDefaultProtectedRegion(NOProtectBlock b, NOLocation v) {
+    public static ProtectedCuboidRegion getDefaultProtectedRegion(OutpostProtectBlock b, OutspotLocation v) {
         BlockVector3 min, max;
         if (b.chunkRadius > 0) {
             min = getMinChunkVector(v.x, v.y, v.z, b.chunkRadius, b.yRadius);
@@ -382,7 +382,7 @@ public class WGUtils {
         return new ProtectedCuboidRegion(createNOID(v.x, v.y, v.z), min, max);
     }
 
-    public static List<BlockVector2> getPointsFromDecomposedRegion(NORegion r) {
+    public static List<BlockVector2> getPointsFromDecomposedRegion(OutpostRegion r) {
         assert r.getPoints().size() == 4;
         List<Integer> xs = new ArrayList<>(), zs = new ArrayList<>();
         for (BlockVector2 p : r.getPoints()) {
@@ -403,12 +403,12 @@ public class WGUtils {
         return points;
     }
 
-    public static boolean canMergeRegionTypes(NOProtectBlock current, NORegion mergeInto) {
+    public static boolean canMergeRegionTypes(OutpostProtectBlock current, OutpostRegion mergeInto) {
         if (current.allowedMergingIntoTypes.contains("all"))
             return true;
 
-        if (mergeInto instanceof NOGroupRegion) {
-            for (NOMergedRegion r : ((NOGroupRegion) mergeInto).getMergedRegions()) {
+        if (mergeInto instanceof OutpostGroupRegion) {
+            for (OutpostMergedRegion r : ((OutpostGroupRegion) mergeInto).getMergedRegions()) {
                 if (!current.allowedMergingIntoTypes.contains(r.getTypeOptions().alias))
                     return false;
             }

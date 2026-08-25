@@ -17,9 +17,9 @@ package dev.noellx.outpost.commands;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NORegion;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.OutpostRegion;
+import dev.noellx.outpost.Outpost;
 import dev.noellx.outpost.utils.WGUtils;
 
 import org.bukkit.command.CommandSender;
@@ -54,34 +54,34 @@ public class ArgName implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         if (!s.hasPermission("NullaeOutpost.name")) {
-            NOL.msg(s, NOL.NO_PERMISSION_NAME.msg());
+            OutpostL.msg(s, OutpostL.NO_PERMISSION_NAME.msg());
             return true;
         }
         Player p = (Player) s;
-        NORegion r = NORegion.fromLocationGroup(p.getLocation());
+        OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
         if (r == null) {
-            NOL.msg(s, NOL.NOT_IN_REGION.msg());
+            OutpostL.msg(s, OutpostL.NOT_IN_REGION.msg());
             return true;
         }
         if (WGUtils.hasNoAccess(r.getWGRegion(), p, WorldGuardPlugin.inst().wrapPlayer(p), false)) {
-            NOL.msg(s, NOL.NO_ACCESS.msg());
+            OutpostL.msg(s, OutpostL.NO_ACCESS.msg());
             return true;
         }
         if (args.length < 2) {
-            NOL.msg(s, NOL.NAME_HELP.msg());
+            OutpostL.msg(s, OutpostL.NAME_HELP.msg());
             return true;
         }
 
         if (args[1].equals("none")) {
             r.setName(null);
-            NOL.msg(p, NOL.NAME_REMOVED.msg().replace("%id%", r.getId()));
+            OutpostL.msg(p, OutpostL.NAME_REMOVED.msg().replace("%id%", r.getId()));
         } else {
-            if (!NullaeOutpost.getInstance().getConfigOptions().allowDuplicateRegionNames && NullaeOutpost.isNONameAlreadyUsed(args[1])) {
-                NOL.msg(p, NOL.NAME_TAKEN.msg().replace("%name%", args[1]));
+            if (!Outpost.getInstance().getConfigOptions().allowDuplicateRegionNames && Outpost.isNONameAlreadyUsed(args[1])) {
+                OutpostL.msg(p, OutpostL.NAME_TAKEN.msg().replace("%name%", args[1]));
                 return true;
             }
             r.setName(args[1]);
-            NOL.msg(p, NOL.NAME_SET_NAME.msg().replace("%id%", r.getId()).replace("%name%", r.getName()));
+            OutpostL.msg(p, OutpostL.NAME_SET_NAME.msg().replace("%id%", r.getId()).replace("%name%", r.getName()));
         }
         return true;
     }

@@ -18,8 +18,8 @@ package dev.noellx.outpost.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.Outpost;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,10 +50,10 @@ public class ArgToggle implements NOCommandArg {
         public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
             Player p = (Player) s;
             if (p.hasPermission("NullaeOutpost.toggle")) {
-                NullaeOutpost.toggleList.remove(p.getUniqueId());
-                p.sendMessage(NOL.TOGGLE_ON.msg());
+                Outpost.toggleList.remove(p.getUniqueId());
+                p.sendMessage(OutpostL.TOGGLE_ON.msg());
             } else {
-                p.sendMessage(NOL.NO_PERMISSION_TOGGLE.msg());
+                p.sendMessage(OutpostL.NO_PERMISSION_TOGGLE.msg());
             }
             return true;
         }
@@ -85,10 +85,10 @@ public class ArgToggle implements NOCommandArg {
         public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
             Player p = (Player) s;
             if (p.hasPermission("NullaeOutpost.toggle")) {
-                NullaeOutpost.toggleList.add(p.getUniqueId());
-                p.sendMessage(NOL.TOGGLE_OFF.msg());
+                Outpost.toggleList.add(p.getUniqueId());
+                p.sendMessage(OutpostL.TOGGLE_OFF.msg());
             } else {
-                p.sendMessage(NOL.NO_PERMISSION_TOGGLE.msg());
+                p.sendMessage(OutpostL.NO_PERMISSION_TOGGLE.msg());
             }
             return true;
         }
@@ -122,15 +122,15 @@ public class ArgToggle implements NOCommandArg {
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         Player p = (Player) s;
         if (p.hasPermission("NullaeOutpost.toggle")) {
-            if (!NullaeOutpost.toggleList.contains(p.getUniqueId())) {
-                NullaeOutpost.toggleList.add(p.getUniqueId());
-                p.sendMessage(NOL.TOGGLE_OFF.msg());
+            if (!Outpost.toggleList.contains(p.getUniqueId())) {
+                Outpost.toggleList.add(p.getUniqueId());
+                p.sendMessage(OutpostL.TOGGLE_OFF.msg());
             } else {
-                NullaeOutpost.toggleList.remove(p.getUniqueId());
-                p.sendMessage(NOL.TOGGLE_ON.msg());
+                Outpost.toggleList.remove(p.getUniqueId());
+                p.sendMessage(OutpostL.TOGGLE_ON.msg());
             }
         } else {
-            p.sendMessage(NOL.NO_PERMISSION_TOGGLE.msg());
+            p.sendMessage(OutpostL.NO_PERMISSION_TOGGLE.msg());
         }
         return true;
     }

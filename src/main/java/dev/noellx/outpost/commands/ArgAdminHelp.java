@@ -22,7 +22,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.Outpost;
 
 public class ArgAdminHelp {
 
@@ -49,7 +49,7 @@ public class ArgAdminHelp {
     }
 
     static boolean argumentAdminHelp(CommandSender p, String[] args) {
-        String bc = "/" + NullaeOutpost.getInstance().getConfigOptions().base_command;
+        String bc = "/" + Outpost.getInstance().getConfigOptions().base_command;
         String tx = ChatColor.AQUA + "> " + ChatColor.GRAY + bc;
 
         p.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "===============" +

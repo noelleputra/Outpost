@@ -17,8 +17,8 @@ package dev.noellx.outpost.commands;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.Outpost;
 import dev.noellx.outpost.utils.upgrade.LegacyUpgrade;
 
 import org.bukkit.Bukkit;
@@ -36,7 +36,7 @@ public class ArgAdmin implements NOCommandArg {
 
     // has to be a method, because the base command config option is not available until the plugin is loaded
     public static String getFlagHelp() {
-        return ChatColor.AQUA + "> " + ChatColor.GRAY + "/" + NullaeOutpost.getInstance().getConfigOptions().base_command +
+        return ChatColor.AQUA + "> " + ChatColor.GRAY + "/" + Outpost.getInstance().getConfigOptions().base_command +
                 " admin flag [world] [flagname] [value|null|default]";
     }
 
@@ -64,7 +64,7 @@ public class ArgAdmin implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         if (!s.hasPermission("NullaeOutpost.admin")) {
-            return NOL.msg(s, NOL.NO_PERMISSION_ADMIN.msg());
+            return OutpostL.msg(s, OutpostL.NO_PERMISSION_ADMIN.msg());
         }
 
         if (args.length < 2) {
@@ -76,8 +76,8 @@ public class ArgAdmin implements NOCommandArg {
             case "help":
                 return ArgAdminHelp.argumentAdminHelp(s, args);
             case "version":
-                s.sendMessage(ChatColor.AQUA + "NullaeOutpost: " + ChatColor.GRAY + NullaeOutpost.getInstance().getDescription().getVersion());
-                s.sendMessage(ChatColor.AQUA + "Developers: " + ChatColor.GRAY + NullaeOutpost.getInstance().getDescription().getAuthors());
+                s.sendMessage(ChatColor.AQUA + "NullaeOutpost: " + ChatColor.GRAY + Outpost.getInstance().getDescription().getVersion());
+                s.sendMessage(ChatColor.AQUA + "Developers: " + ChatColor.GRAY + Outpost.getInstance().getDescription().getAuthors());
                 s.sendMessage(ChatColor.AQUA + "Bukkit:  " + ChatColor.GRAY + Bukkit.getVersion());
                 s.sendMessage(ChatColor.AQUA + "WG: " + ChatColor.GRAY + WorldGuardPlugin.inst().getDescription().getVersion());
                 break;
@@ -93,12 +93,12 @@ public class ArgAdmin implements NOCommandArg {
                 s.sendMessage(ChatColor.YELLOW + "Done!");
                 break;
             case "debug":
-                if (NullaeOutpost.getInstance().isDebug()) {
+                if (Outpost.getInstance().isDebug()) {
                     s.sendMessage(ChatColor.YELLOW + "Debug mode is now off.");
-                    NullaeOutpost.getInstance().setDebug(false);
+                    Outpost.getInstance().setDebug(false);
                 } else {
                     s.sendMessage(ChatColor.YELLOW + "Debug mode is now on.");
-                    NullaeOutpost.getInstance().setDebug(true);
+                    Outpost.getInstance().setDebug(true);
                 }
         }
         return true;

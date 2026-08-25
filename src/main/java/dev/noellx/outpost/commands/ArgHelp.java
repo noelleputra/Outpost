@@ -23,8 +23,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.Outpost;
 import dev.noellx.outpost.utils.MiscUtil;
 import dev.noellx.outpost.utils.TextGUI;
 
@@ -48,30 +48,30 @@ public class ArgHelp implements NOCommandArg {
     public static List<HelpEntry> helpMenu = new ArrayList<>();
 
     public static void initHelpMenu() {
-        String base = "/" + NullaeOutpost.getInstance().getConfigOptions().base_command + " ";
+        String base = "/" + Outpost.getInstance().getConfigOptions().base_command + " ";
 
         helpMenu.clear();
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.INFO_HELP.msg(), NOL.INFO_HELP_DESC.msg(), base + "info"), "NullaeOutpost.info"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.ADDREMOVE_HELP.msg(), NOL.ADDREMOVE_HELP_DESC.msg(), base), "NullaeOutpost.members"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.ADDREMOVE_OWNER_HELP.msg(), NOL.ADDREMOVE_OWNER_HELP_DESC.msg(), base), "NullaeOutpost.owners"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.GET_HELP.msg(), NOL.GET_HELP_DESC.msg(), base + "get"), "NullaeOutpost.get"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.GIVE_HELP.msg(), NOL.GIVE_HELP_DESC.msg(), base + "give"), "NullaeOutpost.give"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.COUNT_HELP.msg(), NOL.COUNT_HELP_DESC.msg(), base + "count"), "NullaeOutpost.count", "NullaeOutpost.count.others"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.LIST_HELP.msg(), NOL.LIST_HELP_DESC.msg(), base + "list"), "NullaeOutpost.list", "NullaeOutpost.list.others"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.NAME_HELP.msg(), NOL.NAME_HELP_DESC.msg(), base + "name"), "NullaeOutpost.name"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.MERGE_HELP.msg(), NOL.MERGE_HELP_DESC.msg(), base + "merge"), "NullaeOutpost.merge"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.FLAG_HELP.msg(), NOL.FLAG_HELP_DESC.msg(), base + "flag"), "NullaeOutpost.flags"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.HOME_HELP.msg(), NOL.HOME_HELP_DESC.msg(), base + "home"), "NullaeOutpost.home"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.SETHOME_HELP.msg(), NOL.SETHOME_HELP_DESC.msg(), base + "sethome"), "NullaeOutpost.sethome"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.TP_HELP.msg(), NOL.TP_HELP_DESC.msg(), base + "tp"), "NullaeOutpost.tp"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.VISIBILITY_HIDE_HELP.msg(), NOL.VISIBILITY_HIDE_HELP_DESC.msg(), base + "hide"), "NullaeOutpost.hide"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.VISIBILITY_UNHIDE_HELP.msg(), NOL.VISIBILITY_UNHIDE_HELP_DESC.msg(), base + "unhide"), "NullaeOutpost.unhide"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.TOGGLE_HELP.msg(), NOL.TOGGLE_HELP_DESC.msg(), base + "toggle"), "NullaeOutpost.toggle"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.VIEW_HELP.msg(), NOL.VIEW_HELP_DESC.msg(), base + "view"), "NullaeOutpost.view"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.UNCLAIM_HELP.msg(), NOL.UNCLAIM_HELP_DESC.msg(), base + "unclaim"), "NullaeOutpost.unclaim"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.REGION_HELP.msg(), NOL.REGION_HELP_DESC.msg(), base + "region"), "NullaeOutpost.region"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.ADMIN_HELP.msg(), NOL.ADMIN_HELP_DESC.msg(), base + "admin"), "NullaeOutpost.admin"));
-        helpMenu.add(new HelpEntry(sendWithPerm(NOL.RELOAD_HELP.msg(), NOL.RELOAD_HELP_DESC.msg(), base + "reload"), "NullaeOutpost.admin"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.INFO_HELP.msg(), OutpostL.INFO_HELP_DESC.msg(), base + "info"), "NullaeOutpost.info"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.ADDREMOVE_HELP.msg(), OutpostL.ADDREMOVE_HELP_DESC.msg(), base), "NullaeOutpost.members"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.ADDREMOVE_OWNER_HELP.msg(), OutpostL.ADDREMOVE_OWNER_HELP_DESC.msg(), base), "NullaeOutpost.owners"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.GET_HELP.msg(), OutpostL.GET_HELP_DESC.msg(), base + "get"), "NullaeOutpost.get"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.GIVE_HELP.msg(), OutpostL.GIVE_HELP_DESC.msg(), base + "give"), "NullaeOutpost.give"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.COUNT_HELP.msg(), OutpostL.COUNT_HELP_DESC.msg(), base + "count"), "NullaeOutpost.count", "NullaeOutpost.count.others"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.LIST_HELP.msg(), OutpostL.LIST_HELP_DESC.msg(), base + "list"), "NullaeOutpost.list", "NullaeOutpost.list.others"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.NAME_HELP.msg(), OutpostL.NAME_HELP_DESC.msg(), base + "name"), "NullaeOutpost.name"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.MERGE_HELP.msg(), OutpostL.MERGE_HELP_DESC.msg(), base + "merge"), "NullaeOutpost.merge"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.FLAG_HELP.msg(), OutpostL.FLAG_HELP_DESC.msg(), base + "flag"), "NullaeOutpost.flags"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.HOME_HELP.msg(), OutpostL.HOME_HELP_DESC.msg(), base + "home"), "NullaeOutpost.home"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.SETHOME_HELP.msg(), OutpostL.SETHOME_HELP_DESC.msg(), base + "sethome"), "NullaeOutpost.sethome"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.TP_HELP.msg(), OutpostL.TP_HELP_DESC.msg(), base + "tp"), "NullaeOutpost.tp"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.VISIBILITY_HIDE_HELP.msg(), OutpostL.VISIBILITY_HIDE_HELP_DESC.msg(), base + "hide"), "NullaeOutpost.hide"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.VISIBILITY_UNHIDE_HELP.msg(), OutpostL.VISIBILITY_UNHIDE_HELP_DESC.msg(), base + "unhide"), "NullaeOutpost.unhide"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.TOGGLE_HELP.msg(), OutpostL.TOGGLE_HELP_DESC.msg(), base + "toggle"), "NullaeOutpost.toggle"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.VIEW_HELP.msg(), OutpostL.VIEW_HELP_DESC.msg(), base + "view"), "NullaeOutpost.view"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.UNCLAIM_HELP.msg(), OutpostL.UNCLAIM_HELP_DESC.msg(), base + "unclaim"), "NullaeOutpost.unclaim"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.REGION_HELP.msg(), OutpostL.REGION_HELP_DESC.msg(), base + "region"), "NullaeOutpost.region"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.ADMIN_HELP.msg(), OutpostL.ADMIN_HELP_DESC.msg(), base + "admin"), "NullaeOutpost.admin"));
+        helpMenu.add(new HelpEntry(sendWithPerm(OutpostL.RELOAD_HELP.msg(), OutpostL.RELOAD_HELP_DESC.msg(), base + "reload"), "NullaeOutpost.admin"));
     }
 
     @Override
@@ -118,10 +118,10 @@ public class ArgHelp implements NOCommandArg {
             }
         }
 
-        TextGUI.displayGUI(p, NOL.HELP.msg(), "/" + NullaeOutpost.getInstance().getConfigOptions().base_command + " help %page%", page, GUI_SIZE, entries, false);
+        TextGUI.displayGUI(p, OutpostL.HELP.msg(), "/" + Outpost.getInstance().getConfigOptions().base_command + " help %page%", page, GUI_SIZE, entries, false);
 
         if (page >= 0 && page * GUI_SIZE + GUI_SIZE < entries.size()) {
-            NOL.msg(p, NOL.HELP_NEXT.msg().replace("%page%", page + 2 + ""));
+            OutpostL.msg(p, OutpostL.HELP_NEXT.msg().replace("%page%", page + 2 + ""));
         }
 
         return true;

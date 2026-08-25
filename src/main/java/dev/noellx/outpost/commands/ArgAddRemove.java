@@ -62,17 +62,17 @@ public class ArgAddRemove implements NOCommandArg {
 
         // check permission
         if ((operationType.equals("add") || operationType.equals("remove")) && !p.hasPermission("NullaeOutpost.members")) {
-            return NOL.msg(p, NOL.NO_PERMISSION_MEMBERS.msg());
+            return OutpostL.msg(p, OutpostL.NO_PERMISSION_MEMBERS.msg());
         } else if ((operationType.equals("addowner") || operationType.equals("removeowner")) && !p.hasPermission("NullaeOutpost.owners")) {
-            return NOL.msg(p, NOL.NO_PERMISSION_OWNERS.msg());
+            return OutpostL.msg(p, OutpostL.NO_PERMISSION_OWNERS.msg());
         }
 
         // determine player to be added or removed
         if (args.length < 2) {
-            return NOL.msg(p, NOL.COMMAND_REQUIRES_PLAYER_NAME.msg());
+            return OutpostL.msg(p, OutpostL.COMMAND_REQUIRES_PLAYER_NAME.msg());
         }
         if (!UUIDCache.containsName(args[1])) {
-            return NOL.msg(p, NOL.PLAYER_NOT_FOUND.msg());
+            return OutpostL.msg(p, OutpostL.PLAYER_NOT_FOUND.msg());
         }
 
         // user being added
@@ -80,31 +80,31 @@ public class ArgAddRemove implements NOCommandArg {
         String addPlayerName = UUIDCache.getNameFromUUID(addPlayerUuid);
 
         // getting player regions is slow, so run it async
-        Bukkit.getServer().getScheduler().runTaskAsynchronously(NullaeOutpost.getInstance(), () -> {
-            List<NORegion> regions;
+        Bukkit.getServer().getScheduler().runTaskAsynchronously(Outpost.getInstance(), () -> {
+            List<OutpostRegion> regions;
 
             // obtain region list that player is being added to or removed from
             if (flags.containsKey("-a")) { // add or remove to all regions a player owns
 
                 // don't let players remove themself from all of their regions
                 if (operationType.equals("removeowner") && addPlayerUuid.equals(p.getUniqueId())) {
-                    NOL.msg(p, NOL.CANNOT_REMOVE_YOURSELF_FROM_ALL_REGIONS.msg());
+                    OutpostL.msg(p, OutpostL.CANNOT_REMOVE_YOURSELF_FROM_ALL_REGIONS.msg());
                     return;
                 }
 
-                regions = NOPlayer.fromPlayer(p).getNORegions(p.getWorld(), false);
+                regions = OutpostPlayer.fromPlayer(p).getNORegions(p.getWorld(), false);
             } else { // add or remove to one region (the region currently in)
-                NORegion r = NORegion.fromLocationGroup(p.getLocation());
+                OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
 
                 if (r == null) {
-                    NOL.msg(p, NOL.NOT_IN_REGION.msg());
+                    OutpostL.msg(p, OutpostL.NOT_IN_REGION.msg());
                     return;
                 } else if (WGUtils.hasNoAccess(r.getWGRegion(), p, WorldGuardPlugin.inst().wrapPlayer(p), false)) {
-                    NOL.msg(p, NOL.NO_ACCESS.msg());
+                    OutpostL.msg(p, OutpostL.NO_ACCESS.msg());
                     return;
                 } else if (operationType.equals("removeowner") && addPlayerUuid.equals(p.getUniqueId()) && r.getOwners().size() == 1) {
                     // don't let users remove themself if they are the last owner of the region
-                    NOL.msg(p, NOL.CANNOT_REMOVE_YOURSELF_LAST_OWNER.msg());
+                    OutpostL.msg(p, OutpostL.CANNOT_REMOVE_YOURSELF_LAST_OWNER.msg());
                     return;
                 }
 
@@ -113,35 +113,35 @@ public class ArgAddRemove implements NOCommandArg {
 
             // check that the player is not over their limit if they are being set owner
             if (operationType.equals("addowner")) {
-                if (determinePlayerSurpassedLimit(p, regions, NOPlayer.fromUUID(addPlayerUuid))) {
+                if (determinePlayerSurpassedLimit(p, regions, OutpostPlayer.fromUUID(addPlayerUuid))) {
                     return;
                 }
             }
 
             // apply operation to regions
-            for (NORegion r : regions) {
+            for (OutpostRegion r : regions) {
 
                 if (operationType.equals("add") || operationType.equals("addowner")) {
                     if (flags.containsKey("-a")) {
-                        NOL.msg(p, NOL.ADDED_TO_REGION_SPECIFIC.msg()
+                        OutpostL.msg(p, OutpostL.ADDED_TO_REGION_SPECIFIC.msg()
                                 .replace("%player%", addPlayerName)
                                 .replace("%region%", r.getName() == null ? r.getId() : r.getName() + " (" + r.getId() + ")"));
                     } else {
-                        NOL.msg(p, NOL.ADDED_TO_REGION.msg().replace("%player%", addPlayerName));
+                        OutpostL.msg(p, OutpostL.ADDED_TO_REGION.msg().replace("%player%", addPlayerName));
                     }
 
                     // add to WorldGuard profile cache
-                    Bukkit.getScheduler().runTaskAsynchronously(NullaeOutpost.getInstance(), () -> UUIDCache.storeWGProfile(addPlayerUuid, addPlayerName));
+                    Bukkit.getScheduler().runTaskAsynchronously(Outpost.getInstance(), () -> UUIDCache.storeWGProfile(addPlayerUuid, addPlayerName));
 
                 } else if ((operationType.equals("remove") && r.isMember(addPlayerUuid))
                         || (operationType.equals("removeowner") && r.isOwner(addPlayerUuid))) {
 
                     if (flags.containsKey("-a")) {
-                        NOL.msg(p, NOL.REMOVED_FROM_REGION_SPECIFIC.msg()
+                        OutpostL.msg(p, OutpostL.REMOVED_FROM_REGION_SPECIFIC.msg()
                                 .replace("%player%", addPlayerName)
                                 .replace("%region%", r.getName() == null ? r.getId() : r.getName() + " (" + r.getId() + ")"));
                     } else {
-                        NOL.msg(p, NOL.REMOVED_FROM_REGION.msg().replace("%player%", addPlayerName));
+                        OutpostL.msg(p, OutpostL.REMOVED_FROM_REGION.msg().replace("%player%", addPlayerName));
                     }
                 }
 
@@ -183,7 +183,7 @@ public class ArgAddRemove implements NOCommandArg {
                         break;
                     case "remove":
                     case "removeowner":
-                        NORegion r = NORegion.fromLocationGroup(p.getLocation());
+                        OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
                         if (r != null) {
                             names = new ArrayList<>();
                             for (UUID uuid : args[0].equalsIgnoreCase("remove") ? r.getMembers() : r.getOwners()) {
@@ -206,15 +206,15 @@ public class ArgAddRemove implements NOCommandArg {
         return null;
     }
 
-    public boolean determinePlayerSurpassedLimit(Player commandSender, List<NORegion> regionsToBeAddedTo, NOPlayer addedPlayer) {
+    public boolean determinePlayerSurpassedLimit(Player commandSender, List<OutpostRegion> regionsToBeAddedTo, OutpostPlayer addedPlayer) {
 
-        if (addedPlayer.getPlayer() == null && !NullaeOutpost.getInstance().isLuckPermsSupportEnabled()) { // offline player
-            if (NullaeOutpost.getInstance().getConfigOptions().allowAddownerForOfflinePlayersWithoutLp) {
+        if (addedPlayer.getPlayer() == null && !Outpost.getInstance().isLuckPermsSupportEnabled()) { // offline player
+            if (Outpost.getInstance().getConfigOptions().allowAddownerForOfflinePlayersWithoutLp) {
                 // bypass config option
                 return false;
             } else {
                 // we need luckperms to determine region limits for offline players, so if luckperms isn't detected, prevent the action
-                NOL.msg(commandSender, NOL.ADDREMOVE_PLAYER_NEEDS_TO_BE_ONLINE.msg());
+                OutpostL.msg(commandSender, OutpostL.ADDREMOVE_PLAYER_NEEDS_TO_BE_ONLINE.msg());
                 return true;
             }
         }
@@ -222,18 +222,18 @@ public class ArgAddRemove implements NOCommandArg {
         // find total region amounts after player is added to the regions, and their existing total
         String err = LimitUtil.checkAddOwner(addedPlayer, regionsToBeAddedTo.stream()
                 .flatMap(r -> {
-                    if (r instanceof NOGroupRegion) {
-                        return ((NOGroupRegion) r).getMergedRegions().stream();
+                    if (r instanceof OutpostGroupRegion) {
+                        return ((OutpostGroupRegion) r).getMergedRegions().stream();
                     }
                     return Stream.of(r);
                 })
-                .map(NORegion::getTypeOptions)
+                .map(OutpostRegion::getTypeOptions)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList()));
         if (err.equals("")) {
             return false;
         } else {
-            NOL.msg(commandSender, err);
+            OutpostL.msg(commandSender, err);
             return true;
         }
     }

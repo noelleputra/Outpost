@@ -18,9 +18,9 @@ package dev.noellx.outpost.commands;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NORegion;
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.OutpostRegion;
+import dev.noellx.outpost.Outpost;
 import dev.noellx.outpost.utils.UUIDCache;
 import dev.noellx.outpost.utils.WGUtils;
 
@@ -60,17 +60,17 @@ public class ArgRegion implements NOCommandArg {
         RegionManager rgm = WGUtils.getRegionManagerWithPlayer(p);
 
         if (!p.hasPermission("NullaeOutpost.region")) {
-            NOL.msg(p, NOL.NO_PERMISSION_REGION.msg());
+            OutpostL.msg(p, OutpostL.NO_PERMISSION_REGION.msg());
             return true;
         }
 
         if (args.length < 3) {
-            NOL.msg(p, NOL.REGION_HELP.msg());
+            OutpostL.msg(p, OutpostL.REGION_HELP.msg());
             return true;
         }
 
         if (!UUIDCache.containsName(args[2])) {
-            NOL.msg(p, NOL.PLAYER_NOT_FOUND.msg());
+            OutpostL.msg(p, OutpostL.PLAYER_NOT_FOUND.msg());
             return true;
         }
 
@@ -80,18 +80,18 @@ public class ArgRegion implements NOCommandArg {
             StringBuilder regionMessage = new StringBuilder();
             boolean found = false;
             for (ProtectedRegion r : rgm.getRegions().values()) {
-                if (NullaeOutpost.isNORegion(r) && r.getOwners().contains(playerUuid)) {
+                if (Outpost.isNORegion(r) && r.getOwners().contains(playerUuid)) {
                     found = true;
                     regionMessage.append(r.getId()).append(", ");
                 }
             }
 
             if (!found) {
-                NOL.msg(p, NOL.REGION_NOT_FOUND_FOR_PLAYER.msg()
+                OutpostL.msg(p, OutpostL.REGION_NOT_FOUND_FOR_PLAYER.msg()
                         .replace("%player%", args[2]));
             } else {
                 regionMessage = new StringBuilder(regionMessage.substring(0, regionMessage.length() - 2) + ".");
-                NOL.msg(p, NOL.REGION_LIST.msg()
+                OutpostL.msg(p, OutpostL.REGION_LIST.msg()
                         .replace("%player%", args[2])
                         .replace("%regions%", regionMessage));
             }
@@ -100,9 +100,9 @@ public class ArgRegion implements NOCommandArg {
 
             boolean found = false;
             for (ProtectedRegion r : rgm.getRegions().values()) {
-                if (NullaeOutpost.isNORegion(r)) {
+                if (Outpost.isNORegion(r)) {
 
-                    NORegion psr = NORegion.fromWGRegion(p.getWorld(), r);
+                    OutpostRegion psr = OutpostRegion.fromWGRegion(p.getWorld(), r);
                     if (psr.isOwner(playerUuid)) {
                         found = true;
 
@@ -118,17 +118,17 @@ public class ArgRegion implements NOCommandArg {
             }
 
             if (!found) {
-                NOL.msg(p, NOL.REGION_NOT_FOUND_FOR_PLAYER.msg().replace("%player%", args[2]));
+                OutpostL.msg(p, OutpostL.REGION_NOT_FOUND_FOR_PLAYER.msg().replace("%player%", args[2]));
                 return true;
             }
 
             if (args[1].equalsIgnoreCase("remove")) {
-                NOL.msg(p, NOL.REGION_REMOVE.msg().replace("%player%", args[2]));
+                OutpostL.msg(p, OutpostL.REGION_REMOVE.msg().replace("%player%", args[2]));
             } else if (args[1].equalsIgnoreCase("disown")) {
-                NOL.msg(p, NOL.REGION_DISOWN.msg().replace("%player%", args[2]));
+                OutpostL.msg(p, OutpostL.REGION_DISOWN.msg().replace("%player%", args[2]));
             }
         } else {
-            NOL.msg(p, NOL.REGION_HELP.msg());
+            OutpostL.msg(p, OutpostL.REGION_HELP.msg());
         }
         return true;
     }

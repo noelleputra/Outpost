@@ -58,46 +58,46 @@ public class ArgInfo implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] args, HashMap<String, String> flags) {
         Player p = (Player) s;
-        NORegion r = NORegion.fromLocationGroupUnsafe(p.getLocation());
+        OutpostRegion r = OutpostRegion.fromLocationGroupUnsafe(p.getLocation());
 
         if (r == null)
-            return NOL.NOT_IN_REGION.send(p);
+            return OutpostL.NOT_IN_REGION.send(p);
 
         if (!p.hasPermission("NullaeOutpost.info.others") && WGUtils.hasNoAccess(r.getWGRegion(), p, WorldGuardPlugin.inst().wrapPlayer(p), true))
-            return NOL.NO_ACCESS.send(p);
+            return OutpostL.NO_ACCESS.send(p);
 
         if (r.getTypeOptions() == null) {
-            NOL.msg(p, ChatColor.RED + "This region is problematic, and the block type (" + r.getType() + ") is not configured. Please contact an administrator.");
+            OutpostL.msg(p, ChatColor.RED + "This region is problematic, and the block type (" + r.getType() + ") is not configured. Please contact an administrator.");
             Bukkit.getLogger().info(ChatColor.RED + "This region is problematic, and the block type (" + r.getType() + ") is not configured.");
             return true;
         }
 
         if (args.length == 1) { // info of current region player is in
             if (!p.hasPermission("NullaeOutpost.info"))
-                return NOL.NO_PERMISSION_INFO.send(p);
+                return OutpostL.NO_PERMISSION_INFO.send(p);
 
-            NOL.msg(p, NOL.INFO_HEADER.msg());
+            OutpostL.msg(p, OutpostL.INFO_HEADER.msg());
 
             // region: %region%, priority: %priority%
             StringBuilder sb = new StringBuilder();
 
             if (r.getName() == null) {
-                NOL.INFO_REGION2.append(sb, r.getId());
+                OutpostL.INFO_REGION2.append(sb, r.getId());
             } else {
-                NOL.INFO_REGION2.append(sb, r.getName() + " (" + r.getId() + ")");
+                OutpostL.INFO_REGION2.append(sb, r.getName() + " (" + r.getId() + ")");
             }
 
-            if (!NOL.INFO_PRIORITY2.isEmpty()) {
-                sb.append(", ").append(NOL.INFO_PRIORITY2.format(r.getWGRegion().getPriority()));
+            if (!OutpostL.INFO_PRIORITY2.isEmpty()) {
+                sb.append(", ").append(OutpostL.INFO_PRIORITY2.format(r.getWGRegion().getPriority()));
             }
-            NOL.msg(p, sb.toString());
+            OutpostL.msg(p, sb.toString());
 
             // type: %type%
-            if (r instanceof NOGroupRegion) {
-                NOL.INFO_TYPE2.send(p, r.getTypeOptions().alias + " " + NOL.INFO_MAY_BE_MERGED.msg());
-                displayMerged(p, (NOGroupRegion) r);
+            if (r instanceof OutpostGroupRegion) {
+                OutpostL.INFO_TYPE2.send(p, r.getTypeOptions().alias + " " + OutpostL.INFO_MAY_BE_MERGED.msg());
+                displayMerged(p, (OutpostGroupRegion) r);
             } else {
-                NOL.INFO_TYPE2.send(p, r.getTypeOptions().alias);
+                OutpostL.INFO_TYPE2.send(p, r.getTypeOptions().alias);
             }
 
             displayFlags(p, r);
@@ -106,9 +106,9 @@ public class ArgInfo implements NOCommandArg {
 
             if (r.getParent() != null) {
                 if (r.getName() != null) {
-                    NOL.INFO_PARENT2.send(p, r.getParent().getName() + " (" + r.getParent().getId() + ")");
+                    OutpostL.INFO_PARENT2.send(p, r.getParent().getName() + " (" + r.getParent().getId() + ")");
                 } else {
-                    NOL.INFO_PARENT2.send(p, r.getParent().getId());
+                    OutpostL.INFO_PARENT2.send(p, r.getParent().getId());
                 }
             }
 
@@ -116,12 +116,12 @@ public class ArgInfo implements NOCommandArg {
             BlockVector3 max = r.getWGRegion().getMaximumPoint();
             // only show x,z if it's at block limit
             if (min.getBlockY() == WGUtils.MIN_BUILD_HEIGHT && max.getBlockY() == WGUtils.MAX_BUILD_HEIGHT) {
-                NOL.INFO_BOUNDS_XZ.send(p,
+                OutpostL.INFO_BOUNDS_XZ.send(p,
                         min.getBlockX(), min.getBlockZ(),
                         max.getBlockX(), max.getBlockZ()
                 );
             } else {
-                NOL.INFO_BOUNDS_XYZ.send(p,
+                OutpostL.INFO_BOUNDS_XYZ.send(p,
                         min.getBlockX(), min.getBlockY(), min.getBlockZ(),
                         max.getBlockX(), max.getBlockY(), max.getBlockZ()
                 );
@@ -132,27 +132,27 @@ public class ArgInfo implements NOCommandArg {
             switch (args[1].toLowerCase()) {
                 case "members":
                     if (!p.hasPermission("NullaeOutpost.members"))
-                        return NOL.NO_PERMISSION_MEMBERS.send(p);
+                        return OutpostL.NO_PERMISSION_MEMBERS.send(p);
 
                     displayMembers(p, r.getWGRegion());
                     break;
                 case "owners":
                     if (!p.hasPermission("NullaeOutpost.owners"))
-                        return NOL.NO_PERMISSION_OWNERS.send(p);
+                        return OutpostL.NO_PERMISSION_OWNERS.send(p);
 
                     displayOwners(p, r.getWGRegion());
                     break;
                 case "flags":
                     if (!p.hasPermission("NullaeOutpost.flags"))
-                        return NOL.NO_PERMISSION_FLAGS.send(p);
+                        return OutpostL.NO_PERMISSION_FLAGS.send(p);
                         displayFlags(p, r);
                     break;
                 default:
-                    NOL.INFO_HELP.send(p);
+                    OutpostL.INFO_HELP.send(p);
                     break;
             }
         } else {
-            NOL.INFO_HELP.send(p);
+            OutpostL.INFO_HELP.send(p);
         }
         return true;
     }
@@ -162,17 +162,17 @@ public class ArgInfo implements NOCommandArg {
         return null;
     }
 
-    private static void displayMerged(Player p, NOGroupRegion r) {
+    private static void displayMerged(Player p, OutpostGroupRegion r) {
         StringBuilder msg = new StringBuilder();
-        for (NOMergedRegion pr : r.getMergedRegions()) {
+        for (OutpostMergedRegion pr : r.getMergedRegions()) {
             msg.append(pr.getId()).append(" (").append(pr.getTypeOptions().alias).append("), ");
         }
-        NOL.INFO_MERGED2.send(p, msg);
+        OutpostL.INFO_MERGED2.send(p, msg);
     }
 
-    private static void displayFlags(Player p, NORegion r) {
+    private static void displayFlags(Player p, OutpostRegion r) {
         ProtectedRegion region = r.getWGRegion();
-        NOProtectBlock typeOptions = r.getTypeOptions();
+        OutpostProtectBlock typeOptions = r.getTypeOptions();
 
         StringBuilder flagDisp = new StringBuilder();
         String flagValue;
@@ -193,9 +193,9 @@ public class ArgInfo implements NOCommandArg {
 
         if (flagDisp.length() > 2) {
             flagDisp = new StringBuilder(flagDisp.substring(0, flagDisp.length() - 2) + ".");
-            NOL.INFO_FLAGS2.send(p, flagDisp);
+            OutpostL.INFO_FLAGS2.send(p, flagDisp);
         } else {
-            NOL.INFO_FLAGS2.send(p, NOL.INFO_NO_FLAGS.msg());
+            OutpostL.INFO_FLAGS2.send(p, OutpostL.INFO_NO_FLAGS.msg());
         }
     }
 
@@ -203,7 +203,7 @@ public class ArgInfo implements NOCommandArg {
         DefaultDomain owners = region.getOwners();
         StringBuilder msg = new StringBuilder();
         if (owners.size() == 0) {
-            NOL.INFO_NO_OWNERS.append(msg);
+            OutpostL.INFO_NO_OWNERS.append(msg);
         } else {
             for (UUID uuid : owners.getUniqueIds()) {
                 String name = UUIDCache.getNameFromUUID(uuid);
@@ -215,14 +215,14 @@ public class ArgInfo implements NOCommandArg {
             }
             msg = new StringBuilder(msg.substring(0, msg.length() - 2));
         }
-        NOL.INFO_OWNERS2.send(p, msg);
+        OutpostL.INFO_OWNERS2.send(p, msg);
     }
 
     private static void displayMembers(Player p, ProtectedRegion region) {
         DefaultDomain members = region.getMembers();
         StringBuilder msg = new StringBuilder();
         if (members.size() == 0) {
-            NOL.INFO_NO_MEMBERS.append(msg);
+            OutpostL.INFO_NO_MEMBERS.append(msg);
         } else {
             for (UUID uuid : members.getUniqueIds()) {
                 String name = UUIDCache.getNameFromUUID(uuid);
@@ -234,6 +234,6 @@ public class ArgInfo implements NOCommandArg {
             }
             msg = new StringBuilder(msg.substring(0, msg.length() - 2));
         }
-        NOL.INFO_MEMBERS2.send(p, msg);
+        OutpostL.INFO_MEMBERS2.send(p, msg);
     }
 }

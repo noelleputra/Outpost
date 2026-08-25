@@ -62,44 +62,44 @@ public class ArgUnclaim implements NOCommandArg {
 
 
         if (!p.hasPermission("NullaeOutpost.unclaim")) {
-            NOL.msg(p, NOL.NO_PERMISSION_UNCLAIM.msg());
+            OutpostL.msg(p, OutpostL.NO_PERMISSION_UNCLAIM.msg());
             return true;
         }
 
         if (args.length >= 2) { // /no unclaim [list|region-id] (unclaim remote region)
 
             if (!p.hasPermission("NullaeOutpost.unclaim.remote")) {
-                NOL.msg(p, NOL.NO_PERMISSION_UNCLAIM_REMOTE.msg());
+                OutpostL.msg(p, OutpostL.NO_PERMISSION_UNCLAIM_REMOTE.msg());
                 return true;
             }
 
-            NOPlayer psp = NOPlayer.fromPlayer(p);
+            OutpostPlayer psp = OutpostPlayer.fromPlayer(p);
 
             // list of regions that the player owns
-            List<NORegion> regions = psp.getNORegionsCrossWorld(psp.getPlayer().getWorld(), false);
+            List<OutpostRegion> regions = psp.getNORegionsCrossWorld(psp.getPlayer().getWorld(), false);
 
             if (args[1].equalsIgnoreCase("list")) {
                 displayNORegions(s, regions, args.length == 2 ? 0 : tryParseInt(args[2]) - 1);
             } else {
-                for (NORegion psr : regions) {
+                for (OutpostRegion psr : regions) {
                     if (psr.getId().equalsIgnoreCase(args[1])) {
                         return unclaimBlock(psr, p);
                     }
                 }
-                NOL.msg(p, NOL.REGION_DOES_NOT_EXIST.msg());
+                OutpostL.msg(p, OutpostL.REGION_DOES_NOT_EXIST.msg());
             }
 
             return true;
         } else { // /no unclaim (no arguments, unclaim current region)
-            NORegion r = NORegion.fromLocationGroupUnsafe(p.getLocation()); // allow unclaiming unconfigured regions
+            OutpostRegion r = OutpostRegion.fromLocationGroupUnsafe(p.getLocation()); // allow unclaiming unconfigured regions
 
             if (r == null) {
-                NOL.msg(p, NOL.NOT_IN_REGION.msg());
+                OutpostL.msg(p, OutpostL.NOT_IN_REGION.msg());
                 return true;
             }
 
             if (!r.isOwner(p.getUniqueId()) && !p.hasPermission("NullaeOutpost.superowner")) {
-                NOL.msg(p, NOL.NO_REGION_PERMISSION.msg());
+                OutpostL.msg(p, OutpostL.NO_REGION_PERMISSION.msg());
                 return true;
             }
 
@@ -122,9 +122,9 @@ public class ArgUnclaim implements NOCommandArg {
         return i;
     }
 
-    private void displayNORegions(CommandSender s, List<NORegion> regions, int page) {
+    private void displayNORegions(CommandSender s, List<OutpostRegion> regions, int page) {
         List<TextComponent> entries = new ArrayList<>();
-        for (NORegion rs : regions) {
+        for (OutpostRegion rs : regions) {
             String msg;
             if (rs.getName() == null) {
                 msg = ChatColor.GRAY + "> " + ChatColor.AQUA + rs.getId();
@@ -133,20 +133,20 @@ public class ArgUnclaim implements NOCommandArg {
             }
             TextComponent tc = new TextComponent(ChatColor.AQUA + " [-] " + msg);
             tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to unclaim " + rs.getId()).create()));
-            tc.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + NullaeOutpost.getInstance().getConfigOptions().base_command + " unclaim " + rs.getId()));
+            tc.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + Outpost.getInstance().getConfigOptions().base_command + " unclaim " + rs.getId()));
             entries.add(tc);
         }
-        TextGUI.displayGUI(s, NOL.UNCLAIM_HEADER.msg(), "/" + NullaeOutpost.getInstance().getConfigOptions().base_command + " unclaim list %page%", page, 17, entries, true);
+        TextGUI.displayGUI(s, OutpostL.UNCLAIM_HEADER.msg(), "/" + Outpost.getInstance().getConfigOptions().base_command + " unclaim list %page%", page, 17, entries, true);
     }
 
-    private boolean unclaimBlock(NORegion r, Player p) {
-        NOProtectBlock cpb = r.getTypeOptions();
+    private boolean unclaimBlock(OutpostRegion r, Player p) {
+        OutpostProtectBlock cpb = r.getTypeOptions();
         if (cpb != null && !cpb.noDrop) {
             // return protection stone
             List<ItemStack> items = new ArrayList<>();
 
-            if (r instanceof NOGroupRegion) {
-                for (NORegion rp : ((NOGroupRegion) r).getMergedRegions()) {
+            if (r instanceof OutpostGroupRegion) {
+                for (OutpostRegion rp : ((OutpostGroupRegion) r).getMergedRegions()) {
                     if (rp.getTypeOptions() != null) items.add(rp.getTypeOptions().createItem());
                 }
             } else {
@@ -156,11 +156,11 @@ public class ArgUnclaim implements NOCommandArg {
             for (ItemStack item : items) {
                 if (!p.getInventory().addItem(item).isEmpty()) {
                     // method will return not empty if item couldn't be added
-                    if (NullaeOutpost.getInstance().getConfigOptions().dropItemWhenInventoryFull) {
-                        NOL.msg(p, NOL.NO_ROOM_DROPPING_ON_FLOOR.msg());
+                    if (Outpost.getInstance().getConfigOptions().dropItemWhenInventoryFull) {
+                        OutpostL.msg(p, OutpostL.NO_ROOM_DROPPING_ON_FLOOR.msg());
                         p.getWorld().dropItem(p.getLocation(), item);
                     } else {
-                        NOL.msg(p, NOL.NO_ROOM_IN_INVENTORY.msg());
+                        OutpostL.msg(p, OutpostL.NO_ROOM_IN_INVENTORY.msg());
                         return true;
                     }
                 }
@@ -169,13 +169,13 @@ public class ArgUnclaim implements NOCommandArg {
         // remove region
         // check if removing the region and firing region remove event blocked it
         if (!r.deleteRegion(true, p)) {
-            if (!NullaeOutpost.getInstance().getConfigOptions().allowMergingHoles) { // side case if the removing creates a hole and those are prevented
-                NOL.msg(p, NOL.DELETE_REGION_PREVENTED_NO_HOLES.msg());
+            if (!Outpost.getInstance().getConfigOptions().allowMergingHoles) { // side case if the removing creates a hole and those are prevented
+                OutpostL.msg(p, OutpostL.DELETE_REGION_PREVENTED_NO_HOLES.msg());
             }
             return true;
         }
 
-        NOL.msg(p, NOL.NO_LONGER_PROTECTED.msg());
+        OutpostL.msg(p, OutpostL.NO_LONGER_PROTECTED.msg());
 
         return true;
     }

@@ -52,29 +52,29 @@ public class ArgHideUnhide implements NOCommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] arg, HashMap<String, String> flags) {
         Player p = (Player) s;
-        NORegion r = NORegion.fromLocationGroup(p.getLocation());
+        OutpostRegion r = OutpostRegion.fromLocationGroup(p.getLocation());
 
         // preliminary checks
         if (arg[0].equals("unhide") && !p.hasPermission("NullaeOutpost.unhide"))
-            return NOL.msg(p, NOL.NO_PERMISSION_UNHIDE.msg());
+            return OutpostL.msg(p, OutpostL.NO_PERMISSION_UNHIDE.msg());
 
         if (arg[0].equals("hide") && !p.hasPermission("NullaeOutpost.hide"))
-            return NOL.msg(p, NOL.NO_PERMISSION_HIDE.msg());
+            return OutpostL.msg(p, OutpostL.NO_PERMISSION_HIDE.msg());
 
         if (r == null)
-            return NOL.msg(p, NOL.NOT_IN_REGION.msg());
+            return OutpostL.msg(p, OutpostL.NOT_IN_REGION.msg());
 
         if (WGUtils.hasNoAccess(r.getWGRegion(), p, WorldGuardPlugin.inst().wrapPlayer(p), false))
-            return NOL.msg(p, NOL.NO_ACCESS.msg());
+            return OutpostL.msg(p, OutpostL.NO_ACCESS.msg());
 
         if (r.isHidden()) {
             if (arg[0].equals("hide")) {
-                return NOL.msg(p, NOL.ALREADY_HIDDEN.msg());
+                return OutpostL.msg(p, OutpostL.ALREADY_HIDDEN.msg());
             }
             r.unhide();
         } else {
             if (arg[0].equals("unhide")) {
-                return NOL.msg(p, NOL.ALREADY_NOT_HIDDEN.msg());
+                return OutpostL.msg(p, OutpostL.ALREADY_NOT_HIDDEN.msg());
             }
             r.hide();
         }

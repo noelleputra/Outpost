@@ -17,19 +17,19 @@ package dev.noellx.outpost.utils;
 
 import org.bukkit.entity.Player;
 
-import dev.noellx.outpost.NOL;
-import dev.noellx.outpost.NORegion;
+import dev.noellx.outpost.OutpostL;
+import dev.noellx.outpost.OutpostRegion;
 
 import java.util.List;
 
 public class ChatUtil {
-    public static void displayDuplicateRegionAliases(Player p, List<NORegion> r) {
+    public static void displayDuplicateRegionAliases(Player p, List<OutpostRegion> r) {
         StringBuilder rep = new StringBuilder(r.get(0).getId() + " (" + r.get(0).getWorld().getName() + ")");
 
         for (int i = 1; i < r.size(); i++) {
             rep.append(String.format(", %s (%s)", r.get(i).getId(), r.get(i).getWorld().getName()));
         }
 
-        NOL.msg(p, NOL.SPECIFY_ID_INSTEAD_OF_ALIAS.msg().replace("%regions%", rep.toString()));
+        OutpostL.msg(p, OutpostL.SPECIFY_ID_INSTEAD_OF_ALIAS.msg().replace("%regions%", rep.toString()));
     }
 }

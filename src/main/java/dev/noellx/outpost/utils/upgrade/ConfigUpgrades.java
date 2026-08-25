@@ -17,7 +17,7 @@ package dev.noellx.outpost.utils.upgrade;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 
-import dev.noellx.outpost.NullaeOutpost;
+import dev.noellx.outpost.Outpost;
 
 import org.bukkit.Bukkit;
 
@@ -29,40 +29,40 @@ public class ConfigUpgrades {
     // Upgrade the config one version up (ex. 3 -> 4)
     public static boolean doConfigUpgrades() {
         boolean leaveLoop = false;
-        switch (NullaeOutpost.getInstance().getConfigOptions().configVersion) {
+        switch (Outpost.getInstance().getConfigOptions().configVersion) {
             case 3:
-                NullaeOutpost.config.set("config_version", 4);
-                NullaeOutpost.config.set("base_command", "outpost");
-                NullaeOutpost.config.set("aliases", Arrays.asList("base", "camp"));
+                Outpost.config.set("config_version", 4);
+                Outpost.config.set("base_command", "outpost");
+                Outpost.config.set("aliases", Arrays.asList("base", "camp"));
                 break;
             case 4:
-                NullaeOutpost.config.set("config_version", 5);
-                NullaeOutpost.config.set("async_load_uuid_cache", false);
-                NullaeOutpost.config.set("ps_view_cooldown", 20);
+                Outpost.config.set("config_version", 5);
+                Outpost.config.set("async_load_uuid_cache", false);
+                Outpost.config.set("ps_view_cooldown", 20);
                 break;
             case 5:
-                NullaeOutpost.config.set("config_version", 6);
-                NullaeOutpost.config.set("allow_duplicate_region_names", false);
+                Outpost.config.set("config_version", 6);
+                Outpost.config.set("allow_duplicate_region_names", false);
                 break;
             case 6:
-                NullaeOutpost.config.set("config_version", 7);
-                NullaeOutpost.config.set("drop_item_when_inventory_full", true);
+                Outpost.config.set("config_version", 7);
+                Outpost.config.set("drop_item_when_inventory_full", true);
                 break;
             case 7:
-                NullaeOutpost.config.set("config_version", 8);
-                NullaeOutpost.config.set("regions_must_be_adjacent", false);
+                Outpost.config.set("config_version", 8);
+                Outpost.config.set("regions_must_be_adjacent", false);
                 break;
             case 8:
-                NullaeOutpost.config.set("config_version", 9);
-                NullaeOutpost.config.set("allow_merging_regions", true);
+                Outpost.config.set("config_version", 9);
+                Outpost.config.set("allow_merging_regions", true);
                 break;
             case 9:
-                NullaeOutpost.config.set("config_version", 10);
-                NullaeOutpost.config.set("allow_merging_holes", true);
+                Outpost.config.set("config_version", 10);
+                Outpost.config.set("allow_merging_holes", true);
                 break;
             case 10:
-                NullaeOutpost.config.set("config_version", 11);
-                for (File file : NullaeOutpost.blockDataFolder.listFiles()) {
+                Outpost.config.set("config_version", 11);
+                for (File file : Outpost.blockDataFolder.listFiles()) {
                     CommentedFileConfig c = CommentedFileConfig.builder(file).sync().build();
                     c.load();
                     c.setComment("type", " Define your protection block below\n" +
@@ -83,20 +83,20 @@ public class ConfigUpgrades {
                 }
                 break;
             case 11:
-                NullaeOutpost.config.set("config_version", 12);
-                NullaeOutpost.config.set("economy.max_rent_price", -1.0);
-                NullaeOutpost.config.set("economy.min_rent_price", 1.0);
-                NullaeOutpost.config.setComment("economy.max_rent_price", " Set limits on the price for renting. Set to -1.0 to disable.");
-                NullaeOutpost.config.set("economy.max_rent_period", -1);
-                NullaeOutpost.config.set("economy.min_rent_period", 1);
-                NullaeOutpost.config.setComment("economy.max_rent_period", " Set limits on the period between rent payments, in seconds (86400 seconds = 1 day). Set to -1 to disable.");
-                NullaeOutpost.config.set("economy.tax_enabled", false);
-                NullaeOutpost.config.set("economy.tax_message_on_join", true);
-                NullaeOutpost.config.setComment("economy.tax_enabled", " Set taxes on regions.\n" +
+                Outpost.config.set("config_version", 12);
+                Outpost.config.set("economy.max_rent_price", -1.0);
+                Outpost.config.set("economy.min_rent_price", 1.0);
+                Outpost.config.setComment("economy.max_rent_price", " Set limits on the price for renting. Set to -1.0 to disable.");
+                Outpost.config.set("economy.max_rent_period", -1);
+                Outpost.config.set("economy.min_rent_period", 1);
+                Outpost.config.setComment("economy.max_rent_period", " Set limits on the period between rent payments, in seconds (86400 seconds = 1 day). Set to -1 to disable.");
+                Outpost.config.set("economy.tax_enabled", false);
+                Outpost.config.set("economy.tax_message_on_join", true);
+                Outpost.config.setComment("economy.tax_enabled", " Set taxes on regions.\n" +
                         " Taxes are configured in each individual block config.\n" +
                         " Whether or not to enable the tax command.");
 
-                for (File file : NullaeOutpost.blockDataFolder.listFiles()) {
+                for (File file : Outpost.blockDataFolder.listFiles()) {
                     CommentedFileConfig c = CommentedFileConfig.builder(file).sync().build();
                     c.load();
                     try {
@@ -109,41 +109,41 @@ public class ConfigUpgrades {
                 }
                 break;
             case 12:
-                NullaeOutpost.config.set("config_version", 13);
-                NullaeOutpost.config.set("default_protection_block_placement_off", false);
-                NullaeOutpost.config.setComment("default_protection_block_placement_off", " Whether when players join, by default they have protection block placement toggled off (equivalent to running /no toggle)");
-                NullaeOutpost.config.set("default_allow_addowner_for_offline_players_without_lp", false);
-                NullaeOutpost.config.setComment("default_allow_addowner_for_offline_players_without_lp", " If you do not have LuckPerms, NullaeOutpost is unable to determine the limits of offline players (since it depends\n" +
+                Outpost.config.set("config_version", 13);
+                Outpost.config.set("default_protection_block_placement_off", false);
+                Outpost.config.setComment("default_protection_block_placement_off", " Whether when players join, by default they have protection block placement toggled off (equivalent to running /no toggle)");
+                Outpost.config.set("default_allow_addowner_for_offline_players_without_lp", false);
+                Outpost.config.setComment("default_allow_addowner_for_offline_players_without_lp", " If you do not have LuckPerms, NullaeOutpost is unable to determine the limits of offline players (since it depends\n" +
                         " on permissions), and so it requires players to be online. Set this to true if your server does not need limits (and so\n" +
                         " the check is unnecessary).");
                 break;
             case 13:
-                NullaeOutpost.config.set("config_version", 14);
-                NullaeOutpost.config.set("admin.cleanup_delete_regions_with_members_but_no_owners", true);
-                NullaeOutpost.config.setComment("admin.cleanup_delete_regions_with_members_but_no_owners", "     Whether /no admin cleanup remove should delete regions that have members, but don't have owners (after inactive\n" +
+                Outpost.config.set("config_version", 14);
+                Outpost.config.set("admin.cleanup_delete_regions_with_members_but_no_owners", true);
+                Outpost.config.setComment("admin.cleanup_delete_regions_with_members_but_no_owners", "     Whether /no admin cleanup remove should delete regions that have members, but don't have owners (after inactive\n" +
                         "     owners are removed).\n" +
                         "     Regions that have no owners or members will be deleted regardless.");
                 break;
             case 14:
-                NullaeOutpost.config.set("config_version", 15);
+                Outpost.config.set("config_version", 15);
 
                 // fix incorrect value set
-                if (NullaeOutpost.config.get("allow_addowner_for_offline_players_without_lp") == null) {
-                    Object value = NullaeOutpost.config.get("default_allow_addowner_for_offline_players_without_lp");
-                    NullaeOutpost.config.removeComment("default_allow_addowner_for_offline_players_without_lp");
-                    NullaeOutpost.config.remove("default_allow_addowner_for_offline_players_without_lp");
-                    NullaeOutpost.config.set("allow_addowner_for_offline_players_without_lp", value == null ? false : (boolean) value);
-                    NullaeOutpost.config.setComment("allow_addowner_for_offline_players_without_lp", " If you do not have LuckPerms, NullaeOutpost is unable to determine the limits of offline players (since it depends\n" +
+                if (Outpost.config.get("allow_addowner_for_offline_players_without_lp") == null) {
+                    Object value = Outpost.config.get("default_allow_addowner_for_offline_players_without_lp");
+                    Outpost.config.removeComment("default_allow_addowner_for_offline_players_without_lp");
+                    Outpost.config.remove("default_allow_addowner_for_offline_players_without_lp");
+                    Outpost.config.set("allow_addowner_for_offline_players_without_lp", value == null ? false : (boolean) value);
+                    Outpost.config.setComment("allow_addowner_for_offline_players_without_lp", " If you do not have LuckPerms, NullaeOutpost is unable to determine the limits of offline players (since it depends\n" +
                             " on permissions), and so it requires players to be online. Set this to true if your server does not need limits (and so\n" +
                             " the check is unnecessary).");
                 }
                 break;
             case 15:
-                NullaeOutpost.config.set("config_version", 16);
-                NullaeOutpost.config.set("allow_home_teleport_for_members", true);
-                NullaeOutpost.config.setComment("allow_home_teleport_for_members", " Whether or not members of a region can /no home to the region.");
+                Outpost.config.set("config_version", 16);
+                Outpost.config.set("allow_home_teleport_for_members", true);
+                Outpost.config.setComment("allow_home_teleport_for_members", " Whether or not members of a region can /no home to the region.");
                 break;
-            case NullaeOutpost.CONFIG_VERSION:
+            case Outpost.CONFIG_VERSION:
                 leaveLoop = true;
                 break;
             default:
