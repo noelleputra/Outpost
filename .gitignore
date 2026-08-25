@@ -1,0 +1,9 @@
+/.idea/
+/bin/
+/.settings/
+/NullaeOutpost.iml
+/.classpath
+/.project
+/dependency-reduced-pom.xml
+/*.iml
+target/

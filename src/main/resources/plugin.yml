@@ -1,0 +1,100 @@
+main: dev.noellx.nullaeoutpost.NullaeOutpost
+version: 1.0.0
+name: NullaeOutpost
+author: Noellx
+description: A simple Outpost.
+api-version: 1.21
+depend: [WorldGuard, WorldEdit]
+softdepend: [PlaceholderAPI, LuckPerms]
+
+permissions:
+  outpost.create:
+    description: Protect a region by placing a outpost block.
+    default: op
+  outpost.destroy:
+    description: Allow players to remove their own protected regions (block break).
+    default: op
+  outpost.unclaim:
+    description: Allow players to unclaim their region using /no unclaim.
+    default: op
+  outpost.unclaim.remote:
+    description: Allow players to unclaim their region remotely using /no unclaim [list|region-id].
+    default: op
+  outpost.view:
+    description: Allows players the use of /no view in their own regions.
+    default: op
+  outpost.view.others:
+    description: Allows players the use of /no view in regions they are not a part of.
+    default: op
+  outpost.info:
+    description: Allows players the use of /no info.
+    default: op
+  outpost.info.others:
+    description: Allows players to use /no info in unowned regions.
+    default: op
+  outpost.get:
+    description: Allows players the use of /no get.
+    default: op
+  outpost.give:
+    description: Allows players the use of /no give (give outpost to others as admin).
+    default: op
+  outpost.count:
+    description: Allows players the use of /no count.
+    default: op
+  outpost.count.others:
+    description: Allows players the use of /no count [player].
+    default: op
+  outpost.list:
+    description: Allows players the use of /no list.
+    default: op
+  outpost.list.others:
+    description: Allows players to do /no list [player].
+    default: op
+  outpost.hide:
+    description: Allow players to hide their outpost block.
+    default: op
+  outpost.unhide:
+    description: Allow players to unhide their outpost block.
+    default: op
+  outpost.name:
+    description: Access to the /no name command.
+    default: op
+  outpost.home:
+    description: Access to the /no home command.
+    default: op
+  outpost.sethome:
+    description: Access to /no sethome.
+    default: op
+  outpost.tp:
+    description: Access to /no tp command.
+    default: op
+  outpost.tp.bypasswait:
+    description: Bypass the wait time set in the config for /no home and /no tp
+    default: op
+  outpost.tp.bypassprevent:
+    description: Bypass prevent_teleport_in option in config
+    default: op
+  outpost.owners:
+    description: Allows players to add or remove region owners. Allows players to use /no info owners command.
+    default: op
+  outpost.members:
+    description: Allows players to add or remove region members. Allows players to use /no info members command.
+    default: op
+  outpost.flags:
+    description: Allows players to set their region flags.
+    default: op
+  outpost.toggle:
+    description: Allows players to toggle outpost placement.
+    default: op
+  outpost.region:
+    description: Allows players to use the /no region commands.
+    default: op
+  outpost.merge:
+    description: Allows players to merge their regions with other regions they own.
+    default: op
+  outpost.admin:
+    description: This permission allows users to override all outpost regions and use /no admin and /no reload.
+    default: op
+  outpost.superowner:
+    description: Allows players to override region permissions.
+    default: op
